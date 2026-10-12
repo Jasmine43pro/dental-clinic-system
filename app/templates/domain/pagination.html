@@ -1,0 +1,1 @@
+<div class="actions">{% if items.has_previous %}<a href="{% querystring page=items.previous_page_number %}">上一页</a>{% endif %}<span class="small">第 {{ items.number }} / {{ items.paginator.num_pages }} 页 · 共 {{ items.paginator.count }} 条</span>{% if items.has_next %}<a href="{% querystring page=items.next_page_number %}">下一页</a>{% endif %}</div>
