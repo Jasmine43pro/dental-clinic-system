@@ -26,18 +26,18 @@
   },
   {
     "file": "六模块验收记录.md",
-    "bytes": 5366,
-    "sha256": "0d75d20558017c1d7a7b25ef3dba8fa9d05453cab76ad3ad8ee9a6dd90d4dc35"
+    "bytes": 5315,
+    "sha256": "6d7054fbc94d0668e21e8959ce77c8e21ef898bd8493f83a53db5b486840fb25"
   },
   {
     "file": "界面素材来源.md",
-    "bytes": 441,
-    "sha256": "eeb21341efc366cf521b0133a31217540492191d934d3d08f135b9998129cc62"
+    "bytes": 360,
+    "sha256": "692293c4e7f4b372ae4cf537508f2ed41522db5bbfc32322ea4ab75fb5c42726"
   },
   {
     "file": "部署说明.md",
-    "bytes": 4298,
-    "sha256": "3c2c4601729532f1691bfc136a7308bee04f11f1ea76471244c46efbc00211cf"
+    "bytes": 4292,
+    "sha256": "097a78a0e2cb953a35f845de9fb45be03f3864a205b0ce9fca82001566fbd02c"
   },
   {
     "file": "验收操作说明.md",
@@ -76,13 +76,13 @@
   },
   {
     "file": "database/数据库设计说明.md",
-    "bytes": 25994,
-    "sha256": "6f59127b449274771708d4a676e47e6e61a6382a4b4423357d9608fffdf75860"
+    "bytes": 26237,
+    "sha256": "1f8414982b15596ef2db4c2753c0e9ad80083d28ef81961b67fa701d09534fb1"
   },
   {
     "file": "database/牙科诊所管理系统-数据库设计.pdf",
-    "bytes": 174842,
-    "sha256": "006269759795b3cd72ac680b83c8b4d26ab7e1dfb251ebf1d95fff225d82e349"
+    "bytes": 224748,
+    "sha256": "46bca0c3f65e0f1be386bf0e40dd5406f1aafdca1863108f1411ad7edf6326f8"
   },
   {
     "file": "database/资源扩展关系图.md",
