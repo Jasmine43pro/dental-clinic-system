@@ -1,0 +1,442 @@
+[
+  {
+    "file": ".env.example",
+    "bytes": 303,
+    "sha256": "2a1675cd7ad69a92277618195422e433d99c0a67c2f182d2deb03d1302a0a3c8"
+  },
+  {
+    "file": ".gitignore",
+    "bytes": 94,
+    "sha256": "6ea4d3ff8d2b0b3271ab5a1572980a4c5b673dceb9283c4271286684c5000a0d"
+  },
+  {
+    "file": "README.md",
+    "bytes": 5754,
+    "sha256": "2f6f5de06fb7c94f222f331b2d3761f823770ecb2e0a953ab1f77c0471b43aae"
+  },
+  {
+    "file": "render.yaml",
+    "bytes": 796,
+    "sha256": "62ec20e6a57acc0597ef9f61c57097aa22712ea25832de166d255379240a516d"
+  },
+  {
+    "file": "requirements.txt",
+    "bytes": 186,
+    "sha256": "9c0fc097a6c65c3dd73500f550213a9bf69e8924771a6ef900eb29a5e2678fe9"
+  },
+  {
+    "file": "六模块验收记录.md",
+    "bytes": 5366,
+    "sha256": "0d75d20558017c1d7a7b25ef3dba8fa9d05453cab76ad3ad8ee9a6dd90d4dc35"
+  },
+  {
+    "file": "界面素材来源.md",
+    "bytes": 441,
+    "sha256": "eeb21341efc366cf521b0133a31217540492191d934d3d08f135b9998129cc62"
+  },
+  {
+    "file": "部署说明.md",
+    "bytes": 4298,
+    "sha256": "3c2c4601729532f1691bfc136a7308bee04f11f1ea76471244c46efbc00211cf"
+  },
+  {
+    "file": "验收操作说明.md",
+    "bytes": 7419,
+    "sha256": "8ec82ee354157b6d5bb9cae1042b9bb2d8566c37eeceb7fdddca406633c83381"
+  },
+  {
+    "file": "app/manage.py",
+    "bytes": 385,
+    "sha256": "d9d533b21900e241293e7028564062296c927bdee2716a2bc61bdf03fe7ce4fd"
+  },
+  {
+    "file": "database/00-prerequisites.sql",
+    "bytes": 113,
+    "sha256": "f85c48323dcceafb9075ade638785b18f1f8710696a74d866b035b5b971aedd1"
+  },
+  {
+    "file": "database/schema-0001.sql",
+    "bytes": 33396,
+    "sha256": "74f1e5bc77d55268f9be153666e91d24e0c864878031eda1b99da97186cd871b"
+  },
+  {
+    "file": "database/schema-0002.sql",
+    "bytes": 1651,
+    "sha256": "fd11bfa9e5c30cd287a9f9ba6316b24816b2ddfad639c1a76157c4e186c4ce80"
+  },
+  {
+    "file": "database/schema-0003.sql",
+    "bytes": 9929,
+    "sha256": "9e953ea8d3d2e72e750bcc5938a5dd346117a5fc21522294b3d126261933d767"
+  },
+  {
+    "file": "database/schema-0004.sql",
+    "bytes": 760,
+    "sha256": "672f6e3d87c0a8b95da2131da5ab0247a0ba2da8bba72c85e1c981825104fa7a"
+  },
+  {
+    "file": "database/数据库设计说明.md",
+    "bytes": 25994,
+    "sha256": "6f59127b449274771708d4a676e47e6e61a6382a4b4423357d9608fffdf75860"
+  },
+  {
+    "file": "database/牙科诊所管理系统-数据库设计.pdf",
+    "bytes": 174842,
+    "sha256": "006269759795b3cd72ac680b83c8b4d26ab7e1dfb251ebf1d95fff225d82e349"
+  },
+  {
+    "file": "database/资源扩展关系图.md",
+    "bytes": 1187,
+    "sha256": "03ccaf3aadb319c4feab911b5bbb4cfb3d769ef8742d3dd5be0650a8430f9c69"
+  },
+  {
+    "file": "report/1602240104陈杨娟-修正版.docx",
+    "bytes": 3911261,
+    "sha256": "5ef9ec8879254ba02bfd2bbb66bb4b9491a3143ebfce8196d128608a2206b94c"
+  },
+  {
+    "file": "report/1602240104陈杨娟.pdf",
+    "bytes": 6199049,
+    "sha256": "8531b4fc1af62acdc66e535fdaa095d4d22db8a1aa7a6248dbd3d6953f668079"
+  },
+  {
+    "file": "scripts/cloud_prepare.py",
+    "bytes": 696,
+    "sha256": "cb51a348bb156662dec8a3b8b737d48138b2361c69cc79fc9bfda05476979462"
+  },
+  {
+    "file": "scripts/cloud_start.py",
+    "bytes": 556,
+    "sha256": "3f0f4c12c841a1a619ebff9d52415ba1ad46fecc8d1bb444cb083110eaef33db"
+  },
+  {
+    "file": "app/config/settings.py",
+    "bytes": 2180,
+    "sha256": "affc77484125de33b8a6640c251a88ea734e92b12b3a5ddd7a6f1af6920f051a"
+  },
+  {
+    "file": "app/config/settings_cloud.py",
+    "bytes": 4005,
+    "sha256": "849045268788a9dff1992062be37799909c5da5b6372765fe33b77d2dfb89253"
+  },
+  {
+    "file": "app/config/urls.py",
+    "bytes": 2826,
+    "sha256": "79388aad30f402ebf47dd4141b55b210a8a53836cf2ac04352b05c0cb827c2bd"
+  },
+  {
+    "file": "app/config/wsgi.py",
+    "bytes": 170,
+    "sha256": "ab8e0949b44aa845c70cd581caa63e2f241ba3b7f5f7680301d5d93ae07c47bf"
+  },
+  {
+    "file": "app/config/__init__.py",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "file": "app/domain/access.py",
+    "bytes": 2346,
+    "sha256": "73be15bb396b0eadbe7465ae7e6330ed42231913e26fbed89a897ccc37285bcd"
+  },
+  {
+    "file": "app/domain/forms.py",
+    "bytes": 9690,
+    "sha256": "7e51af53cc9756ff05104713d59ef7685b22c70ba0cb7c391844c3bb334b3387"
+  },
+  {
+    "file": "app/domain/identity.py",
+    "bytes": 2982,
+    "sha256": "493f4be186f18aa422f1c5f4810f5dde62268e12b0cea480151dc969fe04acec"
+  },
+  {
+    "file": "app/domain/models.py",
+    "bytes": 20938,
+    "sha256": "60d37f6fe5112df4f5484bbc010c95cd72c69c8d73686427d89dbd4eb48e69c2"
+  },
+  {
+    "file": "app/domain/reservations.py",
+    "bytes": 7631,
+    "sha256": "e334be04125d8123cb3fb9ed77eb0742f81b1b084e4d591329bc9e028d891d6d"
+  },
+  {
+    "file": "app/domain/services.py",
+    "bytes": 20174,
+    "sha256": "6f20f0e247db78468247236e8b11b40ba817948c3324592c749d753264492615"
+  },
+  {
+    "file": "app/domain/tests.py",
+    "bytes": 5590,
+    "sha256": "4c4909f477c3501a033843c4d2d10d54733f104d46e20b3393c4bbe37e5726d7"
+  },
+  {
+    "file": "app/domain/test_business.py",
+    "bytes": 13439,
+    "sha256": "f1c698f57e9545c407db4d47ddb1af486db4d9500f0ba86073ca18802255dc03"
+  },
+  {
+    "file": "app/domain/test_cloud.py",
+    "bytes": 1445,
+    "sha256": "1d57f14f4de77b4ba2a29b8d16d3e6cc2b89f08db600d1d09f37852db73ba773"
+  },
+  {
+    "file": "app/domain/test_core_workflow.py",
+    "bytes": 21014,
+    "sha256": "2fe5bd97c38ab2fa26a20c334693b0f3e51aa610fcd7be49c8925feb38ba1f1c"
+  },
+  {
+    "file": "app/domain/test_reservations.py",
+    "bytes": 17841,
+    "sha256": "7cd970bc8fdb7697c35622df9f55095a3785a078eb0eb98f77f67d09ad769b92"
+  },
+  {
+    "file": "app/domain/views.py",
+    "bytes": 47265,
+    "sha256": "2b6cc1cb96df617fe4205b55a8e0accaf5b7c82778879f3b13778f235d89d50a"
+  },
+  {
+    "file": "app/domain/__init__.py",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "file": "app/templates/403.html",
+    "bytes": 239,
+    "sha256": "0ddca2c798b2630bfa09d32a6144f894e43ee38f7f32c3fbb67019a5ca5c99ce"
+  },
+  {
+    "file": "app/templates/404.html",
+    "bytes": 221,
+    "sha256": "4f7ccfe0d2254d429a4d559b41e99fcc7f264b30f51dec5972857a461ab0c9e7"
+  },
+  {
+    "file": "app/domain/management/__init__.py",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "file": "app/domain/migrations/0001_initial.py",
+    "bytes": 54258,
+    "sha256": "68c76855858872a42c8546c042a39067e45dd8d5a25d031a7715cd2723accd28"
+  },
+  {
+    "file": "app/domain/migrations/0002_database_guards.py",
+    "bytes": 2255,
+    "sha256": "05b14c277a3a06b01b93ff8ccd6ee8a993b385ed0ebb6ba4a866d25c32a4e925"
+  },
+  {
+    "file": "app/domain/migrations/0003_continuous_reservations_resources_identity.py",
+    "bytes": 9791,
+    "sha256": "c4c64d5d44fbbf101fcbf53525bd8100f1ccf87224e2f35ee6d9aef89a3f4a02"
+  },
+  {
+    "file": "app/domain/migrations/0004_backfill_reservation_history.py",
+    "bytes": 1938,
+    "sha256": "2b9bce262898431479b2319820fb091b85a6b89ef6a137ad89a44fd89b3a1c5b"
+  },
+  {
+    "file": "app/domain/migrations/__init__.py",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "file": "app/domain/templatetags/ui_language.py",
+    "bytes": 13785,
+    "sha256": "2b1d3e3c2596530f71542a5ee3ba3946a383eece5c5ab8829fd4474048f8dd18"
+  },
+  {
+    "file": "app/domain/templatetags/__init__.py",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "file": "app/domain/management/commands/prepare_demo_day.py",
+    "bytes": 1936,
+    "sha256": "dda8577c9d2de6b09ff90ba2caf7b8d0f9e5767322e88bd477a94deba161199a"
+  },
+  {
+    "file": "app/domain/management/commands/prepare_review_demo.py",
+    "bytes": 2496,
+    "sha256": "5d291b2421f8024d65bcffbb39c8850b4a3f2da30943a01d66acb0d7d723b4b6"
+  },
+  {
+    "file": "app/domain/management/commands/seed_demo.py",
+    "bytes": 9849,
+    "sha256": "06efc52739e07fcee304e381bf58bac786af61dfe0c6bfe0306ce8f87ddd1f5e"
+  },
+  {
+    "file": "app/domain/management/commands/seed_demo_cloud.py",
+    "bytes": 1222,
+    "sha256": "e991781230374e8469424a094a32c2d56270e7ac29ce731e4bbc5d356630546b"
+  },
+  {
+    "file": "app/domain/management/commands/seed_resources.py",
+    "bytes": 2285,
+    "sha256": "7f2c583cdce0c24be23c984f27b433d01a4832824125a98e9155d8c1945531c8"
+  },
+  {
+    "file": "app/domain/management/commands/__init__.py",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "file": "app/domain/static/domain/app.css",
+    "bytes": 7827,
+    "sha256": "adfd1df8a5fd5f2720d90c06dde9dfc6fc60ae0d0901ffca5ae2a210f47f5e6d"
+  },
+  {
+    "file": "app/domain/static/domain/app.js",
+    "bytes": 3444,
+    "sha256": "15267b907f97a016e00980dd1b445e4c754f7cbaa9ac297c4890bbb19ef4b1db"
+  },
+  {
+    "file": "app/domain/static/domain/c-theme.css",
+    "bytes": 14192,
+    "sha256": "9f145f336c21445d373a363748642037f342219444917e64bc00cd9cef9dbcda"
+  },
+  {
+    "file": "app/domain/static/domain/clinic-space.jpg",
+    "bytes": 92495,
+    "sha256": "72cd62f7c75f8e539346e5684f0ed22e38f827cdc411114237feaf8474aafeb4"
+  },
+  {
+    "file": "app/domain/static/domain/clinic.css",
+    "bytes": 7872,
+    "sha256": "595f0cab53663a3fd156a4c3f9aad62164cb53fbb6a382344cf66c4a4923deaf"
+  },
+  {
+    "file": "app/domain/static/domain/english.js",
+    "bytes": 15036,
+    "sha256": "3b032da312ce3791234453d596b36270d85af0d238e5dfe3bbdf16c8a355b3a7"
+  },
+  {
+    "file": "app/templates/domain/accounts.html",
+    "bytes": 832,
+    "sha256": "97c385e336d075d9c5e48472c2578cc77d8325419b4a6ae94fb1f08b8332f0fd"
+  },
+  {
+    "file": "app/templates/domain/amendments.html",
+    "bytes": 734,
+    "sha256": "d2b670502b5e757a7cde97200cc8af759fea14359fbbe65d486aed41e37f3138"
+  },
+  {
+    "file": "app/templates/domain/appointment.html",
+    "bytes": 4347,
+    "sha256": "37d7a7698d50128c02f0d68580ebc871656aee7c47318507041eb6b1f0818586"
+  },
+  {
+    "file": "app/templates/domain/appointments.html",
+    "bytes": 1561,
+    "sha256": "cad310bf82f4e92ab3db91dfc89afa3b6923c4731220ec1f6a5bc16f69461d16"
+  },
+  {
+    "file": "app/templates/domain/assignments.html",
+    "bytes": 891,
+    "sha256": "c672e456637df27adcc06b972a3cc644b1a9085ccebcc8527edca588b9570503"
+  },
+  {
+    "file": "app/templates/domain/audit.html",
+    "bytes": 803,
+    "sha256": "4850ff857105d67de276212db30afea48e418bec157fbdeb199b010d12a5bef6"
+  },
+  {
+    "file": "app/templates/domain/base.html",
+    "bytes": 4397,
+    "sha256": "46eddac13530efe5f175176d8e5dec3af24fd1aeea76f0f15628474479ec8ca6"
+  },
+  {
+    "file": "app/templates/domain/booking.html",
+    "bytes": 2919,
+    "sha256": "8284f1d4ece138c35f6794b47bc9c92a4bcfa3e0fdf94bf398d8feecde38ed66"
+  },
+  {
+    "file": "app/templates/domain/costs.html",
+    "bytes": 917,
+    "sha256": "f3af5eb4f9d802f75ee187199b30c6da92666fee735e82a8931efc8b3caa598a"
+  },
+  {
+    "file": "app/templates/domain/dashboard.html",
+    "bytes": 2747,
+    "sha256": "e569510f9a9c8aca563100863fff4839cb6c61e2f239eba94f2efc27c2305437"
+  },
+  {
+    "file": "app/templates/domain/date_board.html",
+    "bytes": 580,
+    "sha256": "496b2b09352b8ce1d5ab018b6c4d65371d49626983fe50367aa89a22fcdce5d6"
+  },
+  {
+    "file": "app/templates/domain/form.html",
+    "bytes": 1119,
+    "sha256": "3ee02fc877c280eee11d96653dedcc3903e6a79340ed24eb7db2f65af4a78f26"
+  },
+  {
+    "file": "app/templates/domain/form_fields.html",
+    "bytes": 500,
+    "sha256": "047efe89ce1d0bf865d2e6841bd9a75205f9aa1f7531046d86fdbc9dd61a40ec"
+  },
+  {
+    "file": "app/templates/domain/invoice.html",
+    "bytes": 1883,
+    "sha256": "e7ec125e9a9abdd7a5348537b68656e6744d57f48afed88d4bb4b439e477207b"
+  },
+  {
+    "file": "app/templates/domain/master.html",
+    "bytes": 1200,
+    "sha256": "377c543489ddfa2894b58aaaa00f2832225cd84d9584984b7c511205000edbcd"
+  },
+  {
+    "file": "app/templates/domain/pagination.html",
+    "bytes": 368,
+    "sha256": "4a7074f220dcd082cc5a5a29be7435f171f3ebcd9cfaa6adfb276ff7ace2cec8"
+  },
+  {
+    "file": "app/templates/domain/patients.html",
+    "bytes": 2366,
+    "sha256": "0b7b739c9443ac4551a7fedd5b483e9d2337c09e1fe5446c75a2ec661f39f809"
+  },
+  {
+    "file": "app/templates/domain/register.html",
+    "bytes": 561,
+    "sha256": "9be287d3d81d789733631a1556edfdf7227bc268b751abb985756891dd1d025a"
+  },
+  {
+    "file": "app/templates/domain/reports.html",
+    "bytes": 4334,
+    "sha256": "5652b0163353f946db08c34c623b331693df96698274419cb5002afffbbbfc98"
+  },
+  {
+    "file": "app/templates/domain/reservation_card.html",
+    "bytes": 1564,
+    "sha256": "5e4f8c795f52a4397b5ad57a6165e2c18f4ddc9f372e4a13ce2a7ef6dc99302a"
+  },
+  {
+    "file": "app/templates/domain/resources.html",
+    "bytes": 1837,
+    "sha256": "da0b53e3b4f5eef8ddd632fa0d2838a93563c7e92ddb11f5aa51ce922eee91c9"
+  },
+  {
+    "file": "app/templates/domain/schedules.html",
+    "bytes": 947,
+    "sha256": "89bcefe6d7208abfcfc634f45aa6b8cb4a7532900c06932f7a381eb76da5d724"
+  },
+  {
+    "file": "app/templates/domain/title_emblem.html",
+    "bytes": 404,
+    "sha256": "b1b64c173c478a76743fd42bbdd99323f00268f6d34346ed43d705596b015605"
+  },
+  {
+    "file": "app/templates/domain/visit.html",
+    "bytes": 3972,
+    "sha256": "fc18e888a5ee0ebd950ffc72cfc76eabce6884157e0ae8e7c95376fc80fd842c"
+  },
+  {
+    "file": "app/templates/registration/login.html",
+    "bytes": 1221,
+    "sha256": "385bb0ce12ce231d6bb5631ef19ebbe162fe53cd079a9e87723f204e7cca8524"
+  },
+  {
+    "file": "app/templates/registration/password.html",
+    "bytes": 33,
+    "sha256": "e5e22bed3959d8bc0192d479c7c3e27f909a146de1599ae22796046a2c98463e"
+  }
+]
