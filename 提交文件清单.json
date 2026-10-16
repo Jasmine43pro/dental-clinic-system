@@ -10,104 +10,19 @@
     "sha256": "6ea4d3ff8d2b0b3271ab5a1572980a4c5b673dceb9283c4271286684c5000a0d"
   },
   {
+    "file": ".python-version",
+    "bytes": 5,
+    "sha256": "7b55f8e67b5623c4bef3fa691288da9437d79d3aba156de48d481db32ac7d16d"
+  },
+  {
     "file": "README.md",
-    "bytes": 5754,
-    "sha256": "2f6f5de06fb7c94f222f331b2d3761f823770ecb2e0a953ab1f77c0471b43aae"
+    "bytes": 9035,
+    "sha256": "f5b0006ac503152189852791d364a8c7ff63740e0fefccf7694d2262a6540bbe"
   },
   {
-    "file": "render.yaml",
-    "bytes": 796,
-    "sha256": "62ec20e6a57acc0597ef9f61c57097aa22712ea25832de166d255379240a516d"
-  },
-  {
-    "file": "requirements.txt",
-    "bytes": 186,
-    "sha256": "9c0fc097a6c65c3dd73500f550213a9bf69e8924771a6ef900eb29a5e2678fe9"
-  },
-  {
-    "file": "六模块验收记录.md",
-    "bytes": 5315,
-    "sha256": "6d7054fbc94d0668e21e8959ce77c8e21ef898bd8493f83a53db5b486840fb25"
-  },
-  {
-    "file": "界面素材来源.md",
-    "bytes": 360,
-    "sha256": "692293c4e7f4b372ae4cf537508f2ed41522db5bbfc32322ea4ab75fb5c42726"
-  },
-  {
-    "file": "部署说明.md",
-    "bytes": 4292,
-    "sha256": "097a78a0e2cb953a35f845de9fb45be03f3864a205b0ce9fca82001566fbd02c"
-  },
-  {
-    "file": "验收操作说明.md",
-    "bytes": 7419,
-    "sha256": "8ec82ee354157b6d5bb9cae1042b9bb2d8566c37eeceb7fdddca406633c83381"
-  },
-  {
-    "file": "app/manage.py",
-    "bytes": 385,
-    "sha256": "d9d533b21900e241293e7028564062296c927bdee2716a2bc61bdf03fe7ce4fd"
-  },
-  {
-    "file": "database/00-prerequisites.sql",
-    "bytes": 113,
-    "sha256": "f85c48323dcceafb9075ade638785b18f1f8710696a74d866b035b5b971aedd1"
-  },
-  {
-    "file": "database/schema-0001.sql",
-    "bytes": 33396,
-    "sha256": "74f1e5bc77d55268f9be153666e91d24e0c864878031eda1b99da97186cd871b"
-  },
-  {
-    "file": "database/schema-0002.sql",
-    "bytes": 1651,
-    "sha256": "fd11bfa9e5c30cd287a9f9ba6316b24816b2ddfad639c1a76157c4e186c4ce80"
-  },
-  {
-    "file": "database/schema-0003.sql",
-    "bytes": 9929,
-    "sha256": "9e953ea8d3d2e72e750bcc5938a5dd346117a5fc21522294b3d126261933d767"
-  },
-  {
-    "file": "database/schema-0004.sql",
-    "bytes": 760,
-    "sha256": "672f6e3d87c0a8b95da2131da5ab0247a0ba2da8bba72c85e1c981825104fa7a"
-  },
-  {
-    "file": "database/数据库设计说明.md",
-    "bytes": 26237,
-    "sha256": "1f8414982b15596ef2db4c2753c0e9ad80083d28ef81961b67fa701d09534fb1"
-  },
-  {
-    "file": "database/牙科诊所管理系统-数据库设计.pdf",
-    "bytes": 224748,
-    "sha256": "46bca0c3f65e0f1be386bf0e40dd5406f1aafdca1863108f1411ad7edf6326f8"
-  },
-  {
-    "file": "database/资源扩展关系图.md",
-    "bytes": 1187,
-    "sha256": "03ccaf3aadb319c4feab911b5bbb4cfb3d769ef8742d3dd5be0650a8430f9c69"
-  },
-  {
-    "file": "report/1602240104陈杨娟-修正版.docx",
-    "bytes": 3911261,
-    "sha256": "5ef9ec8879254ba02bfd2bbb66bb4b9491a3143ebfce8196d128608a2206b94c"
-  },
-  {
-    "file": "report/1602240104陈杨娟.pdf",
-    "bytes": 6199049,
-    "sha256": "8531b4fc1af62acdc66e535fdaa095d4d22db8a1aa7a6248dbd3d6953f668079"
-  },
-  {
-    "file": "scripts/cloud_prepare.py",
-    "bytes": 696,
-    "sha256": "cb51a348bb156662dec8a3b8b737d48138b2361c69cc79fc9bfda05476979462"
-  },
-  {
-    "file": "scripts/cloud_start.py",
-    "bytes": 556,
-    "sha256": "3f0f4c12c841a1a619ebff9d52415ba1ad46fecc8d1bb444cb083110eaef33db"
+    "file": "app/config/__init__.py",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
   },
   {
     "file": "app/config/settings.py",
@@ -130,7 +45,7 @@
     "sha256": "ab8e0949b44aa845c70cd581caa63e2f241ba3b7f5f7680301d5d93ae07c47bf"
   },
   {
-    "file": "app/config/__init__.py",
+    "file": "app/domain/__init__.py",
     "bytes": 0,
     "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
   },
@@ -138,6 +53,11 @@
     "file": "app/domain/access.py",
     "bytes": 2346,
     "sha256": "73be15bb396b0eadbe7465ae7e6330ed42231913e26fbed89a897ccc37285bcd"
+  },
+  {
+    "file": "app/domain/action_states.py",
+    "bytes": 7182,
+    "sha256": "7776b3e030ce30d4a7090aa837d5430bdcab603383f052d506c75abb7aa92b20"
   },
   {
     "file": "app/domain/forms.py",
@@ -150,102 +70,12 @@
     "sha256": "493f4be186f18aa422f1c5f4810f5dde62268e12b0cea480151dc969fe04acec"
   },
   {
-    "file": "app/domain/models.py",
-    "bytes": 20938,
-    "sha256": "60d37f6fe5112df4f5484bbc010c95cd72c69c8d73686427d89dbd4eb48e69c2"
-  },
-  {
-    "file": "app/domain/reservations.py",
-    "bytes": 7631,
-    "sha256": "e334be04125d8123cb3fb9ed77eb0742f81b1b084e4d591329bc9e028d891d6d"
-  },
-  {
-    "file": "app/domain/services.py",
-    "bytes": 20174,
-    "sha256": "6f20f0e247db78468247236e8b11b40ba817948c3324592c749d753264492615"
-  },
-  {
-    "file": "app/domain/tests.py",
-    "bytes": 5590,
-    "sha256": "4c4909f477c3501a033843c4d2d10d54733f104d46e20b3393c4bbe37e5726d7"
-  },
-  {
-    "file": "app/domain/test_business.py",
-    "bytes": 13439,
-    "sha256": "f1c698f57e9545c407db4d47ddb1af486db4d9500f0ba86073ca18802255dc03"
-  },
-  {
-    "file": "app/domain/test_cloud.py",
-    "bytes": 1445,
-    "sha256": "1d57f14f4de77b4ba2a29b8d16d3e6cc2b89f08db600d1d09f37852db73ba773"
-  },
-  {
-    "file": "app/domain/test_core_workflow.py",
-    "bytes": 21014,
-    "sha256": "2fe5bd97c38ab2fa26a20c334693b0f3e51aa610fcd7be49c8925feb38ba1f1c"
-  },
-  {
-    "file": "app/domain/test_reservations.py",
-    "bytes": 17841,
-    "sha256": "7cd970bc8fdb7697c35622df9f55095a3785a078eb0eb98f77f67d09ad769b92"
-  },
-  {
-    "file": "app/domain/views.py",
-    "bytes": 47265,
-    "sha256": "2b6cc1cb96df617fe4205b55a8e0accaf5b7c82778879f3b13778f235d89d50a"
-  },
-  {
-    "file": "app/domain/__init__.py",
-    "bytes": 0,
-    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-  },
-  {
-    "file": "app/templates/403.html",
-    "bytes": 239,
-    "sha256": "0ddca2c798b2630bfa09d32a6144f894e43ee38f7f32c3fbb67019a5ca5c99ce"
-  },
-  {
-    "file": "app/templates/404.html",
-    "bytes": 221,
-    "sha256": "4f7ccfe0d2254d429a4d559b41e99fcc7f264b30f51dec5972857a461ab0c9e7"
-  },
-  {
     "file": "app/domain/management/__init__.py",
     "bytes": 0,
     "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
   },
   {
-    "file": "app/domain/migrations/0001_initial.py",
-    "bytes": 54258,
-    "sha256": "68c76855858872a42c8546c042a39067e45dd8d5a25d031a7715cd2723accd28"
-  },
-  {
-    "file": "app/domain/migrations/0002_database_guards.py",
-    "bytes": 2255,
-    "sha256": "05b14c277a3a06b01b93ff8ccd6ee8a993b385ed0ebb6ba4a866d25c32a4e925"
-  },
-  {
-    "file": "app/domain/migrations/0003_continuous_reservations_resources_identity.py",
-    "bytes": 9791,
-    "sha256": "c4c64d5d44fbbf101fcbf53525bd8100f1ccf87224e2f35ee6d9aef89a3f4a02"
-  },
-  {
-    "file": "app/domain/migrations/0004_backfill_reservation_history.py",
-    "bytes": 1938,
-    "sha256": "2b9bce262898431479b2319820fb091b85a6b89ef6a137ad89a44fd89b3a1c5b"
-  },
-  {
-    "file": "app/domain/migrations/__init__.py",
-    "bytes": 0,
-    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-  },
-  {
-    "file": "app/domain/templatetags/ui_language.py",
-    "bytes": 13785,
-    "sha256": "2b1d3e3c2596530f71542a5ee3ba3946a383eece5c5ab8829fd4474048f8dd18"
-  },
-  {
-    "file": "app/domain/templatetags/__init__.py",
+    "file": "app/domain/management/commands/__init__.py",
     "bytes": 0,
     "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
   },
@@ -275,9 +105,44 @@
     "sha256": "7f2c583cdce0c24be23c984f27b433d01a4832824125a98e9155d8c1945531c8"
   },
   {
-    "file": "app/domain/management/commands/__init__.py",
+    "file": "app/domain/migrations/0001_initial.py",
+    "bytes": 54258,
+    "sha256": "68c76855858872a42c8546c042a39067e45dd8d5a25d031a7715cd2723accd28"
+  },
+  {
+    "file": "app/domain/migrations/0002_database_guards.py",
+    "bytes": 2255,
+    "sha256": "05b14c277a3a06b01b93ff8ccd6ee8a993b385ed0ebb6ba4a866d25c32a4e925"
+  },
+  {
+    "file": "app/domain/migrations/0003_continuous_reservations_resources_identity.py",
+    "bytes": 9791,
+    "sha256": "c4c64d5d44fbbf101fcbf53525bd8100f1ccf87224e2f35ee6d9aef89a3f4a02"
+  },
+  {
+    "file": "app/domain/migrations/0004_backfill_reservation_history.py",
+    "bytes": 1938,
+    "sha256": "2b9bce262898431479b2319820fb091b85a6b89ef6a137ad89a44fd89b3a1c5b"
+  },
+  {
+    "file": "app/domain/migrations/__init__.py",
     "bytes": 0,
     "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "file": "app/domain/models.py",
+    "bytes": 20938,
+    "sha256": "60d37f6fe5112df4f5484bbc010c95cd72c69c8d73686427d89dbd4eb48e69c2"
+  },
+  {
+    "file": "app/domain/reservations.py",
+    "bytes": 7631,
+    "sha256": "e334be04125d8123cb3fb9ed77eb0742f81b1b084e4d591329bc9e028d891d6d"
+  },
+  {
+    "file": "app/domain/services.py",
+    "bytes": 20174,
+    "sha256": "6f20f0e247db78468247236e8b11b40ba817948c3324592c749d753264492615"
   },
   {
     "file": "app/domain/static/domain/app.css",
@@ -291,8 +156,8 @@
   },
   {
     "file": "app/domain/static/domain/c-theme.css",
-    "bytes": 14192,
-    "sha256": "9f145f336c21445d373a363748642037f342219444917e64bc00cd9cef9dbcda"
+    "bytes": 15192,
+    "sha256": "5e3dd3e60713525cfac760417bff24a1b4970f638d36d946adf226874eb365d4"
   },
   {
     "file": "app/domain/static/domain/clinic-space.jpg",
@@ -310,9 +175,74 @@
     "sha256": "3b032da312ce3791234453d596b36270d85af0d238e5dfe3bbdf16c8a355b3a7"
   },
   {
+    "file": "app/domain/templatetags/__init__.py",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "file": "app/domain/templatetags/ui_language.py",
+    "bytes": 13785,
+    "sha256": "2b1d3e3c2596530f71542a5ee3ba3946a383eece5c5ab8829fd4474048f8dd18"
+  },
+  {
+    "file": "app/domain/test_action_states.py",
+    "bytes": 14395,
+    "sha256": "6f8771be80e38420e798167416ae629820458032e0644795be5cad8b6978a4c3"
+  },
+  {
+    "file": "app/domain/test_business.py",
+    "bytes": 13439,
+    "sha256": "f1c698f57e9545c407db4d47ddb1af486db4d9500f0ba86073ca18802255dc03"
+  },
+  {
+    "file": "app/domain/test_cloud.py",
+    "bytes": 1445,
+    "sha256": "1d57f14f4de77b4ba2a29b8d16d3e6cc2b89f08db600d1d09f37852db73ba773"
+  },
+  {
+    "file": "app/domain/test_core_workflow.py",
+    "bytes": 21014,
+    "sha256": "2fe5bd97c38ab2fa26a20c334693b0f3e51aa610fcd7be49c8925feb38ba1f1c"
+  },
+  {
+    "file": "app/domain/test_reservations.py",
+    "bytes": 17841,
+    "sha256": "7cd970bc8fdb7697c35622df9f55095a3785a078eb0eb98f77f67d09ad769b92"
+  },
+  {
+    "file": "app/domain/tests.py",
+    "bytes": 5590,
+    "sha256": "4c4909f477c3501a033843c4d2d10d54733f104d46e20b3393c4bbe37e5726d7"
+  },
+  {
+    "file": "app/domain/views.py",
+    "bytes": 48660,
+    "sha256": "573a3edc6bfef209cf64b01195787ea6cb72efb7bf13ca2f25a1d1cd96571b29"
+  },
+  {
+    "file": "app/manage.py",
+    "bytes": 385,
+    "sha256": "d9d533b21900e241293e7028564062296c927bdee2716a2bc61bdf03fe7ce4fd"
+  },
+  {
+    "file": "app/templates/403.html",
+    "bytes": 239,
+    "sha256": "0ddca2c798b2630bfa09d32a6144f894e43ee38f7f32c3fbb67019a5ca5c99ce"
+  },
+  {
+    "file": "app/templates/404.html",
+    "bytes": 221,
+    "sha256": "4f7ccfe0d2254d429a4d559b41e99fcc7f264b30f51dec5972857a461ab0c9e7"
+  },
+  {
     "file": "app/templates/domain/accounts.html",
     "bytes": 832,
     "sha256": "97c385e336d075d9c5e48472c2578cc77d8325419b4a6ae94fb1f08b8332f0fd"
+  },
+  {
+    "file": "app/templates/domain/action_controls.html",
+    "bytes": 616,
+    "sha256": "74a788e9873c78d6b18b4350fa7471f6b5b97443455c67a5e08aeeff0604b70c"
   },
   {
     "file": "app/templates/domain/amendments.html",
@@ -321,8 +251,8 @@
   },
   {
     "file": "app/templates/domain/appointment.html",
-    "bytes": 4347,
-    "sha256": "37d7a7698d50128c02f0d68580ebc871656aee7c47318507041eb6b1f0818586"
+    "bytes": 3553,
+    "sha256": "dff8350e280e5e2ac760a55c6223ee085d1d6786ced1d8aab9c807ea510f48bc"
   },
   {
     "file": "app/templates/domain/appointments.html",
@@ -341,8 +271,8 @@
   },
   {
     "file": "app/templates/domain/base.html",
-    "bytes": 4397,
-    "sha256": "46eddac13530efe5f175176d8e5dec3af24fd1aeea76f0f15628474479ec8ca6"
+    "bytes": 4401,
+    "sha256": "3be3a3c79484e3e573424effc9a3b41953588918a9bea1361b53297a37db542a"
   },
   {
     "file": "app/templates/domain/booking.html",
@@ -366,8 +296,8 @@
   },
   {
     "file": "app/templates/domain/form.html",
-    "bytes": 1119,
-    "sha256": "3ee02fc877c280eee11d96653dedcc3903e6a79340ed24eb7db2f65af4a78f26"
+    "bytes": 1336,
+    "sha256": "036bff3c47e29f9556414c62b6506feda93964a536d751060297e69d1be205a4"
   },
   {
     "file": "app/templates/domain/form_fields.html",
@@ -376,8 +306,8 @@
   },
   {
     "file": "app/templates/domain/invoice.html",
-    "bytes": 1883,
-    "sha256": "e7ec125e9a9abdd7a5348537b68656e6744d57f48afed88d4bb4b439e477207b"
+    "bytes": 1777,
+    "sha256": "11b105b6c919772f4bb9e31ad0eaeb105d3a95f7821de17cec7cae9e781e654c"
   },
   {
     "file": "app/templates/domain/master.html",
@@ -426,8 +356,8 @@
   },
   {
     "file": "app/templates/domain/visit.html",
-    "bytes": 3972,
-    "sha256": "fc18e888a5ee0ebd950ffc72cfc76eabce6884157e0ae8e7c95376fc80fd842c"
+    "bytes": 3787,
+    "sha256": "f9d4686847bdd0bb704806c22b8e4007c9cc7573abc2b63dfb81846ea2b483ea"
   },
   {
     "file": "app/templates/registration/login.html",
@@ -438,5 +368,595 @@
     "file": "app/templates/registration/password.html",
     "bytes": 33,
     "sha256": "e5e22bed3959d8bc0192d479c7c3e27f909a146de1599ae22796046a2c98463e"
+  },
+  {
+    "file": "database/00-prerequisites.sql",
+    "bytes": 113,
+    "sha256": "f85c48323dcceafb9075ade638785b18f1f8710696a74d866b035b5b971aedd1"
+  },
+  {
+    "file": "database/schema-0001.sql",
+    "bytes": 33396,
+    "sha256": "74f1e5bc77d55268f9be153666e91d24e0c864878031eda1b99da97186cd871b"
+  },
+  {
+    "file": "database/schema-0002.sql",
+    "bytes": 1651,
+    "sha256": "fd11bfa9e5c30cd287a9f9ba6316b24816b2ddfad639c1a76157c4e186c4ce80"
+  },
+  {
+    "file": "database/schema-0003.sql",
+    "bytes": 9929,
+    "sha256": "9e953ea8d3d2e72e750bcc5938a5dd346117a5fc21522294b3d126261933d767"
+  },
+  {
+    "file": "database/schema-0004.sql",
+    "bytes": 760,
+    "sha256": "672f6e3d87c0a8b95da2131da5ab0247a0ba2da8bba72c85e1c981825104fa7a"
+  },
+  {
+    "file": "database/数据库设计说明.md",
+    "bytes": 26237,
+    "sha256": "1f8414982b15596ef2db4c2753c0e9ad80083d28ef81961b67fa701d09534fb1"
+  },
+  {
+    "file": "database/牙科诊所管理系统-数据库设计.pdf",
+    "bytes": 224748,
+    "sha256": "46bca0c3f65e0f1be386bf0e40dd5406f1aafdca1863108f1411ad7edf6326f8"
+  },
+  {
+    "file": "database/资源扩展关系图.md",
+    "bytes": 1187,
+    "sha256": "03ccaf3aadb319c4feab911b5bbb4cfb3d769ef8742d3dd5be0650a8430f9c69"
+  },
+  {
+    "file": "render.yaml",
+    "bytes": 844,
+    "sha256": "557a81fcd1e705997f822140f6405a4420b9ac9e3e67162012e6885a7cbbbf85"
+  },
+  {
+    "file": "report/1602240104陈杨娟-修正版.docx",
+    "bytes": 3911261,
+    "sha256": "5ef9ec8879254ba02bfd2bbb66bb4b9491a3143ebfce8196d128608a2206b94c"
+  },
+  {
+    "file": "report/1602240104陈杨娟-完整分析与设计报告.docx",
+    "bytes": 6836005,
+    "sha256": "c3bd564305ebc13c16cc4d106a4f01f469f533ee1acbd0a2280fb257e3823211"
+  },
+  {
+    "file": "report/1602240104陈杨娟-完整分析与设计报告.md",
+    "bytes": 112132,
+    "sha256": "57c7e881c0cbda79dee57deda1ba2d56aeb9d5a683d368d7cbb7cd78b0eb1df0"
+  },
+  {
+    "file": "report/1602240104陈杨娟-完整分析与设计报告.pdf",
+    "bytes": 8903560,
+    "sha256": "c3f7fff3d503c7be58d7b208b04451df09ce5eb4da6168bce0a544430441c25c"
+  },
+  {
+    "file": "report/1602240104陈杨娟.pdf",
+    "bytes": 6199049,
+    "sha256": "8531b4fc1af62acdc66e535fdaa095d4d22db8a1aa7a6248dbd3d6953f668079"
+  },
+  {
+    "file": "report/assets/erd-0.png",
+    "bytes": 1166255,
+    "sha256": "441f1506fb6c915376a205bdc534ae662714da4440e9df98c64c1cc19ca39c1f"
+  },
+  {
+    "file": "report/assets/erd-0.svg",
+    "bytes": 147103,
+    "sha256": "579efd3aaab5c7d2bdfb81d815b19041c571bdfb25489110dc4b47433f4e8c33"
+  },
+  {
+    "file": "report/assets/erd-1.png",
+    "bytes": 363962,
+    "sha256": "91a6dd7c9d7d45d0bd9f19cb32f17ea9eb5964bccd5833c86cf87314c128b690"
+  },
+  {
+    "file": "report/assets/erd-1.svg",
+    "bytes": 22269,
+    "sha256": "10612adab709dbbbb6098c9c4741f31d430ae3e4631a07927f3c30cd4dc7d064"
+  },
+  {
+    "file": "report/assets/erd-2.png",
+    "bytes": 303756,
+    "sha256": "766f05b218ae29dda359d0c1bdd6a5b7b3151d22cb505f42ae356a709e0e2ac8"
+  },
+  {
+    "file": "report/assets/erd-2.svg",
+    "bytes": 15767,
+    "sha256": "d303bc56a72316cd550c75aeda5375f34233b203d5b1c2ba099ab30115ccabfe"
+  },
+  {
+    "file": "report/assets/erd-3.png",
+    "bytes": 364681,
+    "sha256": "167158cb060e5b36b9dc2006acc11ff2b0236c717582729835445121db211e7d"
+  },
+  {
+    "file": "report/assets/erd-3.svg",
+    "bytes": 17825,
+    "sha256": "bbce2bc32ca81b057909d6370cbf2b97b6d441abc718e49ece4aafbc428a3ede"
+  },
+  {
+    "file": "report/assets/erd-4.png",
+    "bytes": 362946,
+    "sha256": "485c5dbbee5ea4896cde4aaf290aa9895fd0fd29efb9c8738b54592c1127ff40"
+  },
+  {
+    "file": "report/assets/erd-4.svg",
+    "bytes": 22191,
+    "sha256": "78354dd04e66b682dfea42e3993c0860984538028383429d5be6c5cb1f86f76b"
+  },
+  {
+    "file": "report/assets/erd-5.png",
+    "bytes": 580022,
+    "sha256": "54a685481eb81561163528bb4aff9fd0fd94bf9b3a1efbbe972b620d130c3060"
+  },
+  {
+    "file": "report/assets/erd-5.svg",
+    "bytes": 29186,
+    "sha256": "7720e0544303efb79716bd9b7e876d48dcdcb79c11bfaf4282d1dfe4c959d2ba"
+  },
+  {
+    "file": "report/assets/erd-6.png",
+    "bytes": 412641,
+    "sha256": "c50b838702b02578b0f8a218fa40ad47e517cde00d73d13f7c40dd074ce3c367"
+  },
+  {
+    "file": "report/assets/erd-6.svg",
+    "bytes": 27312,
+    "sha256": "27dea9328f6ca740504db696cc245045f9b38ebdf1c26964a53c5ae55b64ef74"
+  },
+  {
+    "file": "report/assets/image1.jpeg",
+    "bytes": 36793,
+    "sha256": "21ac31bf6bfc9776f371de4c5bf9008cc0ade2296a9306f31c70e707be75a233"
+  },
+  {
+    "file": "report/assets/image10.png",
+    "bytes": 143408,
+    "sha256": "dd21a515d070090d6b908d4f2a7712daa74ff0e2835f0ff3153ec0ac9470dace"
+  },
+  {
+    "file": "report/assets/image11.png",
+    "bytes": 131149,
+    "sha256": "498943c2f34bf8549e2ad017a5fd80dbcba69b43a561c332d2a4cc37c4130c55"
+  },
+  {
+    "file": "report/assets/image12.png",
+    "bytes": 138478,
+    "sha256": "1a389bd167a37714d0bc99d14634430f09d16d7c81a8b7df3e3f2db7e53b8c63"
+  },
+  {
+    "file": "report/assets/image13.png",
+    "bytes": 113898,
+    "sha256": "0c987c3bd9a28997d5b95d13c5aaea2505fedeb36aea888b928babc85be3b807"
+  },
+  {
+    "file": "report/assets/image14.png",
+    "bytes": 98728,
+    "sha256": "a4a67594063f55ee3f86a6e36b8e9ef82c467261f26773e1dbe6c0ad072d7611"
+  },
+  {
+    "file": "report/assets/image15.png",
+    "bytes": 86423,
+    "sha256": "2c54c1162897a54c71af96f038f455668295fd88b48455005b01bbcf2c4e3e12"
+  },
+  {
+    "file": "report/assets/image16.png",
+    "bytes": 117325,
+    "sha256": "44f88378a682b7ebe8c2218f26cc50f40fe3dbb93ce51df867f8837232c4c134"
+  },
+  {
+    "file": "report/assets/image17.png",
+    "bytes": 95631,
+    "sha256": "4e7744c45276222a5dc4f6a2be00165ba6d2d25bee22797c0a2c12391ef0064c"
+  },
+  {
+    "file": "report/assets/image18.png",
+    "bytes": 133133,
+    "sha256": "156cff6c5fbf215ee9d627afb0bf87f6796ee5615be4d8c7ca6af875506d0343"
+  },
+  {
+    "file": "report/assets/image19.png",
+    "bytes": 92423,
+    "sha256": "8e5cb0eb700ac8d79737228f31cd98050416f84c722f4f4b83d1396c22341d46"
+  },
+  {
+    "file": "report/assets/image2.png",
+    "bytes": 83284,
+    "sha256": "af172aa1e2b42d4e60c2366b04c85ad001a16496af95826884a6eb30340037fd"
+  },
+  {
+    "file": "report/assets/image20.png",
+    "bytes": 95268,
+    "sha256": "be3532c5f875b501ac08546fb01d96c6e978ec00701a1829a73bb74cd4ffff29"
+  },
+  {
+    "file": "report/assets/image21.png",
+    "bytes": 71550,
+    "sha256": "1a668df05e32f4f27cf3a8723ef1d2c68ebd72446cd8b943dd03c65a86634441"
+  },
+  {
+    "file": "report/assets/image22.png",
+    "bytes": 74095,
+    "sha256": "2332401bc1aabdffecbe8d8828fb5fd5c334025ad76eda50f25c312941fa9933"
+  },
+  {
+    "file": "report/assets/image23.png",
+    "bytes": 111646,
+    "sha256": "597ab321803c2e6cc57a6ac53dcda72ace7dcf615195129574499c8dd4ce7b70"
+  },
+  {
+    "file": "report/assets/image24.png",
+    "bytes": 69209,
+    "sha256": "4117b594a312b185d2529559096bf2817862b91eb45101b64656559386491c82"
+  },
+  {
+    "file": "report/assets/image25.png",
+    "bytes": 70127,
+    "sha256": "6cd8dde2ff3d623386a5510a9647a5d3eb374d97617e7b1ecf46fd449186ee88"
+  },
+  {
+    "file": "report/assets/image26.png",
+    "bytes": 70029,
+    "sha256": "368ca3c52f25e9ee26944969f1a85a5a2590fc2f5e9edf1a4cfe06a0c4c17ae9"
+  },
+  {
+    "file": "report/assets/image27.png",
+    "bytes": 70409,
+    "sha256": "92c2af1b0b04ee2843851f72189b9fee66ec5c98570026ffb6158a7973382ace"
+  },
+  {
+    "file": "report/assets/image28.png",
+    "bytes": 118593,
+    "sha256": "5a199b25b3aea30a4520ec3ce8a994fa1724d2eec30787f5bb2d5f2f17ce89dd"
+  },
+  {
+    "file": "report/assets/image29.png",
+    "bytes": 72231,
+    "sha256": "a5e690ad8b4ee7e05d37a45e83d3a96db96001aabcc138ed911263d142947b92"
+  },
+  {
+    "file": "report/assets/image3.png",
+    "bytes": 94173,
+    "sha256": "53eb7984588d56befe5dacd09a7bd5de7d0d87b6ffa961ecaaa4671cef7e8b38"
+  },
+  {
+    "file": "report/assets/image30.png",
+    "bytes": 74549,
+    "sha256": "d82b01c050d4d5f00de22d36f2bc566d3f1f16c1ce81cb702047805247e3733f"
+  },
+  {
+    "file": "report/assets/image31.png",
+    "bytes": 109232,
+    "sha256": "bc1cba9273508b24538c6c5fc166e32819fd8f8f652a2b2cf2f0d4d3d4bf760c"
+  },
+  {
+    "file": "report/assets/image32.png",
+    "bytes": 70249,
+    "sha256": "ddd86ea7a87284f7da1656df72745ca17eb2d1e492fc32095aacf24012348daf"
+  },
+  {
+    "file": "report/assets/image33.png",
+    "bytes": 71355,
+    "sha256": "93f13b1b2aa928d381e0b31ac27742f6cd458e27cbc2ecc843d05ef632648903"
+  },
+  {
+    "file": "report/assets/image34.png",
+    "bytes": 72120,
+    "sha256": "e6951062dd434c26599fd7fb651d03318d588c6d417e0413adb238ffd10d8f5d"
+  },
+  {
+    "file": "report/assets/image35.png",
+    "bytes": 76637,
+    "sha256": "c742dc5255d0ce57562841760809f8c6c814616dc7797067e654a007740e29f5"
+  },
+  {
+    "file": "report/assets/image36.png",
+    "bytes": 76617,
+    "sha256": "5f51e154a10545fa3389b3bf5c4f2ad3a2879915ade2c68aa046f6b5a50804e2"
+  },
+  {
+    "file": "report/assets/image37.png",
+    "bytes": 79477,
+    "sha256": "9b47e37fe8d532535e86ac3dfd80b679705b9446bdbdc9c7615334f9c95ea39d"
+  },
+  {
+    "file": "report/assets/image38.png",
+    "bytes": 74607,
+    "sha256": "7977107f0472374d9f9e04c89f2b7d151de4672386a714dfa15489ef0f2b309b"
+  },
+  {
+    "file": "report/assets/image39.png",
+    "bytes": 78092,
+    "sha256": "52be957c29f58f2488db63885ffc43486613ac887b4bc9b8a220effd1ecb6385"
+  },
+  {
+    "file": "report/assets/image4.png",
+    "bytes": 94299,
+    "sha256": "856f0c66dd7d9b68714dc4fc046210bbcbdb675b6d4df1ec991bee837350dabc"
+  },
+  {
+    "file": "report/assets/image40.png",
+    "bytes": 75375,
+    "sha256": "08031cb9b7dbf4e89d03e5fd540d94d8e127b59a214261539cc965f7ff82ce82"
+  },
+  {
+    "file": "report/assets/image41.png",
+    "bytes": 71290,
+    "sha256": "8617bfc3161c423af25c8fe9d1e78d1f2f0cd46426b9950df25271fdb95d18e0"
+  },
+  {
+    "file": "report/assets/image42.png",
+    "bytes": 74292,
+    "sha256": "f093e45726c9f1f45caef4707cf302c44f6c883abc2b5ab11e1492de1dbb7694"
+  },
+  {
+    "file": "report/assets/image43.png",
+    "bytes": 71310,
+    "sha256": "15bbbf844bd7a30eae6e11f2b21003206da0e51b0cdfa98b1491d3de1aee066b"
+  },
+  {
+    "file": "report/assets/image44.png",
+    "bytes": 77165,
+    "sha256": "8fe0bb1b08c7976b5953fbb9c2f1efb5e211c84ee3f497fa473eb844ca655ee5"
+  },
+  {
+    "file": "report/assets/image45.png",
+    "bytes": 77512,
+    "sha256": "be849cf3994606635892b0b9ce169cd94aad397c15079f01f0510c590b955033"
+  },
+  {
+    "file": "report/assets/image46.png",
+    "bytes": 71601,
+    "sha256": "3eeae22e89046f2cff3a5099162883c4028d82cb3f703651c57410668111ec28"
+  },
+  {
+    "file": "report/assets/image47.png",
+    "bytes": 75808,
+    "sha256": "d09b82208f1cade0ed163a1ca62ee05a17850b26f411507246337142140c2fe4"
+  },
+  {
+    "file": "report/assets/image48.png",
+    "bytes": 76666,
+    "sha256": "dd7f613d38b4e8ca078b78915ba195681dd18e826aa4fc36288e9203c2dd1321"
+  },
+  {
+    "file": "report/assets/image49.png",
+    "bytes": 79308,
+    "sha256": "ce46c9d85ef746765a8bba8f10ab81a13ad5d068e9c7a0b7793fb1b6a1804d95"
+  },
+  {
+    "file": "report/assets/image5.png",
+    "bytes": 93955,
+    "sha256": "731cd796784922594426ff75ef83e01328045f90b555fb109b7d6f7895def472"
+  },
+  {
+    "file": "report/assets/image50.png",
+    "bytes": 77685,
+    "sha256": "331230ab9c0c84277552a7eec5045d4ac0a8b7a1db9d50a004f2c6ae91904cda"
+  },
+  {
+    "file": "report/assets/image51.png",
+    "bytes": 80255,
+    "sha256": "cab6ecc4ae551b0b54f9ef5802d94a173b841eb1056c57c163d9308c8143c8d7"
+  },
+  {
+    "file": "report/assets/image52.png",
+    "bytes": 51266,
+    "sha256": "2e64bac42a9c8dd114bd39872b446d39ca9f8e0cc12ae06149c974587eb1408e"
+  },
+  {
+    "file": "report/assets/image53.png",
+    "bytes": 59856,
+    "sha256": "c188187598fa2087131673e7cc40de132f35fd5f9dacc333f169744713ecd972"
+  },
+  {
+    "file": "report/assets/image54.png",
+    "bytes": 57407,
+    "sha256": "0b34312caa313be89145b67d87b39dad3dfdd330a256bb5e79e6a1c0f1ab7ba4"
+  },
+  {
+    "file": "report/assets/image55.png",
+    "bytes": 58164,
+    "sha256": "2f71ae97ea88a4bd7e8c228581703ae88f0a7e9f476c2bb535eafa18accfa5d3"
+  },
+  {
+    "file": "report/assets/image6.png",
+    "bytes": 69473,
+    "sha256": "f916f14ee5becd4f63a1fda154b1ce89f38ae0101643727cfd25012dc95f6067"
+  },
+  {
+    "file": "report/assets/image7.png",
+    "bytes": 102110,
+    "sha256": "c239b2ac38edf57fb908a5c9c70e962695736473189a1d450cb3062f4992a191"
+  },
+  {
+    "file": "report/assets/image8.png",
+    "bytes": 107836,
+    "sha256": "40429c3005321393f3cc239ae4e0b3fa36e36836a121a6edb0afe1fca586e006"
+  },
+  {
+    "file": "report/assets/image9.png",
+    "bytes": 82699,
+    "sha256": "271537e97ba0b52832b152dead6a2be137e894849f61e302d75b38056f1be1e0"
+  },
+  {
+    "file": "report/assets/media",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "file": "report/使用说明.md",
+    "bytes": 1020,
+    "sha256": "2dbb5bc2cfc0c33512ae4f9d61afcc3e50cdb338b83cacef9404903b8602798e"
+  },
+  {
+    "file": "report/图形源文件/牙科诊所关系数据库图.vsdx",
+    "bytes": 59876,
+    "sha256": "bfbdf7500f434c5e40535a4f389e1244684e719af4d232bbeeb29354ac620788"
+  },
+  {
+    "file": "requirements.txt",
+    "bytes": 186,
+    "sha256": "9c0fc097a6c65c3dd73500f550213a9bf69e8924771a6ef900eb29a5e2678fe9"
+  },
+  {
+    "file": "scripts/backup_database.py",
+    "bytes": 17055,
+    "sha256": "a69f5abc6da2f605a040b008194d76ef5b3a6fd0d790b38a842ca68087826e7c"
+  },
+  {
+    "file": "scripts/cloud_prepare.py",
+    "bytes": 696,
+    "sha256": "cb51a348bb156662dec8a3b8b737d48138b2361c69cc79fc9bfda05476979462"
+  },
+  {
+    "file": "scripts/cloud_start.py",
+    "bytes": 556,
+    "sha256": "3f0f4c12c841a1a619ebff9d52415ba1ad46fecc8d1bb444cb083110eaef33db"
+  },
+  {
+    "file": "六模块验收记录.md",
+    "bytes": 6242,
+    "sha256": "57345ddd68197ae0ce6921681373705545b645e9b915a57cc93f49012998b12b"
+  },
+  {
+    "file": "备份与迁移说明.md",
+    "bytes": 3610,
+    "sha256": "ca89da81853adab2b8214e30e010e5803e5df68ccd6a47ac9b5eefbb656fc114"
+  },
+  {
+    "file": "完整业务彩排记录-20261016.md",
+    "bytes": 5619,
+    "sha256": "37495140d010b684351c2a325033310f402d9f2fa2098ab4d772e1f27802e755"
+  },
+  {
+    "file": "彩排截图/01-患者预约成功.jpg",
+    "bytes": 109061,
+    "sha256": "c0b531edc81a405c2dc3d03e9229d27f6a29c20e5d8b5f21883e36f3c4da0a83"
+  },
+  {
+    "file": "彩排截图/02-医生完成就诊.jpg",
+    "bytes": 140941,
+    "sha256": "574ccaf93e72f8537de7a7294b409fd60f2688802e7ac3a0b2a050a572fa09e8"
+  },
+  {
+    "file": "彩排截图/03-350.63元模拟收款完成.jpg",
+    "bytes": 87781,
+    "sha256": "9031bf2fe1db6c01cf33bdea4e0e43b7c6a916e5a763c053d8aa5e1cf795193c"
+  },
+  {
+    "file": "彩排截图/04-财务三项虚构成本.jpg",
+    "bytes": 126250,
+    "sha256": "2a444817ddb012a3032ed04dc569998fa3001449590aa45f3515219f183a985f"
+  },
+  {
+    "file": "彩排截图/05-总部季度经营核对.jpg",
+    "bytes": 260110,
+    "sha256": "012038fba1241c233cabc2f3d6026a8e64edc0a959ba2a676e58aa85a4a37335"
+  },
+  {
+    "file": "彩排截图/06-医生本人业绩核对.jpg",
+    "bytes": 156945,
+    "sha256": "930ccb60602acb208a52018e70bd02946fad8fafcc223880405b77438e24441e"
+  },
+  {
+    "file": "彩排截图/07-患者本人已支付单据.jpg",
+    "bytes": 75881,
+    "sha256": "625ab03540c5c93f96004bfc36e93c1dd0d33ae2abfacf53e7700ae952a3e970"
+  },
+  {
+    "file": "操作状态验收说明.md",
+    "bytes": 2884,
+    "sha256": "f85ed51ee555a0cd4a5c1687751abb0465bfef2317bcab166472cbe37ba1c609"
+  },
+  {
+    "file": "本机演示复核记录-20261016.md",
+    "bytes": 6037,
+    "sha256": "8a3c9b7c78e00cbdca6c82e56485f91f48625b34753249ef5732ab763355d883"
+  },
+  {
+    "file": "界面截图/前台已支付结算提示.jpg",
+    "bytes": 79803,
+    "sha256": "5a28d55234c0bd644ee7af60f2f3f4961c06282046a2404f1ccffc99722cef55"
+  },
+  {
+    "file": "界面截图/前台预约核对.jpg",
+    "bytes": 135043,
+    "sha256": "27ec71ee58e8fe7e58362f06502ed7fdd27dbe75a331d791b9137d5a59551212"
+  },
+  {
+    "file": "界面截图/医生已完成就诊.jpg",
+    "bytes": 122887,
+    "sha256": "7114dcc5afdda913fe8c02039ffbe43234ea8df4bbef0df67d9f82313ae3b4c4"
+  },
+  {
+    "file": "界面截图/患者本人预约核对.jpg",
+    "bytes": 129885,
+    "sha256": "ee7f9ea1ec9953160b6dde9dcfbf25bc4fc47dca8758f76e3b1149ce65413d74"
+  },
+  {
+    "file": "界面截图/窄屏大字英文预约核对.jpg",
+    "bytes": 186241,
+    "sha256": "e1db6f776debf4dcc6028b3b16810ffd7072ac8b411914af2a3efef6e71dcd1b"
+  },
+  {
+    "file": "界面截图/管理者连续排班.jpg",
+    "bytes": 157000,
+    "sha256": "65d5b718d2696f4d87d9bb0ab47cd3a92aa45269c9e7ce38e252c240d2700392"
+  },
+  {
+    "file": "界面素材来源.md",
+    "bytes": 360,
+    "sha256": "692293c4e7f4b372ae4cf537508f2ed41522db5bbfc32322ea4ab75fb5c42726"
+  },
+  {
+    "file": "部署说明.md",
+    "bytes": 4016,
+    "sha256": "cee00e154ccc3e41dd50fa6998bfd39bb37931ca4b0f38b3857e3affc5231d47"
+  },
+  {
+    "file": "阶段作业提交说明.md",
+    "bytes": 1826,
+    "sha256": "f99fd6758cf0fa6ae7f0ad71a4937db1069fb5021f07a2a143c415f7002a1760"
+  },
+  {
+    "file": "验收截图/医生已完成就诊操作.jpg",
+    "bytes": 113323,
+    "sha256": "28d6e0ffa9df588888fbc6d3535029d9c83c191df71c0e2e5038d5a6d54ac763"
+  },
+  {
+    "file": "验收截图/已支付单据状态提示.jpg",
+    "bytes": 69363,
+    "sha256": "4c1e847ae22c5301509b3bff3acaea13fd141f59e94a5448ba5782169c7fda62"
+  },
+  {
+    "file": "验收截图/患者本人预约操作.jpg",
+    "bytes": 100755,
+    "sha256": "ecbf6a13dfd8ab4cdac140f388ee716d3de97371f5665a0c5bab8d58f07e16c4"
+  },
+  {
+    "file": "验收截图/更正审批出单提示.jpg",
+    "bytes": 85068,
+    "sha256": "a3f7d6703d1716026fa33c3938a7dc10fb2cd200c0be0768f2407488bc7f835a"
+  },
+  {
+    "file": "验收截图/窄屏大字状态提示.jpg",
+    "bytes": 143749,
+    "sha256": "6e8f348e80ba0521aad4bc0981928a65398b6d53fa7ca0f4cbedfd25511f98e9"
+  },
+  {
+    "file": "验收截图/预约状态提示.jpg",
+    "bytes": 111373,
+    "sha256": "7365ea1643f492b1999b45d7ce3f5d85f722706186a4e53838aa161f9b4ea7cf"
+  },
+  {
+    "file": "验收操作说明.md",
+    "bytes": 11168,
+    "sha256": "b004f8f3f6e6a3589c49afb3f18224694315e752f5a37293276d7e984fbb7a70"
   }
 ]

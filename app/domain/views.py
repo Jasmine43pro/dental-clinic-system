@@ -16,8 +16,18 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
-from . import access, services, forms
+from . import access, services, forms, action_states
 from .models import *
+
+
+def operation_controls(states, route, pk):
+    controls = []
+    for state in states.values():
+        url = reverse('reschedule', args=[pk]) if state.code == 'reschedule' else reverse(route, args=[pk, state.code])
+        controls.append({'code': state.code, 'label': state.label, 'authorized': state.authorized,
+                         'enabled': state.enabled, 'reason': state.reason, 'primary': state.primary,
+                         'visible': state.visible, 'url': url})
+    return controls
 
 
 def layout(request):
@@ -142,14 +152,12 @@ def appointment_list(request):
 @login_required
 def appointment_detail(request, pk):
     app = appointment_for(request.user, pk)
-    receptionist = access.allowed(request.user,['reception'],app.slot.clinic_id)
-    own_patient = access.has_role(request.user,'patient') and app.patient.user_id == request.user.pk
-    services.audit(request.user,app,'view_appointment')
-    return page(request,'appointment',{'app':app,'visit':Visit.objects.filter(appointment=app).first(),
-        'can_cancel': app.status=='booked' and (receptionist or own_patient),
-        'can_correct':receptionist and app.status in ['arrived','no_show'] and not Visit.objects.filter(appointment=app).exists(),'can_extend':app.status in ['booked','arrived'] and (receptionist or access.own_doctor(request.user,app)),
-        'can_checkin':receptionist and app.status=='booked','can_start':access.own_doctor(request.user,app) and app.status=='arrived',
-        'context_query':context_query(request),'title':'预约详情'})
+    visit = Visit.objects.filter(appointment=app).first()
+    states = action_states.appointment_actions(request.user, app, visit)
+    services.audit(request.user, app, 'view_appointment')
+    return page(request, 'appointment', {'app': app, 'visit': visit,
+        'appointment_controls': operation_controls(states, 'appointment_command', pk),
+        'context_query': context_query(request), 'title': '预约详情'})
 
 
 @login_required
@@ -162,6 +170,11 @@ def booking(request, pk=None):
     replacing = appointment_for(request.user,pk) if pk else None
     if replacing:
         access.require(request.user,['reception'],replacing.slot.clinic_id)
+        state = action_states.appointment_actions(request.user, replacing, Visit.objects.filter(appointment=replacing).first())['reschedule']
+        if request.method == 'GET' and not state.enabled:
+            return page(request, 'form', {'form': django_forms.Form(), 'title': '调整预约',
+                'description': replacing.number, 'blocked_reason': state.reason,
+                'back': reverse('appointment', args=[pk])})
     qs = access.slots(request.user).filter(starts_at__gt=timezone.now(),active=True,service__active=True).exclude(reservation_links__is_active=True).order_by('starts_at')
     for key, field in [('clinic','clinic_id'),('dentist','dentist_id')]:
         value = request.GET.get(key)
@@ -240,26 +253,35 @@ def appointment_command(request, pk, action):
     app=appointment_for(request.user,pk)
     if action not in ['cancel','checkin','no_show','start','undo_checkin','undo_no_show','extend']:
         return HttpResponseBadRequest('未知操作')
+    state = action_states.appointment_actions(request.user, app, Visit.objects.filter(appointment=app).first())[action]
+    if not state.authorized:
+        raise PermissionDenied('当前账号没有执行此操作的权限。')
     form=forms.ExtensionForm(request.POST or None) if action=='extend' else forms.ReasonForm(request.POST or None) if action in ['cancel','no_show','undo_checkin','undo_no_show'] else django_forms.Form(request.POST or None)
     if request.method=='POST':
         result=perform(request,'appointment_'+action,lambda:services.extend_appointment(request.user,pk,form.cleaned_data['minutes'],form.cleaned_data['reason']) if action=='extend' else services.start_visit(request.user,pk) if action=='start' else services.appointment_action(request.user,pk,action,form.cleaned_data.get('reason','')),form)
         if result:
             return redirect('visit' if action=='start' else 'appointment',pk=result)
     return page(request,'form',{'form':form,'title':{'cancel':'取消预约','checkin':'确认到诊签到','no_show':'核实爽约','start':'开始接诊','undo_checkin':'纠正误签到','undo_no_show':'纠正爽约记录','extend':'延长治疗安排'}[action],
-        'description':f'{app.number} · {app.patient.name} · {timezone.localtime(app.slot.starts_at):%Y-%m-%d %H:%M}', 'back':reverse('appointment',args=[pk])})
+        'description':f'{app.number} · {app.patient.name} · {timezone.localtime(app.slot.starts_at):%Y-%m-%d %H:%M}', 'back':reverse('appointment',args=[pk]), 'blocked_reason':state.reason})
 
 
 @login_required
 def visit_detail(request, pk):
-    visit=visit_for(request.user,pk)
-    doctor=access.own_doctor(request.user,visit.appointment)
-    services.audit(request.user,visit,'view_visit')
-    return page(request,'visit',{'visit':visit,'lines':visit.treatments.filter(is_active=True),'invoices':visit.invoices.order_by('-issued_at'),
-        'doctor':doctor,'can_bill':access.allowed(request.user,['reception','finance'],visit.appointment.slot.clinic_id),
-        'amendments':VisitAmendment.objects.filter(visit=visit).order_by('-created_at') if doctor else [],
-        'allergies':visit.appointment.patient.patientallergy_set.select_related('allergy') if doctor else [],
-        'contacts':visit.appointment.patient.emergencycontact_set.all() if doctor else [],
-        'context_query':context_query(request),'title':'就诊详情'})
+    visit = visit_for(request.user, pk)
+    doctor = access.own_doctor(request.user, visit.appointment)
+    states = action_states.visit_actions(request.user, visit)
+    controls = {control['code']: control for control in operation_controls(states, 'visit_command', pk)}
+    services.audit(request.user, visit, 'view_visit')
+    return page(request, 'visit', {'visit': visit, 'lines': visit.treatments.filter(is_active=True),
+        'invoices': visit.invoices.order_by('-issued_at'), 'doctor': doctor,
+        'can_bill': states['issue'].authorized,
+        'record_controls': [controls[key] for key in ['notes', 'amend']],
+        'treatment_controls': [controls[key] for key in ['add_treatment', 'remove_treatment', 'complete']],
+        'billing_controls': [controls['issue']],
+        'amendments': VisitAmendment.objects.filter(visit=visit).order_by('-created_at') if doctor else [],
+        'allergies': visit.appointment.patient.patientallergy_set.select_related('allergy') if doctor else [],
+        'contacts': visit.appointment.patient.emergencycontact_set.all() if doctor else [],
+        'context_query': context_query(request), 'title': '就诊详情'})
 
 
 @login_required
@@ -273,6 +295,7 @@ def visit_command(request, pk, action):
         access.require(request.user,['reception','finance'],visit.appointment.slot.clinic_id)
     elif not access.own_doctor(request.user,visit.appointment):
         raise PermissionDenied
+    state = action_states.visit_actions(request.user, visit)[action]
     form=mapping[action](request.POST or None,initial={'version':visit.current_version,
         'clinical_notes':visit.clinical_notes,'special_needs_notes':visit.special_needs_notes})
     if action=='remove_treatment':
@@ -290,15 +313,17 @@ def visit_command(request, pk, action):
             return redirect('invoice',pk=result) if action=='issue' else redirect('visit',pk=pk)
     titles={'notes':'保存诊疗草稿','add_treatment':'添加治疗项目','remove_treatment':'移除治疗项目','complete':'确认完成就诊','issue':'核对并生成结算单','amend':'申请记录更正'}
     return page(request,'form',{'form':form,'title':titles[action],'description':'就诊完成前请核对诊疗说明与全部治疗明细；完成后只能通过审批更正。',
-        'preview_lines':visit.treatments.filter(is_active=True) if action in ['complete','issue'] else None,'back':reverse('visit',args=[pk])})
+        'preview_lines':visit.treatments.filter(is_active=True) if action in ['complete','issue'] else None,'back':reverse('visit',args=[pk]), 'blocked_reason':state.reason})
 
 
 @login_required
 def invoice_detail(request, pk):
-    invoice=get_object_or_404(Invoice,pk=pk)
-    visit_for(request.user,invoice.visit_id)
-    services.audit(request.user,invoice,'view_invoice')
-    return page(request,'invoice',{'invoice':invoice,'can_bill':access.allowed(request.user,['reception','finance'],invoice.visit.appointment.slot.clinic_id),'title':'结算单'})
+    invoice = get_object_or_404(Invoice, pk=pk)
+    visit_for(request.user, invoice.visit_id)
+    states = action_states.invoice_actions(request.user, invoice)
+    services.audit(request.user, invoice, 'view_invoice')
+    return page(request, 'invoice', {'invoice': invoice,
+        'invoice_controls': operation_controls(states, 'invoice_command', pk), 'title': '结算单'})
 
 
 @login_required
@@ -307,12 +332,13 @@ def invoice_command(request, pk, action):
     access.require(request.user,['reception','finance'],invoice.visit.appointment.slot.clinic_id)
     if action not in ['pay','void']:
         return HttpResponseBadRequest('未知操作')
+    state = action_states.invoice_actions(request.user, invoice)[action]
     form=forms.PaymentForm(request.POST or None,initial={'amount':invoice.total}) if action=='pay' else forms.ReasonForm(request.POST or None)
     if request.method=='POST':
         result=perform(request,'invoice_'+action,lambda:services.invoice_action(request.user,pk,action,form.cleaned_data),form)
         if result: return redirect('invoice',pk=pk)
     return page(request,'form',{'form':form,'title':'确认模拟全额收款' if action=='pay' else '确认作废结算单',
-        'description':f'{invoice.number} · 应付 ¥{invoice.total}。模拟收款不连接真实支付平台。','back':reverse('invoice',args=[pk])})
+        'description':f'{invoice.number} · 应付 ¥{invoice.total}。模拟收款不连接真实支付平台。','back':reverse('invoice',args=[pk]), 'blocked_reason':state.reason})
 
 
 def editable_patients(user):

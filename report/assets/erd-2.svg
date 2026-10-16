@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- 由 Microsoft Visio, SVG Export 生成 erd-2.svg 02-patients -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="17in" height="11.7in" viewBox="0 0 1224 842.4"
+		xml:space="preserve" color-interpolation-filters="sRGB" class="st15">
+	<v:documentProperties v:langID="2052" v:metric="true" v:viewMarkup="false"/>
+
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#dfeaf8;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.65}
+		.st2 {stroke:#3c5564;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.6}
+		.st3 {marker-end:url(#mrkr1-20);stroke:#3c5564;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.6}
+		.st4 {fill:#3c5564;fill-opacity:1;stroke:#3c5564;stroke-opacity:1;stroke-width:0.25}
+		.st5 {fill:#ffffff;stroke:#505050;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.65}
+		.st6 {fill:#dfeaf8;stroke:#505050;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.65}
+		.st7 {fill:none;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.65}
+		.st8 {fill:#1e1e1e;font-family:微软雅黑;font-size:0.85833em;font-weight:bold}
+		.st9 {fill:#1e1e1e;font-family:微软雅黑;font-size:0.774994em}
+		.st10 {font-size:1em}
+		.st11 {fill:#1e1e1e;font-family:宋体;font-size:1.58334em;font-weight:bold}
+		.st12 {font-family:微软雅黑;font-size:1em}
+		.st13 {fill:#1e1e1e;font-family:微软雅黑;font-size:0.75em}
+		.st14 {font-family:宋体;font-size:1em}
+		.st15 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<defs id="Markers">
+		<g id="lend1">
+			<path d="M 1 -1 L 0 0 L 1 1 " style="stroke-linecap:round;stroke-linejoin:round;fill:none"/>
+		</g>
+		<marker id="mrkr1-20" class="st4" v:arrowType="1" v:arrowSize="1" orient="auto" markerUnits="strokeWidth"
+				overflow="visible">
+			<use xlink:href="#lend1" transform="scale(-4,-4) "/>
+		</marker>
+	</defs>
+	<g v:mID="5" v:index="3" v:groupContext="foregroundPage">
+		<title>02-patients</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394"/>
+		<g id="shape1-1" v:mID="1" v:groupContext="shape" transform="translate(25.2,-28.8)">
+			<title>工作表.1</title>
+			<rect x="0" y="90" width="1173.6" height="752.4" class="st1"/>
+		</g>
+		<g id="shape2-3" v:mID="2" v:groupContext="shape" transform="translate(374.4,-414.864)">
+			<title>工作表.2</title>
+			<path d="M0 842.4 L8.64 842.4" class="st2"/>
+		</g>
+		<g id="shape3-6" v:mID="3" v:groupContext="shape" transform="translate(-459.36,427.536) rotate(-90)">
+			<title>工作表.3</title>
+			<path d="M0 842.4 L346.9 842.4" class="st2"/>
+		</g>
+		<g id="shape4-9" v:mID="4" v:groupContext="shape" transform="translate(383.04,923.04) rotate(180)">
+			<title>工作表.4</title>
+			<path d="M0 842.4 L344.88 842.4" class="st2"/>
+		</g>
+		<g id="shape5-12" v:mID="5" v:groupContext="shape" transform="translate(880.56,80.64) rotate(90)">
+			<title>工作表.5</title>
+			<path d="M0 842.4 L39.1 842.4" class="st2"/>
+		</g>
+		<g id="shape6-15" v:mID="6" v:groupContext="shape" transform="translate(38.16,-722.664)">
+			<title>工作表.6</title>
+			<path d="M0 842.4 L8.64 842.4" class="st3"/>
+		</g>
+		<g id="shape7-21" v:mID="7" v:groupContext="shape" transform="translate(374.4,-402.264)">
+			<title>工作表.7</title>
+			<path d="M0 842.4 L9.5 842.4" class="st2"/>
+		</g>
+		<g id="shape8-24" v:mID="8" v:groupContext="shape" transform="translate(-458.496,440.136) rotate(-90)">
+			<title>工作表.8</title>
+			<path d="M0 842.4 L360.72 842.4" class="st2"/>
+		</g>
+		<g id="shape9-27" v:mID="9" v:groupContext="shape" transform="translate(383.904,-762.984)">
+			<title>工作表.9</title>
+			<path d="M0 842.4 L430.99 842.4" class="st2"/>
+		</g>
+		<g id="shape10-30" v:mID="10" v:groupContext="shape" transform="translate(1657.3,79.416) rotate(90)">
+			<title>工作表.10</title>
+			<path d="M0 842.4 L40.32 842.4" class="st2"/>
+		</g>
+		<g id="shape11-33" v:mID="11" v:groupContext="shape" transform="translate(814.896,-722.664)">
+			<title>工作表.11</title>
+			<path d="M0 842.4 L9.5 842.4" class="st3"/>
+		</g>
+		<g id="shape12-38" v:mID="12" v:groupContext="shape" transform="translate(763.2,-684.864)">
+			<title>工作表.12</title>
+			<path d="M0 842.4 L10.37 842.4" class="st2"/>
+		</g>
+		<g id="shape13-41" v:mID="13" v:groupContext="shape" transform="translate(-68.832,157.536) rotate(-90)">
+			<title>工作表.13</title>
+			<path d="M0 842.4 L79.34 842.4" class="st2"/>
+		</g>
+		<g id="shape14-44" v:mID="14" v:groupContext="shape" transform="translate(773.568,920.592) rotate(180)">
+			<title>工作表.14</title>
+			<path d="M0 842.4 L737.14 842.4" class="st2"/>
+		</g>
+		<g id="shape15-47" v:mID="15" v:groupContext="shape" transform="translate(878.832,78.192) rotate(90)">
+			<title>工作表.15</title>
+			<path d="M0 842.4 L41.54 842.4" class="st2"/>
+		</g>
+		<g id="shape16-50" v:mID="16" v:groupContext="shape" transform="translate(36.432,-722.664)">
+			<title>工作表.16</title>
+			<path d="M0 842.4 L10.37 842.4" class="st3"/>
+		</g>
+		<g id="shape17-55" v:mID="17" v:groupContext="shape" transform="translate(46.8,-568.08)">
+			<title>工作表.17</title>
+			<rect x="0" y="658.08" width="327.6" height="184.32" class="st5"/>
+		</g>
+		<g id="shape18-57" v:mID="18" v:groupContext="shape" transform="translate(46.8,-730.08)">
+			<title>工作表.18</title>
+			<rect x="0" y="820.08" width="327.6" height="22.32" class="st6"/>
+		</g>
+		<g id="shape19-59" v:mID="19" v:groupContext="shape" transform="translate(48.24,-731.16)">
+			<title>工作表.19</title>
+			<desc>domain_patient</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="162.36" cy="832.32" width="324.72" height="20.16"/>
+			<rect x="0" y="822.24" width="324.72" height="20.16" class="st7"/>
+			<text x="5.04" y="833.49" class="st8" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>domain_patient</text>		</g>
+		<g id="shape20-62" v:mID="20" v:groupContext="shape" transform="translate(48.24,-568.8)">
+			<title>工作表.20</title>
+			<desc>id [PK] created_at updated_at user_id [FK] -&#62; domain_user.id ...</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="162.36" cy="762.66" width="324.72" height="159.48"/>
+			<rect x="0" y="682.92" width="324.72" height="159.48" class="st7"/>
+			<text x="5.04" y="694.17" class="st9" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>id [PK]<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">created_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">updated_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">user_id [FK] </tspan>-&#62; domain_user.id [UQ] [NULL]<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">name<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">birth_date<v:newlineChar/></tspan><tspan
+						x="5.04" dy="1.355em" class="st10">phone<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">identity_verified_at [NULL]<v:newlineChar/></tspan><tspan
+						x="5.04" dy="1.355em" class="st10">identity_verified_by_id [FK] </tspan>-&#62; domain_user.id [NULL]<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">billing_address<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">email<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">active</tspan></text>		</g>
+		<g id="shape21-76" v:mID="21" v:groupContext="shape" transform="translate(824.4,-656.28)">
+			<title>工作表.21</title>
+			<rect x="0" y="746.28" width="327.6" height="96.12" class="st5"/>
+		</g>
+		<g id="shape22-78" v:mID="22" v:groupContext="shape" transform="translate(824.4,-730.08)">
+			<title>工作表.22</title>
+			<rect x="0" y="820.08" width="327.6" height="22.32" class="st6"/>
+		</g>
+		<g id="shape23-80" v:mID="23" v:groupContext="shape" transform="translate(825.84,-731.16)">
+			<title>工作表.23</title>
+			<desc>domain_allergy</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="162.36" cy="832.32" width="324.72" height="20.16"/>
+			<rect x="0" y="822.24" width="324.72" height="20.16" class="st7"/>
+			<text x="5.04" y="833.49" class="st8" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>domain_allergy</text>		</g>
+		<g id="shape24-83" v:mID="24" v:groupContext="shape" transform="translate(825.84,-657)">
+			<title>工作表.24</title>
+			<desc>id [PK] created_at updated_at code [UQ] name</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="162.36" cy="806.76" width="324.72" height="71.28"/>
+			<rect x="0" y="771.12" width="324.72" height="71.28" class="st7"/>
+			<text x="5.04" y="782.37" class="st9" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>id [PK]<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">created_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">updated_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">code [UQ]<v:newlineChar/></tspan><tspan
+						x="5.04" dy="1.355em" class="st10">name</tspan></text>		</g>
+		<g id="shape25-90" v:mID="25" v:groupContext="shape" transform="translate(46.8,-361.08)">
+			<title>工作表.25</title>
+			<rect x="0" y="721.08" width="327.6" height="121.32" class="st5"/>
+		</g>
+		<g id="shape26-92" v:mID="26" v:groupContext="shape" transform="translate(46.8,-460.08)">
+			<title>工作表.26</title>
+			<rect x="0" y="820.08" width="327.6" height="22.32" class="st6"/>
+		</g>
+		<g id="shape27-94" v:mID="27" v:groupContext="shape" transform="translate(48.24,-461.16)">
+			<title>工作表.27</title>
+			<desc>domain_patientallergy</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="162.36" cy="832.32" width="324.72" height="20.16"/>
+			<rect x="0" y="822.24" width="324.72" height="20.16" class="st7"/>
+			<text x="5.04" y="833.49" class="st8" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>domain_patientallergy</text>		</g>
+		<g id="shape28-97" v:mID="28" v:groupContext="shape" transform="translate(48.24,-361.8)">
+			<title>工作表.28</title>
+			<desc>id [PK] created_at updated_at patient_id [FK] -&#62; domain_patie...</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="162.36" cy="794.16" width="324.72" height="96.48"/>
+			<rect x="0" y="745.92" width="324.72" height="96.48" class="st7"/>
+			<text x="5.04" y="757.17" class="st9" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>id [PK]<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">created_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">updated_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">patient_id [FK] </tspan>-&#62; domain_patient.id<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">allergy_id [FK] </tspan>-&#62; domain_allergy.id<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">manifestation<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">notes</tspan></text>		</g>
+		<g id="shape29-106" v:mID="29" v:groupContext="shape" transform="translate(435.6,-631.08)">
+			<title>工作表.29</title>
+			<rect x="0" y="721.08" width="327.6" height="121.32" class="st5"/>
+		</g>
+		<g id="shape30-108" v:mID="30" v:groupContext="shape" transform="translate(435.6,-730.08)">
+			<title>工作表.30</title>
+			<rect x="0" y="820.08" width="327.6" height="22.32" class="st6"/>
+		</g>
+		<g id="shape31-110" v:mID="31" v:groupContext="shape" transform="translate(437.04,-731.16)">
+			<title>工作表.31</title>
+			<desc>domain_emergencycontact</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="162.36" cy="832.32" width="324.72" height="20.16"/>
+			<rect x="0" y="822.24" width="324.72" height="20.16" class="st7"/>
+			<text x="5.04" y="833.49" class="st8" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>domain_emergencycontact</text>		</g>
+		<g id="shape32-113" v:mID="32" v:groupContext="shape" transform="translate(437.04,-631.8)">
+			<title>工作表.32</title>
+			<desc>id [PK] created_at updated_at patient_id [FK] -&#62; domain_patie...</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="162.36" cy="794.16" width="324.72" height="96.48"/>
+			<rect x="0" y="745.92" width="324.72" height="96.48" class="st7"/>
+			<text x="5.04" y="757.17" class="st9" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>id [PK]<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">created_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">updated_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">patient_id [FK] </tspan>-&#62; domain_patient.id<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">name<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">relationship<v:newlineChar/></tspan><tspan
+						x="5.04" dy="1.355em" class="st10">phone</tspan></text>		</g>
+		<g id="shape33-122" v:mID="33" v:groupContext="shape" transform="translate(36,-792)">
+			<title>工作表.33</title>
+			<desc>患者与辅助资料 关系数据库图</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="576" cy="822.6" width="1152" height="39.6"/>
+			<rect x="0" y="802.8" width="1152" height="39.6" class="st7"/>
+			<text x="5.04" y="814.05" class="st11" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>患者与辅助资料<tspan
+						class="st12"> </tspan>关系数据库图</text>		</g>
+		<g id="shape34-126" v:mID="34" v:groupContext="shape" transform="translate(36,-8.64)">
+			<title>工作表.34</title>
+			<desc>PK 主键 FK 外键 UQ 唯一 NULL 可空箭头由外键指向被引用表。字段类型及完整约束见数据字典。 跨区外键在字段行...</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="576" cy="831.6" width="1152" height="21.6"/>
+			<rect x="0" y="820.8" width="1152" height="21.6" class="st7"/>
+			<text x="5.04" y="832.05" class="st13" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>PK <tspan
+						class="st14">主键</tspan>   FK <tspan class="st14">外键</tspan>   UQ <tspan class="st14">唯一</tspan>   NULL <tspan
+						class="st14">可空</tspan><tspan class="st14">；</tspan><tspan class="st14">箭头由外键指向被引用表</tspan><tspan
+						class="st14">。</tspan><tspan class="st14">字段类型及完整约束见数据字典</tspan><tspan class="st14">。</tspan>  <tspan
+						class="st14">跨区外键在字段行标明目标表</tspan><tspan class="st14">，</tspan><tspan class="st14">完整连接见总览</tspan><tspan
+						class="st14">。</tspan></text>		</g>
+	</g>
+</svg>

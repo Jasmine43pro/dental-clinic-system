@@ -3,8 +3,10 @@ services:
     name: jasmine-dental-coursework
     runtime: python
     plan: free
+    region: singapore
+    autoDeployTrigger: 'off'
     buildCommand: pip install -r requirements.txt && python scripts/cloud_prepare.py
-    startCommand: python scripts/cloud_start.py
+    startCommand: gunicorn --chdir app config.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --timeout 60 --access-logfile - --error-logfile -
     healthCheckPath: /health/
     envVars:
       - key: DJANGO_SETTINGS_MODULE
@@ -12,9 +14,9 @@ services:
       - key: DJANGO_SECRET_KEY
         generateValue: true
       - key: DATABASE_URL
-        fromDatabase:
-          name: jasmine-dental-db
-          property: connectionString
+        sync: false
+      - key: DB_SSLMODE
+        value: require
       - key: DJANGO_TRUST_PROXY
         value: '1'
       - key: DJANGO_HTTPS
@@ -23,8 +25,3 @@ services:
         value: '1'
       - key: DEMO_INITIAL_PASSWORD
         sync: false
-
-databases:
-  - name: jasmine-dental-db
-    plan: free
-    ipAllowList: []

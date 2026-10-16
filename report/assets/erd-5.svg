@@ -1,0 +1,426 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<!-- 由 Microsoft Visio, SVG Export 生成 erd-5.svg 05-clinical-finance -->
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events"
+		xmlns:v="http://schemas.microsoft.com/visio/2003/SVGExtensions/" width="17in" height="11.705in" viewBox="0 0 1224 842.76"
+		xml:space="preserve" color-interpolation-filters="sRGB" class="st15">
+	<v:documentProperties v:langID="2052" v:metric="true" v:viewMarkup="false"/>
+
+	<style type="text/css">
+	<![CDATA[
+		.st1 {fill:#f2ddda;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.65}
+		.st2 {stroke:#3c5564;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.6}
+		.st3 {marker-end:url(#mrkr1-20);stroke:#3c5564;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.6}
+		.st4 {fill:#3c5564;fill-opacity:1;stroke:#3c5564;stroke-opacity:1;stroke-width:0.25}
+		.st5 {fill:#ffffff;stroke:#505050;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.65}
+		.st6 {fill:#f2ddda;stroke:#505050;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.65}
+		.st7 {fill:none;stroke:none;stroke-linecap:round;stroke-linejoin:round;stroke-width:0.65}
+		.st8 {fill:#1e1e1e;font-family:微软雅黑;font-size:0.85833em;font-weight:bold}
+		.st9 {fill:#1e1e1e;font-family:微软雅黑;font-size:0.774994em}
+		.st10 {font-size:1em}
+		.st11 {fill:#1e1e1e;font-family:宋体;font-size:1.58334em;font-weight:bold}
+		.st12 {font-family:微软雅黑;font-size:1em}
+		.st13 {fill:#1e1e1e;font-family:微软雅黑;font-size:0.75em}
+		.st14 {font-family:宋体;font-size:1em}
+		.st15 {fill:none;fill-rule:evenodd;font-size:12px;overflow:visible;stroke-linecap:square;stroke-miterlimit:3}
+	]]>
+	</style>
+
+	<defs id="Markers">
+		<g id="lend1">
+			<path d="M 1 -1 L 0 0 L 1 1 " style="stroke-linecap:round;stroke-linejoin:round;fill:none"/>
+		</g>
+		<marker id="mrkr1-20" class="st4" v:arrowType="1" v:arrowSize="1" orient="auto" markerUnits="strokeWidth"
+				overflow="visible">
+			<use xlink:href="#lend1" transform="scale(-4,-4) "/>
+		</marker>
+	</defs>
+	<g v:mID="8" v:index="6" v:groupContext="foregroundPage">
+		<title>05-clinical-finance</title>
+		<v:pageProperties v:drawingScale="0.0393701" v:pageScale="0.0393701" v:drawingUnits="24" v:shadowOffsetX="8.50394"
+				v:shadowOffsetY="-8.50394"/>
+		<g id="shape1-1" v:mID="1" v:groupContext="shape" transform="translate(25.2,-28.8)">
+			<title>工作表.1</title>
+			<rect x="0" y="90" width="1173.6" height="752.76" class="st1"/>
+		</g>
+		<g id="shape2-3" v:mID="2" v:groupContext="shape" transform="translate(763.2,-685.224)">
+			<title>工作表.2</title>
+			<path d="M0 842.76 L8.64 842.76" class="st2"/>
+		</g>
+		<g id="shape3-6" v:mID="3" v:groupContext="shape" transform="translate(-70.92,157.536) rotate(-90)">
+			<title>工作表.3</title>
+			<path d="M0 842.76 L76.9 842.76" class="st2"/>
+		</g>
+		<g id="shape4-9" v:mID="4" v:groupContext="shape" transform="translate(771.84,923.4) rotate(180)">
+			<title>工作表.4</title>
+			<path d="M0 842.76 L733.68 842.76" class="st2"/>
+		</g>
+		<g id="shape5-12" v:mID="5" v:groupContext="shape" transform="translate(880.92,80.64) rotate(90)">
+			<title>工作表.5</title>
+			<path d="M0 842.76 L39.1 842.76" class="st2"/>
+		</g>
+		<g id="shape6-15" v:mID="6" v:groupContext="shape" transform="translate(38.16,-723.024)">
+			<title>工作表.6</title>
+			<path d="M0 842.76 L8.64 842.76" class="st3"/>
+		</g>
+		<g id="shape7-21" v:mID="7" v:groupContext="shape" transform="translate(763.2,-415.224)">
+			<title>工作表.7</title>
+			<path d="M0 842.76 L9.5 842.76" class="st2"/>
+		</g>
+		<g id="shape8-24" v:mID="8" v:groupContext="shape" transform="translate(-70.056,427.536) rotate(-90)">
+			<title>工作表.8</title>
+			<path d="M0 842.76 L78.12 842.76" class="st2"/>
+		</g>
+		<g id="shape9-27" v:mID="9" v:groupContext="shape" transform="translate(772.704,1192.18) rotate(180)">
+			<title>工作表.9</title>
+			<path d="M0 842.76 L735.41 842.76" class="st2"/>
+		</g>
+		<g id="shape10-30" v:mID="10" v:groupContext="shape" transform="translate(880.056,349.416) rotate(90)">
+			<title>工作表.10</title>
+			<path d="M0 842.76 L40.32 842.76" class="st2"/>
+		</g>
+		<g id="shape11-33" v:mID="11" v:groupContext="shape" transform="translate(37.296,-453.024)">
+			<title>工作表.11</title>
+			<path d="M0 842.76 L9.5 842.76" class="st3"/>
+		</g>
+		<g id="shape12-38" v:mID="12" v:groupContext="shape" transform="translate(763.2,-402.624)">
+			<title>工作表.12</title>
+			<path d="M0 842.76 L10.37 842.76" class="st2"/>
+		</g>
+		<g id="shape13-41" v:mID="13" v:groupContext="shape" transform="translate(-69.192,440.136) rotate(-90)">
+			<title>工作表.13</title>
+			<path d="M0 842.76 L361.94 842.76" class="st2"/>
+		</g>
+		<g id="shape14-44" v:mID="14" v:groupContext="shape" transform="translate(773.568,920.952) rotate(180)">
+			<title>工作表.14</title>
+			<path d="M0 842.76 L348.34 842.76" class="st2"/>
+		</g>
+		<g id="shape15-47" v:mID="15" v:groupContext="shape" transform="translate(1267.99,78.192) rotate(90)">
+			<title>工作表.15</title>
+			<path d="M0 842.76 L41.54 842.76" class="st2"/>
+		</g>
+		<g id="shape16-50" v:mID="16" v:groupContext="shape" transform="translate(425.232,-723.024)">
+			<title>工作表.16</title>
+			<path d="M0 842.76 L10.37 842.76" class="st3"/>
+		</g>
+		<g id="shape17-55" v:mID="17" v:groupContext="shape" transform="translate(374.4,-402.624)">
+			<title>工作表.17</title>
+			<path d="M0 842.76 L11.23 842.76" class="st2"/>
+		</g>
+		<g id="shape18-58" v:mID="18" v:groupContext="shape" transform="translate(-457.128,440.136) rotate(-90)">
+			<title>工作表.18</title>
+			<path d="M0 842.76 L363.17 842.76" class="st2"/>
+		</g>
+		<g id="shape19-61" v:mID="19" v:groupContext="shape" transform="translate(385.632,919.728) rotate(180)">
+			<title>工作表.19</title>
+			<path d="M0 842.76 L350.06 842.76" class="st2"/>
+		</g>
+		<g id="shape20-64" v:mID="20" v:groupContext="shape" transform="translate(878.328,76.968) rotate(90)">
+			<title>工作表.20</title>
+			<path d="M0 842.76 L42.77 842.76" class="st2"/>
+		</g>
+		<g id="shape21-67" v:mID="21" v:groupContext="shape" transform="translate(35.568,-723.024)">
+			<title>工作表.21</title>
+			<path d="M0 842.76 L11.23 842.76" class="st3"/>
+		</g>
+		<g id="shape22-72" v:mID="22" v:groupContext="shape" transform="translate(374.4,-377.424)">
+			<title>工作表.22</title>
+			<path d="M0 842.76 L16.7 842.76" class="st2"/>
+		</g>
+		<g id="shape23-75" v:mID="23" v:groupContext="shape" transform="translate(-451.656,465.336) rotate(-90)">
+			<title>工作表.23</title>
+			<path d="M0 842.76 L75.6 842.76" class="st2"/>
+		</g>
+		<g id="shape24-78" v:mID="24" v:groupContext="shape" transform="translate(391.104,1232.5) rotate(180)">
+			<title>工作表.24</title>
+			<path d="M0 842.76 L16.7 842.76" class="st3"/>
+		</g>
+		<g id="shape25-83" v:mID="25" v:groupContext="shape" transform="translate(1152,-685.224)">
+			<title>工作表.25</title>
+			<path d="M0 842.76 L8.64 842.76" class="st2"/>
+		</g>
+		<g id="shape26-86" v:mID="26" v:groupContext="shape" transform="translate(317.88,157.536) rotate(-90)">
+			<title>工作表.26</title>
+			<path d="M0 842.76 L83.02 842.76" class="st2"/>
+		</g>
+		<g id="shape27-89" v:mID="27" v:groupContext="shape" transform="translate(1160.64,917.28) rotate(180)">
+			<title>工作表.27</title>
+			<path d="M0 842.76 L1122.48 842.76" class="st2"/>
+		</g>
+		<g id="shape28-92" v:mID="28" v:groupContext="shape" transform="translate(880.92,74.52) rotate(90)">
+			<title>工作表.28</title>
+			<path d="M0 842.76 L45.22 842.76" class="st2"/>
+		</g>
+		<g id="shape29-95" v:mID="29" v:groupContext="shape" transform="translate(38.16,-723.024)">
+			<title>工作表.29</title>
+			<path d="M0 842.76 L8.64 842.76" class="st3"/>
+		</g>
+		<g id="shape30-100" v:mID="30" v:groupContext="shape" transform="translate(374.4,-120.024)">
+			<title>工作表.30</title>
+			<path d="M0 842.76 L9.5 842.76" class="st2"/>
+		</g>
+		<g id="shape31-103" v:mID="31" v:groupContext="shape" transform="translate(-458.856,722.736) rotate(-90)">
+			<title>工作表.31</title>
+			<path d="M0 842.76 L642.1 842.76" class="st2"/>
+		</g>
+		<g id="shape32-106" v:mID="32" v:groupContext="shape" transform="translate(383.904,923.4) rotate(180)">
+			<title>工作表.32</title>
+			<path d="M0 842.76 L346.61 842.76" class="st2"/>
+		</g>
+		<g id="shape33-109" v:mID="33" v:groupContext="shape" transform="translate(880.056,80.64) rotate(90)">
+			<title>工作表.33</title>
+			<path d="M0 842.76 L39.1 842.76" class="st2"/>
+		</g>
+		<g id="shape34-112" v:mID="34" v:groupContext="shape" transform="translate(37.296,-723.024)">
+			<title>工作表.34</title>
+			<path d="M0 842.76 L9.5 842.76" class="st3"/>
+		</g>
+		<g id="shape35-117" v:mID="35" v:groupContext="shape" transform="translate(1152,-415.224)">
+			<title>工作表.35</title>
+			<path d="M0 842.76 L10.37 842.76" class="st2"/>
+		</g>
+		<g id="shape36-120" v:mID="36" v:groupContext="shape" transform="translate(319.608,427.536) rotate(-90)">
+			<title>工作表.36</title>
+			<path d="M0 842.76 L78.12 842.76" class="st2"/>
+		</g>
+		<g id="shape37-123" v:mID="37" v:groupContext="shape" transform="translate(1162.37,1192.18) rotate(180)">
+			<title>工作表.37</title>
+			<path d="M0 842.76 L1125.94 842.76" class="st2"/>
+		</g>
+		<g id="shape38-126" v:mID="38" v:groupContext="shape" transform="translate(879.192,349.416) rotate(90)">
+			<title>工作表.38</title>
+			<path d="M0 842.76 L40.32 842.76" class="st2"/>
+		</g>
+		<g id="shape39-129" v:mID="39" v:groupContext="shape" transform="translate(36.432,-453.024)">
+			<title>工作表.39</title>
+			<path d="M0 842.76 L10.37 842.76" class="st3"/>
+		</g>
+		<g id="shape40-134" v:mID="40" v:groupContext="shape" transform="translate(435.6,-593.64)">
+			<title>工作表.40</title>
+			<rect x="0" y="683.64" width="327.6" height="159.12" class="st5"/>
+		</g>
+		<g id="shape41-136" v:mID="41" v:groupContext="shape" transform="translate(435.6,-730.44)">
+			<title>工作表.41</title>
+			<rect x="0" y="820.44" width="327.6" height="22.32" class="st6"/>
+		</g>
+		<g id="shape42-138" v:mID="42" v:groupContext="shape" transform="translate(437.04,-731.52)">
+			<title>工作表.42</title>
+			<desc>domain_visittreatment</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="162.36" cy="832.68" width="324.72" height="20.16"/>
+			<rect x="0" y="822.6" width="324.72" height="20.16" class="st7"/>
+			<text x="5.04" y="833.85" class="st8" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>domain_visittreatment</text>		</g>
+		<g id="shape43-141" v:mID="43" v:groupContext="shape" transform="translate(437.04,-594.36)">
+			<title>工作表.43</title>
+			<desc>id [PK] created_at updated_at visit_id [FK] -&#62; domain_visit.i...</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="162.36" cy="775.62" width="324.72" height="134.28"/>
+			<rect x="0" y="708.48" width="324.72" height="134.28" class="st7"/>
+			<text x="5.04" y="719.73" class="st9" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>id [PK]<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">created_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">updated_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">visit_id [FK] </tspan>-&#62; domain_visit.id<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">treatment_type_id [FK] </tspan>-&#62; domain_treatmenttype.id<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">name_snapshot<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">quantity<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">unit_price_snapshot<v:newlineChar/></tspan><tspan
+						x="5.04" dy="1.355em" class="st10">subtotal<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">is_active</tspan></text>		</g>
+		<g id="shape44-153" v:mID="44" v:groupContext="shape" transform="translate(435.6,-336.24)">
+			<title>工作表.44</title>
+			<rect x="0" y="696.24" width="327.6" height="146.52" class="st5"/>
+		</g>
+		<g id="shape45-155" v:mID="45" v:groupContext="shape" transform="translate(435.6,-460.44)">
+			<title>工作表.45</title>
+			<rect x="0" y="820.44" width="327.6" height="22.32" class="st6"/>
+		</g>
+		<g id="shape46-157" v:mID="46" v:groupContext="shape" transform="translate(437.04,-461.52)">
+			<title>工作表.46</title>
+			<desc>domain_invoiceline</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="162.36" cy="832.68" width="324.72" height="20.16"/>
+			<rect x="0" y="822.6" width="324.72" height="20.16" class="st7"/>
+			<text x="5.04" y="833.85" class="st8" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>domain_invoiceline</text>		</g>
+		<g id="shape47-160" v:mID="47" v:groupContext="shape" transform="translate(437.04,-336.96)">
+			<title>工作表.47</title>
+			<desc>id [PK] created_at updated_at invoice_id [FK] -&#62; domain_invoi...</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="162.36" cy="781.92" width="324.72" height="121.68"/>
+			<rect x="0" y="721.08" width="324.72" height="121.68" class="st7"/>
+			<text x="5.04" y="732.33" class="st9" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>id [PK]<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">created_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">updated_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">invoice_id [FK] </tspan>-&#62; domain_invoice.id<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">visit_treatment_id [FK] </tspan>-&#62; domain_visittreatment.id<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">name_snapshot<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">quantity_snapshot<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">unit_price_snapshot<v:newlineChar/></tspan><tspan
+						x="5.04" dy="1.355em" class="st10">subtotal</tspan></text>		</g>
+		<g id="shape48-171" v:mID="48" v:groupContext="shape" transform="translate(46.8,-581.04)">
+			<title>工作表.48</title>
+			<rect x="0" y="671.04" width="327.6" height="171.72" class="st5"/>
+		</g>
+		<g id="shape49-173" v:mID="49" v:groupContext="shape" transform="translate(46.8,-730.44)">
+			<title>工作表.49</title>
+			<rect x="0" y="820.44" width="327.6" height="22.32" class="st6"/>
+		</g>
+		<g id="shape50-175" v:mID="50" v:groupContext="shape" transform="translate(48.24,-731.52)">
+			<title>工作表.50</title>
+			<desc>domain_visit</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="162.36" cy="832.68" width="324.72" height="20.16"/>
+			<rect x="0" y="822.6" width="324.72" height="20.16" class="st7"/>
+			<text x="5.04" y="833.85" class="st8" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>domain_visit</text>		</g>
+		<g id="shape51-178" v:mID="51" v:groupContext="shape" transform="translate(48.24,-581.76)">
+			<title>工作表.51</title>
+			<desc>id [PK] created_at updated_at appointment_id [FK] -&#62; domain_a...</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="162.36" cy="769.32" width="324.72" height="146.88"/>
+			<rect x="0" y="695.88" width="324.72" height="146.88" class="st7"/>
+			<text x="5.04" y="707.13" class="st9" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>id [PK]<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">created_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">updated_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">appointment_id [FK] </tspan>-&#62; domain_appointment.id [UQ]<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">dentist_id [FK] </tspan>-&#62; domain_dentist.id<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">status<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">started_at<v:newlineChar/></tspan><tspan
+						x="5.04" dy="1.355em" class="st10">completed_at [NULL]<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">clinical_notes<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">special_needs_notes<v:newlineChar/></tspan><tspan
+						x="5.04" dy="1.355em" class="st10">current_version</tspan></text>		</g>
+		<g id="shape52-191" v:mID="52" v:groupContext="shape" transform="translate(46.8,-273.24)">
+			<title>工作表.52</title>
+			<rect x="0" y="633.24" width="327.6" height="209.52" class="st5"/>
+		</g>
+		<g id="shape53-193" v:mID="53" v:groupContext="shape" transform="translate(46.8,-460.44)">
+			<title>工作表.53</title>
+			<rect x="0" y="820.44" width="327.6" height="22.32" class="st6"/>
+		</g>
+		<g id="shape54-195" v:mID="54" v:groupContext="shape" transform="translate(48.24,-461.52)">
+			<title>工作表.54</title>
+			<desc>domain_invoice</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="162.36" cy="832.68" width="324.72" height="20.16"/>
+			<rect x="0" y="822.6" width="324.72" height="20.16" class="st7"/>
+			<text x="5.04" y="833.85" class="st8" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>domain_invoice</text>		</g>
+		<g id="shape55-198" v:mID="55" v:groupContext="shape" transform="translate(48.24,-273.96)">
+			<title>工作表.55</title>
+			<desc>id [PK] created_at updated_at number [UQ] visit_id [FK] -&#62; do...</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="162.36" cy="750.42" width="324.72" height="184.68"/>
+			<rect x="0" y="658.08" width="324.72" height="184.68" class="st7"/>
+			<text x="5.04" y="669.33" class="st9" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>id [PK]<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">created_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">updated_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">number [UQ]<v:newlineChar/></tspan><tspan
+						x="5.04" dy="1.355em" class="st10">visit_id [FK] </tspan>-&#62; domain_visit.id<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">source_visit_version<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">replaces_id [FK] </tspan>-&#62; domain_invoice.id [UQ] [NULL]<v:newlineChar/><tspan x="5.04"
+						dy="1.355em" class="st10">status<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">total<v:newlineChar/></tspan><tspan
+						x="5.04" dy="1.355em" class="st10">issued_by_id [FK] </tspan>-&#62; domain_user.id<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">issued_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">voided_by_id [FK] </tspan>-&#62; domain_user.id [NULL]<v:newlineChar/><tspan x="5.04"
+						dy="1.355em" class="st10">voided_at [NULL]<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">void_reason</tspan></text>		</g>
+		<g id="shape56-214" v:mID="56" v:groupContext="shape" transform="translate(824.4,-555.84)">
+			<title>工作表.56</title>
+			<rect x="0" y="645.84" width="327.6" height="196.92" class="st5"/>
+		</g>
+		<g id="shape57-216" v:mID="57" v:groupContext="shape" transform="translate(824.4,-730.44)">
+			<title>工作表.57</title>
+			<rect x="0" y="820.44" width="327.6" height="22.32" class="st6"/>
+		</g>
+		<g id="shape58-218" v:mID="58" v:groupContext="shape" transform="translate(825.84,-731.52)">
+			<title>工作表.58</title>
+			<desc>domain_visitamendment</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="162.36" cy="832.68" width="324.72" height="20.16"/>
+			<rect x="0" y="822.6" width="324.72" height="20.16" class="st7"/>
+			<text x="5.04" y="833.85" class="st8" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>domain_visitamendment</text>		</g>
+		<g id="shape59-221" v:mID="59" v:groupContext="shape" transform="translate(825.84,-556.56)">
+			<title>工作表.59</title>
+			<desc>id [PK] created_at updated_at visit_id [FK] -&#62; domain_visit.i...</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="162.36" cy="756.72" width="324.72" height="172.08"/>
+			<rect x="0" y="670.68" width="324.72" height="172.08" class="st7"/>
+			<text x="5.04" y="681.93" class="st9" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>id [PK]<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">created_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">updated_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">visit_id [FK] </tspan>-&#62; domain_visit.id<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">base_version<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">proposed_changes<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">reason<v:newlineChar/></tspan><tspan
+						x="5.04" dy="1.355em" class="st10">applicant_id [FK] </tspan>-&#62; domain_user.id<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">reviewer_id [FK] </tspan>-&#62; domain_user.id [NULL]<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">status<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">decided_at [NULL]<v:newlineChar/></tspan><tspan
+						x="5.04" dy="1.355em" class="st10">decision_reason<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">effective_version [NULL]</tspan></text>		</g>
+		<g id="shape60-236" v:mID="60" v:groupContext="shape" transform="translate(46.8,-28.44)">
+			<title>工作表.60</title>
+			<rect x="0" y="658.44" width="327.6" height="184.32" class="st5"/>
+		</g>
+		<g id="shape61-238" v:mID="61" v:groupContext="shape" transform="translate(46.8,-190.44)">
+			<title>工作表.61</title>
+			<rect x="0" y="820.44" width="327.6" height="22.32" class="st6"/>
+		</g>
+		<g id="shape62-240" v:mID="62" v:groupContext="shape" transform="translate(48.24,-191.52)">
+			<title>工作表.62</title>
+			<desc>domain_costrecord</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="162.36" cy="832.68" width="324.72" height="20.16"/>
+			<rect x="0" y="822.6" width="324.72" height="20.16" class="st7"/>
+			<text x="5.04" y="833.85" class="st8" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>domain_costrecord</text>		</g>
+		<g id="shape63-243" v:mID="63" v:groupContext="shape" transform="translate(48.24,-29.16)">
+			<title>工作表.63</title>
+			<desc>id [PK] created_at updated_at clinic_id [FK] -&#62; domain_clinic...</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="162.36" cy="763.02" width="324.72" height="159.48"/>
+			<rect x="0" y="683.28" width="324.72" height="159.48" class="st7"/>
+			<text x="5.04" y="694.53" class="st9" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>id [PK]<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">created_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">updated_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">clinic_id [FK] </tspan>-&#62; domain_clinic.id<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">dentist_id [FK] </tspan>-&#62; domain_dentist.id [NULL]<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">visit_id [FK] </tspan>-&#62; domain_visit.id [NULL]<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">category<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">amount<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">occurred_on<v:newlineChar/></tspan><tspan
+						x="5.04" dy="1.355em" class="st10">source_reference<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">description<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">recorded_by_id [FK] </tspan>-&#62; domain_user.id</text>		</g>
+		<g id="shape64-257" v:mID="64" v:groupContext="shape" transform="translate(824.4,-323.64)">
+			<title>工作表.64</title>
+			<rect x="0" y="683.64" width="327.6" height="159.12" class="st5"/>
+		</g>
+		<g id="shape65-259" v:mID="65" v:groupContext="shape" transform="translate(824.4,-460.44)">
+			<title>工作表.65</title>
+			<rect x="0" y="820.44" width="327.6" height="22.32" class="st6"/>
+		</g>
+		<g id="shape66-261" v:mID="66" v:groupContext="shape" transform="translate(825.84,-461.52)">
+			<title>工作表.66</title>
+			<desc>domain_paymentrecord</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="162.36" cy="832.68" width="324.72" height="20.16"/>
+			<rect x="0" y="822.6" width="324.72" height="20.16" class="st7"/>
+			<text x="5.04" y="833.85" class="st8" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>domain_paymentrecord</text>		</g>
+		<g id="shape67-264" v:mID="67" v:groupContext="shape" transform="translate(825.84,-324.36)">
+			<title>工作表.67</title>
+			<desc>id [PK] created_at updated_at invoice_id [FK] -&#62; domain_invoi...</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="162.36" cy="775.62" width="324.72" height="134.28"/>
+			<rect x="0" y="708.48" width="324.72" height="134.28" class="st7"/>
+			<text x="5.04" y="719.73" class="st9" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>id [PK]<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">created_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em"
+						class="st10">updated_at<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">invoice_id [FK] </tspan>-&#62; domain_invoice.id<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">method<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">amount<v:newlineChar/></tspan><tspan
+						x="5.04" dy="1.355em" class="st10">status<v:newlineChar/></tspan><tspan x="5.04" dy="1.355em" class="st10">succeeded_at [NULL]<v:newlineChar/></tspan><tspan
+						x="5.04" dy="1.355em" class="st10">recorded_by_id [FK] </tspan>-&#62; domain_user.id<v:newlineChar/><tspan
+						x="5.04" dy="1.355em" class="st10">request_reference [UQ]</tspan></text>		</g>
+		<g id="shape68-276" v:mID="68" v:groupContext="shape" transform="translate(36,-792.36)">
+			<title>工作表.68</title>
+			<desc>就诊 更正与结算支付 关系数据库图</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="576" cy="822.96" width="1152" height="39.6"/>
+			<rect x="0" y="803.16" width="1152" height="39.6" class="st7"/>
+			<text x="5.04" y="814.41" class="st11" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>就诊<tspan class="st12"> </tspan>更正与结算支付<tspan
+						class="st12"> </tspan>关系数据库图</text>		</g>
+		<g id="shape69-281" v:mID="69" v:groupContext="shape" transform="translate(36,-8.64)">
+			<title>工作表.69</title>
+			<desc>PK 主键 FK 外键 UQ 唯一 NULL 可空箭头由外键指向被引用表。字段类型及完整约束见数据字典。 跨区外键在字段行...</desc>
+			<v:textBlock v:margins="rect(1.8,2.88,0.72,5.04)" v:tabSpace="42.5197" v:verticalAlign="0"/>
+			<v:textRect cx="576" cy="831.96" width="1152" height="21.6"/>
+			<rect x="0" y="821.16" width="1152" height="21.6" class="st7"/>
+			<text x="5.04" y="832.41" class="st13" v:langID="2052"><v:paragraph v:spLine="0.175"/><v:tabList/>PK <tspan
+						class="st14">主键</tspan>   FK <tspan class="st14">外键</tspan>   UQ <tspan class="st14">唯一</tspan>   NULL <tspan
+						class="st14">可空</tspan><tspan class="st14">；</tspan><tspan class="st14">箭头由外键指向被引用表</tspan><tspan
+						class="st14">。</tspan><tspan class="st14">字段类型及完整约束见数据字典</tspan><tspan class="st14">。</tspan>  <tspan
+						class="st14">跨区外键在字段行标明目标表</tspan><tspan class="st14">，</tspan><tspan class="st14">完整连接见总览</tspan><tspan
+						class="st14">。</tspan></text>		</g>
+	</g>
+</svg>

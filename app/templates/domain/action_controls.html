@@ -1,0 +1,10 @@
+{% for control in controls %}{% if control.authorized and control.visible %}
+<div class="operation-item" data-operation="{{ control.code }}">
+  {% if control.enabled %}
+  <a class="button{% if control.primary %} primary{% endif %}" href="{{ control.url }}">{{ control.label }}</a>
+  {% else %}
+  <button type="button" class="button{% if control.primary %} primary{% endif %}" disabled aria-describedby="{{ prefix }}-{{ control.code }}-reason">{{ control.label }}</button>
+  <p class="operation-reason" id="{{ prefix }}-{{ control.code }}-reason">{{ control.reason }}</p>
+  {% endif %}
+</div>
+{% endif %}{% endfor %}
