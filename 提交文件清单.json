@@ -31,8 +31,8 @@
   },
   {
     "file": "app/config/settings_cloud.py",
-    "bytes": 4005,
-    "sha256": "849045268788a9dff1992062be37799909c5da5b6372765fe33b77d2dfb89253"
+    "bytes": 4190,
+    "sha256": "570f38577aab20be86def887a7ece0e98d866ff256bb6d32c06b886ad44f3518"
   },
   {
     "file": "app/config/urls.py",

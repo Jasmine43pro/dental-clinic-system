@@ -12,7 +12,10 @@ SECRET_KEY = hashlib.sha256(raw_secret.encode('utf8')).hexdigest()
 parsed = urlsplit(os.environ.get('DATABASE_URL', ''))
 if parsed.scheme not in ('postgres', 'postgresql') or not parsed.hostname or not parsed.path.strip('/'):
     raise ImproperlyConfigured('DATABASE_URL must be a PostgreSQL connection URL.')
-hosts = os.environ.get('DJANGO_ALLOWED_HOSTS', os.environ.get('RENDER_EXTERNAL_HOSTNAME', ''))
+platform_hosts = [os.environ.get(name, '').strip() for name in (
+    'RENDER_EXTERNAL_HOSTNAME', 'VERCEL_PROJECT_PRODUCTION_URL', 'VERCEL_URL', 'VERCEL_BRANCH_URL'
+)]
+hosts = os.environ.get('DJANGO_ALLOWED_HOSTS', ','.join(dict.fromkeys(host for host in platform_hosts if host)))
 
 DEBUG=False
 ALLOWED_HOSTS = [x.strip() for x in hosts.split(',') if x.strip()]
