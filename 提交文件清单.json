@@ -16,8 +16,8 @@
   },
   {
     "file": "README.md",
-    "bytes": 8738,
-    "sha256": "1b142088b2525958002f5b3d6208086e4c4d7125a2d7a739476d7729a81f191e"
+    "bytes": 7680,
+    "sha256": "d62595222527f2c7bba99ea1eb3dff3387f9bf5fee2ca1e13f5dd3204dfeaecc"
   },
   {
     "file": "app/config/__init__.py",
@@ -821,18 +821,18 @@
   },
   {
     "file": "六模块验收记录.md",
-    "bytes": 6439,
-    "sha256": "92d66c0459e48afda8997ee2c31413db6fd16a952e5d76f94d391bf11d03f800"
+    "bytes": 6285,
+    "sha256": "effb57fa1ed4eb5514743c8a576e428ee4433435a714a8e472ed3b9d2a154cbc"
   },
   {
     "file": "备份与迁移说明.md",
-    "bytes": 3610,
-    "sha256": "ca89da81853adab2b8214e30e010e5803e5df68ccd6a47ac9b5eefbb656fc114"
+    "bytes": 3616,
+    "sha256": "7d8be01e612b1c02e5d9eda63b34519bebbf7106baf153b4fafa8a048077789b"
   },
   {
     "file": "完整业务彩排记录-20261016.md",
-    "bytes": 5652,
-    "sha256": "62b9130c3651047727285691cffef3979cc346bfab0a675c833961b0b409b89e"
+    "bytes": 5428,
+    "sha256": "e91808e6d7a6e177afdf536a75b015be1190daf2146f3ad735a386d10b883337"
   },
   {
     "file": "彩排截图/01-患者预约成功.jpg",
@@ -871,13 +871,13 @@
   },
   {
     "file": "操作状态验收说明.md",
-    "bytes": 2884,
-    "sha256": "f85ed51ee555a0cd4a5c1687751abb0465bfef2317bcab166472cbe37ba1c609"
+    "bytes": 2899,
+    "sha256": "b43f180122b8cb9a04950ebbcbf99e363d9bf2987d099b34bab8ad4f89797ffb"
   },
   {
     "file": "本机演示复核记录-20261016.md",
-    "bytes": 6031,
-    "sha256": "77674a81c8de97c2e7dfc7468895a26adabaed7339200320033211f0e6588d78"
+    "bytes": 5799,
+    "sha256": "f9f9971c3e56a5ced97c4a7985ee4d245710b92fdab9dfea322ee94d655e99ea"
   },
   {
     "file": "界面截图/前台已支付结算提示.jpg",
@@ -916,8 +916,8 @@
   },
   {
     "file": "部署说明.md",
-    "bytes": 4016,
-    "sha256": "cee00e154ccc3e41dd50fa6998bfd39bb37931ca4b0f38b3857e3affc5231d47"
+    "bytes": 4033,
+    "sha256": "ca1fdc31fa7ee00964cb9a9151d87714e13b2be9309243790361f9857eee30a7"
   },
   {
     "file": "阶段作业提交说明.md",
