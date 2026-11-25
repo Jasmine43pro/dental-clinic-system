@@ -20,7 +20,10 @@ Page({
   async loadClinics() {
     this.setData({ status: 'loading' });
     try {
-      const clinics = await listClinics();
+      const clinics = (await listClinics()).map((clinic) => ({
+        ...clinic,
+        displayPhone: clinic.phone && !clinic.phone.startsWith('TEST-CLINIC-') ? clinic.phone : '',
+      }));
       this.setData({ clinics, status: clinics.length ? 'ready' : 'empty' });
     } catch (error) {
       console.error('诊所列表查询失败', error);

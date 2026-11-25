@@ -1,5 +1,5 @@
 const demoClinics = [
-  { id: 1, code: 'DEMO-01', name: '示例诊所', address: '演示地址', active: true },
+  { id: 1, code: 'DEMO-01', name: '云杉路店', address: '演示地址01（非真实地址）', active: true },
 ];
 
 const { clinicApiUrl } = require('../settings');

@@ -1,6 +1,6 @@
 <view class="page">
   <button wx:if="{{!demoMode}}" class="my-appointments" bindtap="openAppointments">我的预约</button>
-  <view wx:if="{{demoMode}}" class="notice">当前显示本地演示数据</view>
+  <view class="notice">基于安德鲁牙科连锁店案例的患者端课程演示。门店、医生及预约数据均为虚构。</view>
   <view wx:if="{{status === 'loading'}}">正在加载诊所…</view>
   <view wx:elif="{{status === 'empty'}}">暂无营业诊所</view>
   <view wx:elif="{{status === 'error'}}">
@@ -11,7 +11,7 @@
     <view class="clinic" wx:for="{{clinics}}" wx:key="id">
       <view class="name">{{item.name}}</view>
       <view class="address">{{item.address}}</view>
-      <view wx:if="{{item.phone}}">{{item.phone}}</view>
+      <view wx:if="{{item.displayPhone}}">{{item.displayPhone}}</view>
       <button wx:if="{{!demoMode}}" class="booking-link" size="mini" data-id="{{item.id}}" data-name="{{item.name}}" bindtap="openBooking">查看可约时段</button>
     </view>
   </block>

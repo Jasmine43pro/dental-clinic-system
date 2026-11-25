@@ -8,6 +8,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.utils import timezone
+from domain.demo_names import CLINIC_NAMES, DENTIST_NAMES
 from domain.models import *
 
 class Command(BaseCommand):
@@ -41,8 +42,8 @@ class Command(BaseCommand):
                 scope_type='clinic' if clinic else ('self' if role in ['patient','dentist'] else 'global'),valid_from=now)
             return user
         clinics=[]
-        for i in range(1,16):
-            c=Clinic.objects.create(code=f'DEMO-{i:02}',name=f'虚构演示诊所{i:02}',address=f'演示地址{i:02}（非真实地址）',
+        for i, clinic_name in enumerate(CLINIC_NAMES, start=1):
+            c=Clinic.objects.create(code=f'DEMO-{i:02}',name=clinic_name,address=f'演示地址{i:02}（非真实地址）',
                 manager_name=f'演示负责人{i:02}',phone=f'TEST-CLINIC-{i:02}',email=f'clinic{i}@example.invalid',floor_area=100+i)
             clinics.append(c)
             for weekday in range(1,8):
@@ -56,9 +57,9 @@ class Command(BaseCommand):
         doctors=[]
         relations=[]
         qualifications=[Qualification.objects.create(code=f'Q{i}',name=name) for i,name in enumerate(['牙髓病学（演示）','口腔放射学（演示）','儿科（演示）'],1)]
-        for i in range(6):
+        for i, dentist_name in enumerate(DENTIST_NAMES):
             user=account(f'demo_dentist_{i+1}','dentist')
-            d=Dentist.objects.create(employee_number=f'DEMO-D{i+1}',name=f'演示医生{i+1}',user=user,
+            d=Dentist.objects.create(employee_number=f'DEMO-D{i+1}',name=dentist_name,user=user,
                 birth_date=date(1980+i,1,1),home_address='虚构地址，不公开',phone=f'TEST-DENTIST-{i+1}',email=f'dentist{i+1}@example.invalid')
             doctors.append(d)
             rel=DentistClinic.objects.create(dentist=d,clinic=clinics[0 if i<3 else 1],valid_from=stamp(today-timedelta(days=400)))
