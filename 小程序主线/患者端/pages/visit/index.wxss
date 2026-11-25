@@ -1,0 +1,4 @@
+@import "../booking/index.wxss";
+
+.line { padding: 16rpx 0; border-top: 1px solid #e5ebe4; overflow-wrap: anywhere; }
+.total { margin-top: 18rpx; text-align: right; font-size: 32rpx; font-weight: 600; }

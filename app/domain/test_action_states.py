@@ -10,7 +10,7 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 from . import services
-from .models import (Appointment, Invoice, Patient, PaymentRecord, ResourceUnavailable,
+from .models import (Allergy, Appointment, AuditEvent, Invoice, Patient, PatientAllergy, PaymentRecord, ResourceUnavailable,
                      Role, RoleAssignment, ScheduleSlot, TreatmentType, User, Visit)
 
 
@@ -37,7 +37,7 @@ class StateControlTests(TestCase):
         self.addCleanup(clock_patch.stop)
 
     def booking(self):
-        return services.book(self.front, self.patient.pk, self.slot.pk, treatment_id=self.treatment.pk)
+        return services.book(self.front, self.patient.pk, self.slot.pk, treatment_id=self.treatment.pk, allergy_status='no_known')
 
     def read(self, actor, route, *args):
         self.client.force_login(actor)
@@ -69,7 +69,7 @@ class StateControlTests(TestCase):
         app = self.booking()
         with patch('django.utils.timezone.now', return_value=self.slot.starts_at - timedelta(minutes=10)):
             services.appointment_action(self.front, app.pk, 'checkin')
-            visit = services.start_visit(self.doctor, app.pk)
+            visit = services.start_visit(self.doctor, app.pk, allergy_status='no_known')
         self.clock.return_value = self.slot.starts_at + timedelta(minutes=10)
         if completed:
             services.edit_visit(self.doctor, visit.pk, 'notes', {'version': visit.current_version,
@@ -104,6 +104,34 @@ class StateControlTests(TestCase):
         self.client.force_login(User.objects.get(username='demo_reception_b'))
         self.assertEqual(self.client.get(reverse('appointment', args=[app.pk])).status_code, 403)
         self.assertEqual(self.client.get(reverse('appointment_command', args=[app.pk, 'checkin'])).status_code, 403)
+
+    def test_appointment_history_uses_patient_id_and_existing_scope(self):
+        appointment = self.booking()
+        same_name = Patient.objects.create(name=self.patient.name, birth_date=date(1996, 1, 1),
+                                          phone='TEST-STATE-SAME-NAME', billing_address='虚构地址')
+        other_slot = ScheduleSlot.objects.exclude(clinic_id=self.slot.clinic_id).first()
+        cancelled = Appointment.objects.create(number='APT-LOCAL-HISTORY', patient=self.patient, slot=self.slot,
+            status=Appointment.Status.CANCELLED, source='reception', created_by=self.front)
+        Appointment.objects.create(number='APT-SAME-NAME', patient=same_name, slot=self.slot,
+            status=Appointment.Status.CANCELLED, source='reception', created_by=self.front)
+        elsewhere = Appointment.objects.create(number='APT-OTHER-CLINIC', patient=self.patient, slot=other_slot,
+            status=Appointment.Status.CANCELLED, source='reception', created_by=self.front)
+
+        history_url = f"{reverse('appointments')}?patient={self.patient.pk}"
+        self.assertContains(self.read(self.front, 'appointment', appointment.pk), f'href="{history_url}"')
+        self.assertContains(self.read(self.front, 'patients'), f'href="{history_url}"')
+        response = self.client.get(history_url)
+        self.assertEqual({item.pk for item in response.context['items']}, {appointment.pk, cancelled.pk})
+        self.assertContains(response, f'name="patient" value="{self.patient.pk}"')
+        response = self.client.get(history_url + '&status=cancelled')
+        self.assertEqual([item.pk for item in response.context['items']], [cancelled.pk])
+        self.assertEqual(self.client.get(reverse('appointments'), {'patient': 'invalid'}).status_code, 400)
+
+        self.client.force_login(self.patient_user)
+        response = self.client.get(history_url)
+        self.assertEqual({item.pk for item in response.context['items']}, {appointment.pk, cancelled.pk, elsewhere.pk})
+        response = self.client.get(reverse('appointments'), {'patient': same_name.pk})
+        self.assertEqual(response.context['items'].paginator.count, 0)
 
     def test_checkin_date_and_no_show_end_boundary(self):
         app = self.booking()
@@ -212,9 +240,34 @@ class StateControlTests(TestCase):
             self.operation(self.read(self.doctor, 'appointment', app.pk), 'start', False, '资源容量不足')
             blocked_form = self.read(self.doctor, 'appointment_command', app.pk, 'start')
             self.assertContains(blocked_form, 'disabled aria-describedby="operation-blocked-reason"')
-            rejected = self.write(self.doctor, 'appointment_command', [app.pk, 'start'], {})
+            rejected = self.write(self.doctor, 'appointment_command', [app.pk, 'start'], {'allergy_status': 'no_known'})
             self.assertContains(rejected, '资源容量不足')
         self.assertFalse(Visit.objects.filter(appointment=app).exists())
+
+    def test_legacy_appointment_requires_independent_allergy_confirmation_at_start(self):
+        app = Appointment.objects.create(number='LEGACY-ALLERGY', patient=self.patient, slot=self.slot,
+                                         status='arrived', source='reception', created_by=self.front)
+        allergy = Allergy.objects.create(code='STATE-ALLERGY', name='虚构过敏测试项')
+        PatientAllergy.objects.create(patient=self.patient, allergy=allergy, manifestation='虚构表现')
+        start = [app.pk, 'start']
+        own_page = self.read(self.patient_user, 'appointment', app.pk)
+        self.assertContains(own_page, '预约时过敏核对</dt><dd>未核实')
+        self.assertNotContains(own_page, '虚构过敏测试项')
+        self.assertEqual(self.write(self.patient_user, 'appointment_command', start, {'allergy_status': 'known'}).status_code, 403)
+
+        page = self.read(self.doctor, 'appointment_command', *start)
+        self.assertContains(page, '预约时确认结果：未核实')
+        self.assertContains(page, '虚构过敏测试项')
+        self.assertContains(self.write(self.doctor, 'appointment_command', start, {}), '请先核实并选择患者的过敏状态')
+        self.assertContains(self.write(self.doctor, 'appointment_command', start, {'allergy_status': 'no_known'}),
+                            '患者档案已登记过敏信息')
+        self.assertFalse(Visit.objects.filter(appointment=app).exists())
+
+        completed = self.write(self.doctor, 'appointment_command', start, {'allergy_status': 'known'})
+        self.assertEqual(completed.status_code, 302)
+        visit = Visit.objects.get(appointment=app)
+        event = AuditEvent.objects.get(actor=self.doctor, object_id=visit.pk, action='start_visit')
+        self.assertEqual(event.after_value, {'allergy_status': 'known'})
 
     def test_started_appointment_cannot_be_rescheduled_by_direct_request(self):
         app = self.booking()
@@ -226,7 +279,7 @@ class StateControlTests(TestCase):
             self.assertContains(blocked, 'disabled aria-describedby="operation-blocked-reason"')
             rejected = self.write(self.front, 'reschedule', [app.pk], {'patient': str(self.patient.pk),
                 'slot': str(target.pk), 'treatment': str(self.treatment.pk), 'identity_confirmed': 'on',
-                'reason': '验证禁止改约', 'confirmed': 'yes'})
+                'reason': '验证禁止改约', 'confirmed': 'yes', 'allergy_status': 'no_known'})
             self.assertContains(rejected, '仅可调整尚未开始')
         app.refresh_from_db()
         self.assertEqual(app.slot_id, original_slot)

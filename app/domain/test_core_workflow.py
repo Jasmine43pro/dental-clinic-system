@@ -97,7 +97,7 @@ class CoreWorkflowTests(TestCase):
         self.client.force_login(self.front)
         url='/book/'
         payload={'patient':str(self.patient.pk),'slot':str(self.slot.pk),'treatment':str(self.treatment.pk),
-            'reason':'验收虚构预约','identity_confirmed':'on','request_key':str(uuid.uuid4())}
+            'reason':'验收虚构预约','identity_confirmed':'on','allergy_status':'known','request_key':str(uuid.uuid4())}
         before_count=Appointment.objects.filter(patient=self.patient).count()
         preview=self.client.post(url,payload)
         self.assertEqual(preview.status_code,200)
@@ -112,7 +112,8 @@ class CoreWorkflowTests(TestCase):
 
     def complete(self,app,pay=True):
         self.write(self.front,reverse('appointment_command',args=[app.pk,'checkin']),{},at=stamp(self.day,11))
-        self.write(self.doctor.user,reverse('appointment_command',args=[app.pk,'start']),{},at=stamp(self.day,11,1))
+        self.write(self.doctor.user,reverse('appointment_command',args=[app.pk,'start']),
+            {'allergy_status':'known'},at=stamp(self.day,11,1))
         visit=Visit.objects.get(appointment=app)
         self.client.force_login(self.doctor.user)
         summary=self.client.get(reverse('visit',args=[visit.pk]))
@@ -216,7 +217,7 @@ class CoreWorkflowTests(TestCase):
             self.write(self.manager_b,'/schedules/',{'service':str(self.services[1].pk),'starts_at':stamp(day+timedelta(days=1),11).isoformat()})
             second_slot=ScheduleSlot.objects.get(clinic=self.clinic_b,starts_at=stamp(day+timedelta(days=1),11))
             self.write(self.patient.user,'/book/',{'patient':str(self.patient.pk),'slot':str(second_slot.pk),'reason':'跨店验收',
-                'treatment':'','confirmed':'yes'})
+                'treatment':'','confirmed':'yes','allergy_status':'known'})
             second=Appointment.objects.get(slot=second_slot)
             self.assertEqual(first.patient_id,second.patient_id)
             self.assertEqual(first.slot.dentist_id,second.slot.dentist_id)
@@ -256,7 +257,8 @@ class CoreWorkflowTests(TestCase):
             for hour in [9,10]:
                 self.write(self.manager,'/schedules/',{'service':str(self.services[0].pk),'starts_at':stamp(day,hour).isoformat()})
                 slot=ScheduleSlot.objects.get(clinic=self.clinic,starts_at=stamp(day,hour))
-                self.write(self.front,'/book/',{'patient':str(self.patient.pk),'slot':str(slot.pk),'identity_confirmed':'on','confirmed':'yes','reason':'验收'})
+                self.write(self.front,'/book/',{'patient':str(self.patient.pk),'slot':str(slot.pk),
+                    'identity_confirmed':'on','confirmed':'yes','allergy_status':'known','reason':'验收'})
                 extra.append(Appointment.objects.get(slot=slot))
             self.write(self.front,reverse('appointment_command',args=[extra[0].pk,'cancel']),{'reason':'患者已确认取消'})
         with patch('django.utils.timezone.now',return_value=stamp(day,12,30)):

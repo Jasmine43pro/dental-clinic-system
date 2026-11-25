@@ -1,0 +1,19 @@
+<view class="page">
+  <form class="card" bindsubmit="register">
+    <view class="hint registration-note">课程演示请使用虚构资料。已有诊所档案请联系前台核验并关联账号。</view>
+    <label class="field">姓名<input name="name" maxlength="60" disabled="{{busy}}" /></label>
+    <view class="field">出生日期
+      <picker mode="date" value="{{birthDate}}" disabled="{{busy}}" bindchange="changeBirthDate">
+        <view class="filter">{{birthDate || '选择出生日期'}}</view>
+      </picker>
+    </view>
+    <label class="field">手机号<input name="phone" maxlength="30" disabled="{{busy}}" /></label>
+    <label class="field">账单地址<input name="billing_address" maxlength="255" disabled="{{busy}}" /></label>
+    <label class="field">登录账号<input name="username" maxlength="150" disabled="{{busy}}" /></label>
+    <label class="field">密码<input name="password1" maxlength="256" password="{{true}}" disabled="{{busy}}" /></label>
+    <label class="field">确认密码<input name="password2" maxlength="256" password="{{true}}" disabled="{{busy}}" /></label>
+    <view class="error" wx:if="{{error}}">{{error}}</view>
+    <button class="primary" form-type="submit" disabled="{{busy}}" loading="{{busy}}">注册并登录</button>
+    <button class="secondary" size="mini" disabled="{{busy}}" bindtap="returnToLogin">返回登录</button>
+  </form>
+</view>

@@ -1,0 +1,46 @@
+page {
+  background: #f5f1e8;
+  color: #183f36;
+}
+
+.page {
+  padding: 32rpx;
+}
+
+.notice {
+  margin-bottom: 24rpx;
+  color: #4c665e;
+  font-size: 26rpx;
+}
+
+.clinic {
+  padding: 28rpx;
+  margin-bottom: 20rpx;
+  border: 1px solid #d3ddd5;
+  border-radius: 16rpx;
+  background: #fff;
+}
+
+.name {
+  font-size: 34rpx;
+  font-weight: 600;
+}
+
+.address {
+  margin-top: 10rpx;
+}
+
+.booking-link {
+  margin: 20rpx 0 0;
+  color: #fff;
+  background: #183f36;
+}
+
+.my-appointments {
+  margin: 0 0 20rpx;
+  border: 1px solid #d3ddd5;
+  border-radius: 12rpx;
+  font-weight: 600;
+  color: #183f36;
+  background: #fff;
+}

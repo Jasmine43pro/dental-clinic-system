@@ -1,77 +1,40 @@
 # 牙科诊所管理系统
 
-作者：陈杨娟　学号：1602240104　班级：信管2401
+陈杨娟｜信管2401班｜学号 1602240104
 
-## 课程报告
+本项目使用 Django 和 PostgreSQL，支持预约、排班、签到接诊、诊疗记录、模拟结算、耗材成本和季度统计。系统使用虚构数据。
 
-[牙科诊所管理系统分析与设计报告 PDF](report/1602240104陈杨娟-牙科诊所管理系统.pdf)
+## 作业材料
 
-报告共100页，包含业务建模、系统需求、分析模型、数据库与实现设计，以及用例规约、序列图、状态机、数据字典和7页数据库关系图。
+- [分析与设计报告](report/1602240104陈杨娟-牙科诊所管理系统.pdf)
+- [实现范围与验收补充说明](report/实现范围与验收补充说明.md)
+- [患者端微信小程序源码](小程序主线/患者端)
 
-本项目以ADC课程案例为设计对象，岳雅口腔医院为单院区实地调研样本。运行数据中的诊所、患者、医生和金额均为虚构演示资料。
+## 从源码运行
 
-## 源码结构
+以下步骤适用于 Windows。请预装 Python 3.12 和 PostgreSQL 18，并将仓库下载到 D 盘。下列数据库工具路径可按实际安装位置调整。
 
-| 目录或文件 | 用途 |
-| --- | --- |
-| app/ | Django应用、页面、静态资源、数据库迁移与自动化测试 |
-| scripts/ | 数据库及静态资源准备、Linux服务启动、私有数据库备份 |
-| requirements.txt | Python运行依赖 |
-| .env.example | 环境变量配置项目，不含实际凭据；程序不自动加载此文件 |
-| 提交文件清单.json | 当前文件的字节数与SHA256，清单本身不递归列入 |
+```bat
+set "DENTAL_PG_BIN=D:\PostgreSQL\18\bin"
+py -3.12 -B scripts\bootstrap.py --install
+启动系统.cmd
+```
 
-## 环境与运行
+首次启动会创建本项目专用数据库、应用迁移并生成虚构演示数据。打开 [本机登录页](http://127.0.0.1:8000/login/)，从本机的 `.local/demo-accounts.json` 读取各岗位演示账号和随机密码。用 `demo_reception_a` 登录，在「预约记录」打开 `DEMO-A005`，依次点击「查看对应就诊」「查看结算单」，可核对 100.00 元、已支付和模拟现金。
 
-使用Python 3.12和PostgreSQL，数据库需支持btree_gist扩展。Windows本机的项目、虚拟环境、缓存及数据库保存在D盘。
+默认数据库端口为 55433，网页端口为 8000。首次启动前可通过 `DENTAL_DB_PORT` 和 `DENTAL_WEB_PORT` 指定空闲端口。按 Ctrl+C 停止网页服务。停止本项目数据库可运行 `.venv\Scripts\python.exe -B scripts\database.py stop`。
 
-1. 建立独立Python环境，安装依赖：
+微信开发者工具可打开「小程序主线/患者端」做本地联调，默认连接本机 8000 端口。真机体验需要获授权的体验码及可访问的 HTTPS 服务。
 
-   ~~~text
-   python -m pip install -r requirements.txt
-   ~~~
+## 教师网页验收
 
-2. 在进程环境中设置DJANGO_SETTINGS_MODULE=config.settings_cloud、DATABASE_URL及独立随机DJANGO_SECRET_KEY。其他配置项目见.env.example。密钥至少43字符，实际连接和密码单独保管。
-3. 本机访问时设置DJANGO_ALLOWED_HOSTS=127.0.0.1,localhost,testserver及DJANGO_HTTPS=0；DB_SSLMODE按本机PostgreSQL实际配置设置。托管环境使用实际域名、HTTPS和可信代理设置，域名不使用星号。
-4. 执行迁移与静态资源准备：
+[教师只读验收入口](https://203.195.214.159/login/?next=/appointments/b698d992-1074-428d-bbd4-f5c57c682795/)使用 2026 年 11 月 21 日验收版。用单独提供的只读账号登录后，依次查看预约、就诊和结算，可核对 50.00 元的模拟现金已支付记录。仓库中的后续改进可按本机启动步骤体验。
 
-   ~~~text
-   python scripts/cloud_prepare.py
-   ~~~
+## 回归测试
 
-5. Windows本机启动：
+启动本机数据库后，可在独立测试库运行：
 
-   ~~~text
-   python app/manage.py runserver 127.0.0.1:8000
-   ~~~
-
-   Linux托管环境启动：
-
-   ~~~text
-   python scripts/cloud_start.py
-   ~~~
-
-首次在空库创建虚构演示资料时，设置INITIALIZE_DEMO=1和至少12字符的DEMO_INITIAL_PASSWORD；初始化后设置INITIALIZE_DEMO=0。命令不会覆盖已有演示库或重置密码。演示角色包含患者、前台、医生、诊所管理者、总部、财务和系统管理员，账号及访问范围由初始化命令建立。
-
-访问/login/登录，/health/检查服务状态。完整业务演示须由诊所管理者准备当天尚未开始的连续排班；未来日期预约只能先验证预约与核对，签到须在预约当天办理。60分钟演示治疗需至少两个连续30分钟单元及相应周转资源。
-
-数据库结构由app/domain/migrations/建立。备份工具为scripts/backup_database.py，私有配置及备份保存在.local目录，不纳入公开材料。
-
-## 验证与实现范围
-
-验证命令：
-
-~~~text
-python app/manage.py check
-python app/manage.py makemigrations --check --dry-run
-python app/manage.py test domain --noinput
-~~~
-
-测试使用独立测试数据库。2026年10月15日81项全量回归通过，其中包含8项六模块核心流程和10项操作状态保护测试；系统检查及迁移一致性检查通过。10月16日本机完成预约、签到、诊疗、结算、模拟收款、成本及季度报表的完整流程核对。上述日期对应既有验证结果。
-
-系统支持连续预约与资源容量校验、本人核验、岗位及数据范围授权、受控更正、历史价格快照、模拟全额收款与经营统计。辅助人员采用诊所容量池；未接入真实支付、退款、外部团购核销、医学影像或具体护士跨店排班。性能目标尚需专项测试。英文辅助覆盖核心界面，临床自由文本保留原文。
-
-本机系统已验证，当前尚未提供通过验收的公网业务网址。GitHub地址用于报告及源码查阅。
-
-## 界面素材来源
-
-诊所空间照片来自[Pavel Danilyuk在Pexels发布的照片6812453](https://www.pexels.com/photo/a-dental-equipment-in-the-clinic-6812453/)，许可见[Pexels License](https://www.pexels.com/license/)。照片用于界面装饰，不是ADC或岳雅口腔医院实拍。图标为SVG线稿，字体使用本机系统字体及后备字体。
+```bat
+.venv\Scripts\python.exe -B app\manage.py check
+.venv\Scripts\python.exe -B app\manage.py test domain --keepdb --noinput
+```

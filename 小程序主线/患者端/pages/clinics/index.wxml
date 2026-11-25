@@ -1,0 +1,18 @@
+<view class="page">
+  <button wx:if="{{!demoMode}}" class="my-appointments" bindtap="openAppointments">我的预约</button>
+  <view wx:if="{{demoMode}}" class="notice">当前显示本地演示数据</view>
+  <view wx:if="{{status === 'loading'}}">正在加载诊所…</view>
+  <view wx:elif="{{status === 'empty'}}">暂无营业诊所</view>
+  <view wx:elif="{{status === 'error'}}">
+    <view>诊所列表加载失败</view>
+    <button bindtap="loadClinics">重试</button>
+  </view>
+  <block wx:else>
+    <view class="clinic" wx:for="{{clinics}}" wx:key="id">
+      <view class="name">{{item.name}}</view>
+      <view class="address">{{item.address}}</view>
+      <view wx:if="{{item.phone}}">{{item.phone}}</view>
+      <button wx:if="{{!demoMode}}" class="booking-link" size="mini" data-id="{{item.id}}" data-name="{{item.name}}" bindtap="openBooking">查看可约时段</button>
+    </view>
+  </block>
+</view>

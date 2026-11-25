@@ -1,0 +1,48 @@
+{% extends 'domain/base.html' %}
+{% block content %}
+<div class="crumb"><a href="{% url 'resources' %}?{{ resource_query }}">资源与停诊协调</a></div>
+<div class="heading"><div><h1>跨店改约</h1>
+  <p><a href="{% url 'appointment' appointment.pk %}">{{ appointment.number }}</a>
+    · {{ appointment.patient.name }} · {{ appointment.slot.clinic.name }} · {{ appointment.slot.dentist.name }}
+    · {{ appointment.slot.starts_at|date:'Y-m-d H:i' }}–{{ appointment.ends_at|time:'H:i' }}</p></div></div>
+{% if blocked %}<p class="operation-notice" role="status">{{ blocked }}</p>{% endif %}
+{% if confirm.is_bound and not selected %}<section class="card" role="alert">
+  {{ confirm.errors }}<p>原预约继续保留，请重新查询并选择仍可办理的时段。</p>
+</section>{% endif %}
+{% if not blocked %}
+<section class="card">
+  <h2>患者可就诊时间</h2>
+  <form class="filters" method="get">
+    {{ window.non_field_errors }}
+    {% for field in window %}<label>{{ field.label }}{{ field }}{{ field.errors }}</label>{% endfor %}
+    <button class="primary">查找其他门店</button>
+  </form>
+</section>
+{% if window_ready %}
+<section class="card">
+  <h2>备选时段</h2>
+  <div class="table-wrap"><table>
+    <thead><tr><th>开始时间</th><th>诊所</th><th>医生</th><th>核查结果</th><th>操作</th></tr></thead>
+    <tbody>{% for row in rows %}
+      <tr><td>{{ row.slot.starts_at|time:'H:i' }}</td><td>{{ row.slot.clinic.name }}</td><td>{{ row.slot.dentist.name }}</td>
+        <td>{% if row.reason %}{{ row.reason }}{% else %}可选 · 预计 {{ row.ends|time:'H:i' }} 结束{% endif %}</td>
+        <td>{% if row.ends %}<a href="{% querystring slot=row.slot.pk|stringformat:'s' %}#confirm-transfer">选择时段</a>{% endif %}</td>
+      </tr>
+    {% empty %}<tr><td colspan="5">患者可就诊时段内没有其他授权门店的排班。</td></tr>{% endfor %}</tbody>
+  </table></div>
+  {% include 'domain/pagination.html' %}
+</section>
+{% endif %}
+{% if selected %}
+<section class="card form-card" id="confirm-transfer">
+  <h2>核对并确认跨店改约</h2>
+  <p>{{ selected.slot.clinic.name }} · {{ selected.slot.dentist.name }}
+    · {{ selected.slot.starts_at|date:'Y-m-d H:i' }}–{{ selected.ends|time:'H:i' }}</p>
+  <form method="post" data-guard>
+    {% include 'domain/form_fields.html' with form=confirm %}
+    <button class="primary">确认跨店改约</button>
+  </form>
+</section>
+{% endif %}
+{% endif %}
+{% endblock %}

@@ -1,0 +1,39 @@
+<view class="page">
+  <view class="error" wx:if="{{error}}">{{error}}</view>
+  <view class="notice" wx:if="{{notice}}">{{notice}}</view>
+
+  <view class="card" wx:if="{{!signedIn}}">
+    <form bindsubmit="signIn">
+      <view class="heading">患者账号登录</view>
+      <label class="field">患者账号<input name="username" value="{{username}}" disabled="{{busy}}" maxlength="150" /></label>
+      <label class="field">密码<input name="password" password="{{true}}" value="{{password}}" disabled="{{busy}}" bindinput="changePassword" /></label>
+      <button class="primary" form-type="submit" disabled="{{busy}}" loading="{{busy}}">登录</button>
+      <navigator class="secondary result-link" wx:if="{{!busy}}" url="/pages/register/index">注册患者账号</navigator>
+    </form>
+  </view>
+
+  <block wx:else>
+    <view class="toolbar">
+      <button size="mini" disabled="{{busy}}" bindtap="refresh">刷新</button>
+      <button size="mini" disabled="{{busy}}" bindtap="signOut">退出登录</button>
+    </view>
+    <view class="hint" wx:if="{{busy && !items.length}}">正在查询预约…</view>
+    <view class="hint" wx:elif="{{!items.length && !error}}">暂无预约记录。</view>
+    <view class="card" wx:for="{{items}}" wx:key="id">
+      <view class="summary"><view class="heading">{{item.clinic}}</view><view class="status">{{item.status}}</view></view>
+      <view>{{item.date}} {{item.time}} · {{item.dentist}}</view>
+      <view class="hint">预约号 {{item.number}}</view>
+      <view wx:if="{{item.allergy_confirmation}}" class="hint">预约时过敏核对 {{item.allergy_confirmation}}</view>
+      <view wx:if="{{item.cancel_reason}}" class="hint">取消原因 {{item.cancel_reason}}</view>
+      <button wx:if="{{item.has_completed_visit}}" class="secondary" size="mini" data-id="{{item.id}}" bindtap="openVisit">查看就诊与结算</button>
+      <view wx:if="{{cancellingId === item.id && item.can_cancel}}">
+        <label class="field">取消原因<textarea maxlength="2000" value="{{reason}}" disabled="{{busy}}" bindinput="changeReason" /></label>
+        <button class="danger" size="mini" disabled="{{busy}}" bindtap="confirmCancel">确认取消</button>
+        <button size="mini" disabled="{{busy}}" bindtap="closeCancel">保留预约</button>
+      </view>
+      <button wx:elif="{{item.can_cancel}}" class="danger" size="mini" disabled="{{busy}}" data-id="{{item.id}}" bindtap="openCancel">取消预约</button>
+      <view wx:elif="{{item.status_code === 'booked'}}" class="hint">如需取消，请联系前台。</view>
+    </view>
+    <button wx:if="{{nextPage}}" disabled="{{busy}}" loading="{{busy}}" bindtap="loadMore">显示更多</button>
+  </block>
+</view>

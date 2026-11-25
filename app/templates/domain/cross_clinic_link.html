@@ -1,0 +1,1 @@
+{% if item.status == 'booked' and item.slot.starts_at > now and item.slot.clinic_id in reception_clinics %} · <a href="{% url 'cross_clinic_reschedule' item.pk %}">查找跨店备选</a>{% endif %}

@@ -74,24 +74,24 @@ class BusinessTests(TestCase):
 
     def test_booking_replay_and_payload_mismatch(self):
         key=str(uuid.uuid4());payload={'slot':str(self.slot.pk)}
-        fn=lambda:services.book(self.patient.user,self.patient.pk,self.slot.pk)
+        fn=lambda:services.book(self.patient.user,self.patient.pk,self.slot.pk, allergy_status='no_known')
         a=services.command(self.patient.user,'book',key,payload,fn)
         self.assertEqual(a,services.command(self.patient.user,'book',key,payload,fn))
         with self.assertRaises(ValidationError):services.command(self.patient.user,'book',key,{'slot':'different'},fn)
         self.assertEqual(Appointment.objects.filter(slot=self.slot).count(),1)
 
     def test_patient_cross_doctor_conflict(self):
-        services.book(self.patient.user,self.patient.pk,self.slot.pk)
+        services.book(self.patient.user,self.patient.pk,self.slot.pk, allergy_status='no_known')
         other=ScheduleSlot.objects.filter(starts_at=self.slot.starts_at).exclude(dentist=self.slot.dentist).first()
-        with self.assertRaises(ValidationError):services.book(self.patient.user,self.patient.pk,other.pk)
+        with self.assertRaises(ValidationError):services.book(self.patient.user,self.patient.pk,other.pk, allergy_status='no_known')
 
     def test_invalid_service_or_hours(self):
         ClinicHours.objects.filter(clinic=self.slot.clinic).update(opens_at=time(12))
-        with self.assertRaises(ValidationError):services.book(self.patient.user,self.patient.pk,self.slot.pk)
+        with self.assertRaises(ValidationError):services.book(self.patient.user,self.patient.pk,self.slot.pk, allergy_status='no_known')
 
     def test_self_cancel_boundary(self):
         from unittest.mock import patch
-        app=services.book(self.patient.user,self.patient.pk,self.slot.pk)
+        app=services.book(self.patient.user,self.patient.pk,self.slot.pk, allergy_status='no_known')
         with patch('domain.services.timezone.now',return_value=self.slot.starts_at-timedelta(hours=2)+timedelta(seconds=1)):
             with self.assertRaises(ValidationError):services.appointment_action(self.patient.user,app.pk,'cancel','计划改变')
         with patch('domain.services.timezone.now',return_value=self.slot.starts_at-timedelta(hours=2)):
@@ -99,9 +99,9 @@ class BusinessTests(TestCase):
         app.refresh_from_db();self.assertEqual(app.status,'cancelled')
 
     def test_checkin_requires_today_and_doctor_requires_arrived(self):
-        app=services.book(self.patient.user,self.patient.pk,self.slot.pk)
+        app=services.book(self.patient.user,self.patient.pk,self.slot.pk, allergy_status='no_known')
         with self.assertRaises(ValidationError):services.appointment_action(self.front,app.pk,'checkin')
-        with self.assertRaises(ValidationError):services.start_visit(self.doctor,app.pk)
+        with self.assertRaises(ValidationError):services.start_visit(self.doctor,app.pk, allergy_status='no_known')
 
     def test_complete_issue_pay_and_immutable_paid(self):
         visit=self.draft()
@@ -158,7 +158,8 @@ class BusinessTests(TestCase):
 
     def test_web_booking_confirmation_and_persist(self):
         self.login('demo_patient_1')
-        payload={'patient':str(self.patient.pk),'slot':str(self.slot.pk),'reason':'演示预约','request_key':str(uuid.uuid4())}
+        payload={'patient':str(self.patient.pk),'slot':str(self.slot.pk),'reason':'演示预约',
+            'allergy_status':'known','request_key':str(uuid.uuid4())}
         self.assertContains(self.client.post('/book/',payload),'确认提交预约')
         self.assertFalse(Appointment.objects.filter(slot=self.slot).exists())
         payload['confirmed']='yes'
@@ -196,7 +197,7 @@ class BusinessConcurrencyTests(TransactionTestCase):
         p=Patient.objects.get(user__username='demo_patient_1')
         first=ScheduleSlot.objects.filter(appointment__isnull=True).order_by('starts_at').first()
         second=ScheduleSlot.objects.filter(starts_at=first.starts_at).exclude(dentist=first.dentist).first()
-        results=self.race([lambda:services.book(p.user,p.pk,first.pk),lambda:services.book(p.user,p.pk,second.pk)])
+        results=self.race([lambda:services.book(p.user,p.pk,first.pk, allergy_status='no_known'),lambda:services.book(p.user,p.pk,second.pk, allergy_status='no_known')])
         self.assertCountEqual(results,['saved','conflict'])
 
     def test_payment_vs_void(self):

@@ -35,6 +35,31 @@ class ClinicHours(Entity):
     class Meta:
         constraints=[models.CheckConstraint(condition=Q(weekday__range=(1,7)) & Q(closes_at__gt=F('opens_at')),name='valid_clinic_hours')]
 
+class WorkCalendar(Entity):
+    class Kind(models.TextChoices):
+        WORKING = 'working', '按每周营业时间'
+        HOLIDAY = 'holiday', '节假日休诊'
+        MAKEUP = 'makeup', '调休营业'
+        CLOSED = 'closed', '临时停诊'
+
+    clinic = models.ForeignKey(Clinic, on_delete=models.PROTECT)
+    cal_date = models.DateField()
+    kind = models.CharField(max_length=12, choices=Kind.choices)
+    opens_at = models.TimeField(null=True, blank=True)
+    closes_at = models.TimeField(null=True, blank=True)
+    note = models.CharField(max_length=500, blank=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['clinic', 'cal_date'], name='clinic_date_unique'),
+            models.CheckConstraint(
+                condition=(Q(kind='makeup', opens_at__isnull=False, closes_at__isnull=False, closes_at__gt=F('opens_at'))
+                           | Q(kind__in=['working', 'holiday', 'closed'], opens_at__isnull=True, closes_at__isnull=True)),
+                name='work_calendar_valid_hours',
+                violation_error_message='调休营业须填写有效营业区间，其他日期类型请留空营业时间。',
+            ),
+        ]
+
 class Dentist(Entity):
     employee_number=models.CharField(max_length=30,unique=True)
     user=models.OneToOneField(User,null=True,blank=True,on_delete=models.PROTECT)
@@ -100,6 +125,11 @@ class PatientAllergy(Entity):
     manifestation=models.TextField(blank=True)
     notes=models.TextField(blank=True)
     class Meta: constraints=[models.UniqueConstraint(fields=['patient','allergy'],name='patient_allergy_unique')]
+
+class AllergyConfirmation(models.TextChoices):
+    NO_KNOWN = 'no_known', '已核实无已知过敏'
+    KNOWN = 'known', '有已知过敏'
+
 
 class ScheduleSlot(Entity):
     service=models.ForeignKey(DentistClinic,on_delete=models.PROTECT)
@@ -374,3 +404,107 @@ class ResourceOccupancy(Entity):
         indexes=[models.Index(fields=['resource','starts_at','ends_at'])]
         constraints=[models.UniqueConstraint(fields=['appointment','plan_version','resource'],name='occupancy_version_unique'),
             models.CheckConstraint(condition=Q(ends_at__gt=F('starts_at'),quantity__gt=0,plan_version__gt=0),name='occupancy_valid')]
+
+
+class Supplier(Entity):
+    code=models.CharField(max_length=30)
+    name=models.CharField(max_length=120)
+    license_number=models.CharField(max_length=60,blank=True)
+    contact_phone=models.CharField(max_length=30,blank=True)
+    settlement_terms=models.CharField(max_length=60,blank=True)
+    valid_from=models.DateField()
+    valid_to=models.DateField(null=True,blank=True)
+    active=models.BooleanField(default=True)
+    class Meta:
+        constraints=[models.UniqueConstraint(fields=['code'],name='supplier_code_unique'),
+            models.CheckConstraint(condition=Q(valid_to__isnull=True)|Q(valid_to__gte=F('valid_from')),name='supplier_period_valid')]
+
+    def is_valid_on(self,day):
+        return self.active and self.valid_from<=day and (self.valid_to is None or day<=self.valid_to)
+
+
+class PurchaseOrder(Entity):
+    clinic=models.ForeignKey(Clinic,on_delete=models.PROTECT,related_name='purchase_orders')
+    supplier=models.ForeignKey(Supplier,on_delete=models.PROTECT,related_name='purchase_orders')
+    order_number=models.CharField(max_length=40)
+    ordered_on=models.DateField()
+    status=models.CharField(max_length=10,choices=[('draft','待验收'),('accepted','已验收'),('returned','已退回')],default='draft')
+    total_amount=models.DecimalField(max_digits=14,decimal_places=2)
+    accepted_amount=models.DecimalField(max_digits=14,decimal_places=2,default=0)
+    recorded_by=models.ForeignKey(User,on_delete=models.PROTECT)
+    class Meta:
+        indexes=[models.Index(fields=['clinic','ordered_on']),models.Index(fields=['supplier','ordered_on'])]
+        constraints=[models.UniqueConstraint(fields=['clinic','order_number'],name='purchase_order_number_unique'),
+            models.CheckConstraint(condition=Q(total_amount__gte=0),name='purchase_total_nonnegative'),
+            models.CheckConstraint(condition=Q(accepted_amount__gte=0)&Q(accepted_amount__lte=F('total_amount')),name='purchase_accepted_within_total')]
+
+
+class PurchaseOrderItem(Entity):
+    purchase_order=models.ForeignKey(PurchaseOrder,on_delete=models.PROTECT,related_name='items')
+    item_name=models.CharField(max_length=120)
+    unit=models.CharField(max_length=20)
+    quantity=models.DecimalField(max_digits=12,decimal_places=2)
+    unit_price=models.DecimalField(max_digits=12,decimal_places=2)
+    amount=models.DecimalField(max_digits=14,decimal_places=2)
+    class Meta:
+        constraints=[models.UniqueConstraint(fields=['purchase_order','item_name','unit'],name='purchase_item_unique'),
+            models.CheckConstraint(condition=Q(quantity__gt=0)&Q(unit_price__gte=0),name='purchase_item_quantity_positive'),
+            models.CheckConstraint(condition=Q(amount=Func(F('quantity')*F('unit_price'),Value(2),function='ROUND')),name='purchase_item_amount_valid')]
+
+
+class InventoryBatch(Entity):
+    item=models.ForeignKey(PurchaseOrderItem,on_delete=models.PROTECT,related_name='batches')
+    batch_number=models.CharField(max_length=40,unique=True)
+    received_on=models.DateField()
+    received_quantity=models.DecimalField(max_digits=12,decimal_places=2)
+    remaining_quantity=models.DecimalField(max_digits=12,decimal_places=2)
+    expires_on=models.DateField(null=True,blank=True)
+    class Meta:
+        indexes=[models.Index(fields=['expires_on'])]
+        constraints=[models.CheckConstraint(condition=Q(received_quantity__gt=0),name='batch_received_positive'),
+            models.CheckConstraint(condition=Q(remaining_quantity__gte=0)&Q(remaining_quantity__lte=F('received_quantity')),name='batch_remaining_within_received')]
+
+    @property
+    def clinic(self):
+        return self.item.purchase_order.clinic
+
+
+class MaterialIssue(Entity):
+    issue_number=models.CharField(max_length=40,unique=True)
+    visit=models.ForeignKey(Visit,on_delete=models.PROTECT,related_name='material_issues')
+    batch=models.ForeignKey(InventoryBatch,on_delete=models.PROTECT,related_name='issues')
+    quantity=models.DecimalField(max_digits=12,decimal_places=2)
+    issued_at=models.DateTimeField()
+    issued_by=models.ForeignKey(User,on_delete=models.PROTECT)
+    reversed_at=models.DateTimeField(null=True,blank=True)
+    cost_record=models.ForeignKey(CostRecord,null=True,blank=True,on_delete=models.PROTECT,related_name='material_issues')
+    class Meta:
+        indexes=[models.Index(fields=['visit','issued_at']),models.Index(fields=['batch'])]
+        constraints=[models.CheckConstraint(condition=Q(quantity__gt=0),name='material_issue_quantity_positive')]
+
+
+class ClinicTransferTime(Entity):
+    origin = models.ForeignKey(Clinic, on_delete=models.PROTECT, related_name='outbound_transfer_times')
+    destination = models.ForeignKey(Clinic, on_delete=models.PROTECT, related_name='inbound_transfer_times')
+    minutes = models.PositiveSmallIntegerField()
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['origin', 'destination'], name='clinic_transfer_direction_unique'),
+            models.CheckConstraint(condition=~Q(origin=F('destination')), name='clinic_transfer_distinct_clinics'),
+            models.CheckConstraint(condition=Q(minutes__gte=1, minutes__lte=720), name='clinic_transfer_minutes_range'),
+        ]
+
+
+class TreatmentQualificationRequirement(Entity):
+    treatment_type = models.ForeignKey(TreatmentType, null=True, blank=True, on_delete=models.PROTECT,
+        help_text='留空表示咨询。一个项目有多条启用要求时须全部满足。')
+    qualification = models.ForeignKey(Qualification, on_delete=models.PROTECT)
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['treatment_type', 'qualification'], nulls_distinct=False,
+                name='treatment_qualification_requirement_unique'),
+        ]

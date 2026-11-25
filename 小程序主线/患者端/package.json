@@ -1,0 +1,7 @@
+{
+  "name": "dental-patient-miniprogram",
+  "private": true,
+  "dependencies": {
+    "@cloudbase/wx-cloud-client-sdk": "1.8.11"
+  }
+}

@@ -1,0 +1,51 @@
+<view class="page">
+  <view class="title">{{clinicName}}</view>
+  <view class="error" wx:if="{{error}}">{{error}}</view>
+
+  <form class="card" wx:if="{{!signedIn}}" bindsubmit="signIn">
+    <view class="heading">患者账号登录</view>
+    <label class="field">患者账号<input name="username" value="{{username}}" disabled="{{busy}}" placeholder="请输入现有患者账号" maxlength="150" /></label>
+    <label class="field">密码<input name="password" value="{{password}}" disabled="{{busy}}" password="{{true}}" bindinput="changePassword" placeholder="请输入密码" /></label>
+    <button class="primary" form-type="submit" disabled="{{busy}}" loading="{{busy}}">登录</button>
+    <navigator class="secondary result-link" wx:if="{{!busy}}" url="/pages/register/index">注册患者账号</navigator>
+  </form>
+
+  <block wx:else>
+    <button class="sign-out" size="mini" disabled="{{busy}}" bindtap="signOut">退出登录</button>
+    <view class="card" wx:if="{{result}}">
+      <view class="heading">预约已提交</view>
+      <view class="result">预约号 {{result.number}}</view>
+      <view>状态 {{result.status}}</view>
+      <navigator class="primary result-link" url="/pages/appointments/index">查看我的预约</navigator>
+      <button class="primary" bindtap="anotherBooking">返回时段列表</button>
+    </view>
+    <block wx:else>
+      <view class="card">
+        <view class="heading">30 分钟咨询</view>
+        <picker mode="date" value="{{date}}" disabled="{{busy}}" bindchange="changeDate">
+          <view class="filter">{{date || '筛选预约日期'}}</view>
+        </picker>
+        <button wx:if="{{date}}" class="secondary" size="mini" disabled="{{busy}}" bindtap="clearDate">查看近期时段</button>
+        <button class="secondary" size="mini" disabled="{{busy}}" bindtap="loadSlots">刷新</button>
+        <view wx:if="{{busy && !slots.length}}" class="hint">正在查询时段…</view>
+        <view wx:elif="{{!slots.length && !error}}" class="hint">暂无可约时段，可选择其他日期或诊所。</view>
+        <radio-group bindchange="chooseSlot">
+          <label class="slot" wx:for="{{slots}}" wx:key="id">
+            <radio value="{{item.id}}" checked="{{selectedId === item.id}}" disabled="{{busy}}" color="#183f36" />
+            <view><view>{{item.date}} {{item.time}}</view><view class="hint">{{item.dentist}}</view></view>
+          </label>
+        </radio-group>
+      </view>
+      <view class="card" wx:if="{{slots.length}}">
+        <view class="field">过敏情况确认</view>
+        <radio-group bindchange="chooseAllergyStatus">
+          <label class="slot"><radio value="no_known" checked="{{allergyStatus === 'no_known'}}" disabled="{{busy}}" />已核实无已知过敏</label>
+          <label class="slot"><radio value="known" checked="{{allergyStatus === 'known'}}" disabled="{{busy}}" />有已知过敏</label>
+        </radio-group>
+        <view class="hint" wx:if="{{!allergyStatus}}">未核实。请核实并选择后再预约。</view>
+        <label class="field">预约原因（选填）<textarea value="{{reason}}" maxlength="1000" disabled="{{busy}}" bindinput="changeReason" placeholder="请勿填写敏感个人信息" /></label>
+        <button class="primary" disabled="{{!selectedId || !allergyStatus || busy}}" loading="{{busy}}" bindtap="confirmBooking">确认预约</button>
+      </view>
+    </block>
+  </block>
+</view>

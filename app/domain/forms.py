@@ -1,3 +1,4 @@
+from datetime import datetime
 from decimal import Decimal
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
@@ -61,16 +62,83 @@ class AllergyForm(forms.ModelForm):
         widgets = {'manifestation':forms.Textarea(attrs={'rows':2}),'notes':forms.Textarea(attrs={'rows':2})}
 
 
-class BookingForm(forms.Form):
+class AllergyConfirmationForm(forms.Form):
+    allergy_status = forms.ChoiceField(
+        label='过敏情况确认',
+        choices=[('', '未核实，请选择'), *AllergyConfirmation.choices],
+        required=False,
+        help_text='请在向患者核实后选择。',
+    )
+
+
+class BookingForm(AllergyConfirmationForm):
+    field_order = ['patient', 'slot', 'treatment', 'identity_confirmed', 'allergy_status', 'reason']
     identity_confirmed=forms.BooleanField(label='已核对本人姓名、出生日期及预约对象（前台代办必选）',required=False)
     patient = NamedChoice(Patient.objects.none(), label='患者')
     slot = NamedChoice(ScheduleSlot.objects.none(), label='可预约时段')
     treatment = NamedChoice(TreatmentType.objects.filter(active=True,treatmentbookingprofile__isnull=False),label='预计治疗项目',required=False,help_text='尚未明确治疗类型可留空，安排30分钟咨询；不据此判断团购新客资格。')
     reason = forms.CharField(label='预约原因 / 调整原因', required=False, max_length=1000, widget=forms.Textarea(attrs={'rows':2}))
 
+    def clean_allergy_status(self):
+        status = self.cleaned_data['allergy_status']
+        if not status:
+            raise ValidationError('请先核实并选择患者的过敏状态。')
+        return status
+
+
+class TransferWindowForm(forms.Form):
+    day = forms.DateField(label='患者可就诊日期', widget=forms.DateInput(attrs={'type': 'date'}))
+    earliest = forms.TimeField(label='最早可开始', widget=forms.TimeInput(attrs={'type': 'time'}, format='%H:%M'))
+    latest = forms.TimeField(label='最晚须结束', widget=forms.TimeInput(attrs={'type': 'time'}, format='%H:%M'))
+
+    def clean(self):
+        data = super().clean()
+        if len(data) != 3:
+            return data
+        day = data['day']
+        if day < timezone.localdate():
+            raise ValidationError('请选择今天或之后的可就诊日期。')
+        if data['earliest'] >= data['latest']:
+            raise ValidationError('最晚结束时间须晚于最早开始时间。')
+        data['window_start'] = timezone.make_aware(datetime.combine(day, data['earliest']))
+        data['window_end'] = timezone.make_aware(datetime.combine(day, data['latest']))
+        return data
+
+
+class TransferConfirmationForm(AllergyConfirmationForm):
+    field_order = ['slot', 'version', 'identity_confirmed', 'consent', 'allergy_status', 'reason']
+    slot = forms.UUIDField(label='目标排班', widget=forms.HiddenInput)
+    version = forms.IntegerField(min_value=1, widget=forms.HiddenInput)
+    identity_confirmed = forms.BooleanField(label='已核对患者姓名及出生日期')
+    consent = forms.BooleanField(label='患者已同意所选门店、医生和就诊时间',
+        error_messages={'required': '患者未同意时，须保留原预约。'})
+    reason = forms.CharField(label='跨店调整原因', max_length=1000,
+        widget=forms.Textarea(attrs={'rows': 2}))
+
+    def clean_allergy_status(self):
+        status = self.cleaned_data['allergy_status']
+        if not status:
+            raise ValidationError('请先核实并选择患者的过敏状态。')
+        return status
+
 
 class ReasonForm(forms.Form):
     reason = forms.CharField(label='操作原因', max_length=2000, widget=forms.Textarea(attrs={'rows':2}))
+
+
+class MaterialIssueForm(forms.Form):
+    batch = NamedChoice(InventoryBatch.objects.none(), label='库存批次')
+    quantity = forms.DecimalField(label='领用数量', min_value=Decimal('.01'), max_digits=12,
+        decimal_places=2)
+    reason = forms.CharField(label='备注', max_length=2000, required=False)
+
+    def __init__(self, *args, batches, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['batch'].queryset = batches
+        self.fields['batch'].label_from_instance = lambda batch: (
+            f'{batch.item.item_name} · {batch.batch_number} · '
+            f'余 {batch.remaining_quantity} {batch.item.unit}'
+        )
 
 
 class VersionForm(forms.Form):

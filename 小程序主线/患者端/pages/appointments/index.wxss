@@ -1,0 +1,8 @@
+@import "../booking/index.wxss";
+
+.summary, .toolbar { display: flex; justify-content: space-between; gap: 16rpx; align-items: baseline; }
+.toolbar { margin-bottom: 20rpx; }
+.toolbar button { margin: 0; }
+.status { flex-shrink: 0; color: #4c665e; }
+.notice { padding: 18rpx; margin-bottom: 20rpx; border-radius: 10rpx; background: #e7eee8; }
+.danger { margin: 16rpx 12rpx 0 0; color: #7d3221; background: #fcece5; }

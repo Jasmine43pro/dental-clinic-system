@@ -5,5 +5,5 @@ psycopg-binary==3.3.6
 sqlparse==0.6.0
 typing_extensions==4.16.0
 tzdata==2026.4
-gunicorn==26.2.0; sys_platform != "win32"
 whitenoise==6.12.0
+gunicorn==23.0.0

@@ -1,0 +1,11 @@
+{% if allergy_review %}
+<section class="card">
+  <h2>接诊前核对过敏信息</h2>
+  <p>预约时确认结果：{{ allergy_review.booking_status }}</p>
+  {% for allergy in allergy_review.recorded %}
+    <p>{{ allergy.allergy.name }}{% if allergy.manifestation %} · {{ allergy.manifestation }}{% endif %}{% if allergy.notes %} · {{ allergy.notes }}{% endif %}</p>
+  {% empty %}
+    <p>档案内暂无过敏记录，请向患者核实。</p>
+  {% endfor %}
+</section>
+{% endif %}

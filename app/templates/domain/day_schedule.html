@@ -1,0 +1,59 @@
+{% extends 'domain/base.html' %}
+{% block content %}
+<div class="heading"><div><h1>当天日程</h1><p>核对排班、到诊和停诊情况。</p></div></div>
+<section class="card">
+  <form method="get" class="filters">
+    <label>日期<input type="date" name="day" value="{{ day|date:'Y-m-d' }}" min="2000-01-01" max="2100-12-31" required></label>
+    <label>诊所<select name="clinic"><option value="">全部授权诊所</option>
+      {% for clinic in clinics %}<option value="{{ clinic.pk }}" {% if selected_clinic == clinic.pk|stringformat:'s' %}selected{% endif %}>{{ clinic.name }}</option>{% endfor %}
+    </select></label>
+    <label>医生<select name="dentist"><option value="">全部医生</option>
+      {% for dentist in dentists %}<option value="{{ dentist.pk }}" {% if selected_dentist == dentist.pk|stringformat:'s' %}selected{% endif %}>{{ dentist.name }}</option>{% endfor %}
+    </select></label>
+    <button class="primary">查看日程</button>
+  </form>
+</section>
+<section class="card" id="schedule">
+  <h2>排班与预约</h2>
+  <p class="small">可约按 30 分钟咨询及牙椅容量核查。其他治疗项目和患者冲突在预约时复核。</p>
+  <div class="table-wrap"><table>
+    <thead><tr><th>排班时段</th><th>诊所</th><th>医生</th><th>状态</th><th>记录</th></tr></thead>
+    <tbody>
+    {% for row in rows %}
+      <tr><td>{{ row.slot.starts_at|time:'H:i' }}–{{ row.slot.ends_at|time:'H:i' }}</td>
+        <td>{{ row.slot.clinic.name }}</td><td>{{ row.slot.dentist.name }}</td>
+        <td><span class="badge">{{ row.status }}</span>{% if row.reason %}<div class="small">{{ row.reason }}</div>{% endif %}</td>
+        <td>{% if row.appointment %}<a href="{% url 'appointment' row.appointment.pk %}">{{ row.appointment.number }}</a>
+          · {{ row.appointment.patient.name }}{% if row.slot.pk != row.appointment.slot_id %} · 连续占用{% endif %}
+          {% elif row.booking_query %}<a href="{% url 'booking' %}?{{ row.booking_query }}">办理预约</a>{% endif %}
+        </td></tr>
+    {% empty %}<tr><td colspan="5">当前筛选范围内没有排班或有效预约。</td></tr>{% endfor %}
+    </tbody>
+  </table></div>
+  {% include 'domain/pagination.html' %}
+</section>
+<section class="card">
+  <div class="section-title"><h2>营业与休诊</h2><a href="{% url 'resources' %}?{{ resource_query }}#calendar-coordination">查看停诊协调</a></div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>诊所</th><th>营业状态与时段</th><th>备注</th></tr></thead>
+    <tbody>{% for item in calendar %}
+      <tr><td>{{ item.clinic.name }}</td><td>
+        {% if not item.clinic.active %}诊所停用
+        {% elif item.hours %}{% if item.entry.kind == 'makeup' %}调休营业 · {% endif %}
+          {% for hours in item.hours %}{{ hours.opens_at|time:'H:i' }}–{{ hours.closes_at|time:'H:i' }}{% if not forloop.last %}、{% endif %}{% endfor %}
+        {% elif item.entry and item.entry.kind != 'working' %}{{ item.entry.get_kind_display }}
+        {% else %}休诊{% endif %}
+      </td><td>{{ item.entry.note|default:'—' }}</td></tr>
+    {% empty %}<tr><td colspan="3">暂无授权诊所。</td></tr>{% endfor %}</tbody>
+  </table></div>
+</section>
+<section class="card">
+  <div class="section-title"><h2>资源停用</h2><a href="{% url 'resources' %}?{{ resource_query }}#resource-register">查看资源记录</a></div>
+  <ul>
+    {% for outage in outages %}<li>{{ outage.resource.clinic.name }} · <a href="{% url 'resources' %}?{{ resource_query }}#outage-{{ outage.pk }}">{{ outage.resource.name }}</a>
+      · 停用 {{ outage.quantity }} 单位 · {{ outage.starts_at|date:'m-d H:i' }}–{{ outage.ends_at|date:'m-d H:i' }} · {{ outage.reason }}</li>{% endfor %}
+    {% for resource in inactive_resources %}<li>{{ resource.clinic.name }} · {{ resource.name }} · 已停用</li>{% endfor %}
+    {% if not outages and not inactive_resources %}<li>当日无停用资源。</li>{% endif %}
+  </ul>
+</section>
+{% endblock %}

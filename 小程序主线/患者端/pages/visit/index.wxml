@@ -1,0 +1,54 @@
+<view class="page">
+  <view class="error" wx:if="{{error}}">{{error}}</view>
+  <button wx:if="{{loginNeeded}}" class="primary" bindtap="returnToAppointments">返回我的预约重新登录</button>
+  <view wx:elif="{{busy && !visit}}" class="hint">正在查询就诊…</view>
+  <button wx:elif="{{!visit && appointmentId}}" class="secondary" bindtap="loadVisit">重新查询</button>
+
+  <block wx:if="{{invoice}}">
+    <button class="secondary" size="mini" bindtap="closeInvoice">返回就诊摘要</button>
+    <view class="card">
+      <view class="heading">结算单</view>
+      <view>{{invoice.number}} · {{invoice.status}}</view>
+      <view class="hint">出单时间 {{invoice.issued_at}}</view>
+      <view class="line" wx:for="{{invoice.lines}}" wx:key="id">
+        <view>{{item.name_snapshot}}</view>
+        <view class="hint">{{item.quantity_snapshot}} × ¥{{item.unit_price_snapshot}}</view>
+        <view>¥{{item.subtotal}}</view>
+      </view>
+      <view class="total">合计 ¥{{invoice.total}}</view>
+    </view>
+    <view class="card">
+      <view class="heading">模拟收款记录</view>
+      <view wx:if="{{invoice.payment}}">{{invoice.payment.method}} · ¥{{invoice.payment.amount}}</view>
+      <view wx:if="{{invoice.payment.succeeded_at}}" class="hint">{{invoice.payment.succeeded_at}}</view>
+      <view wx:if="{{!invoice.payment}}" class="hint">暂无成功的模拟收款记录。</view>
+    </view>
+  </block>
+
+  <block wx:elif="{{visit}}">
+    <view class="card">
+      <view class="heading">就诊摘要</view>
+      <view>{{visit.clinic}} · {{visit.dentist}}</view>
+      <view class="hint">预约号 {{visit.appointment_number}}</view>
+      <view class="hint">{{visit.status}} · {{visit.completed_at}}</view>
+    </view>
+    <view class="card">
+      <view class="heading">治疗明细</view>
+      <view class="line" wx:for="{{visit.treatments}}" wx:key="id">
+        <view>{{item.name_snapshot}}</view>
+        <view class="hint">{{item.quantity}} × ¥{{item.unit_price_snapshot}}</view>
+        <view>¥{{item.subtotal}}</view>
+      </view>
+      <view class="hint" wx:if="{{!visit.treatments.length}}">暂无治疗明细。</view>
+    </view>
+    <view class="card">
+      <view class="heading">结算单</view>
+      <view class="line" wx:for="{{visit.invoices}}" wx:key="id">
+        <view>{{item.number}}</view>
+        <view class="hint">{{item.status}} · ¥{{item.total}}</view>
+        <button class="secondary" size="mini" data-id="{{item.id}}" disabled="{{busy}}" bindtap="openInvoice">查看结算单</button>
+      </view>
+      <view class="hint" wx:if="{{!visit.invoices.length}}">暂未生成结算单。</view>
+    </view>
+  </block>
+</view>

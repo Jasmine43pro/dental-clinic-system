@@ -1,5 +1,5 @@
 import uuid
-from datetime import date, datetime
+from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 from urllib.parse import urlencode
 from django import forms as django_forms
@@ -9,14 +9,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import PermissionDenied, ValidationError, ObjectDoesNotExist
 from django.core.paginator import Paginator
-from django.db import IntegrityError, transaction
-from django.db.models import Q, Sum
+from django.db import IntegrityError
+from django.db.models import F, Prefetch, Q, Sum
+from django.db.models.functions import Coalesce
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
-from django.views.decorators.http import require_POST
-from . import access, services, forms, action_states
+from django.views.decorators.cache import never_cache
+from django.views.decorators.http import require_POST, require_safe
+from . import access, action_states, clinic_calendar, forms, identity, services
 from .models import *
 
 
@@ -39,7 +41,7 @@ def layout(request):
     role_titles=[('reception','前台'),('dentist','医生'),('manager','诊所管理'),('patient','患者'),('finance','财务'),('headquarters','总部'),('administrator','账号管理')]
     workspace_role=next((name for code,name in role_titles if code in roles),'工作台')
     role_summary=' / '.join(dict.fromkeys(a.role.name for a in active_assignments))
-    hours=ClinicHours.objects.filter(clinic=clinic,weekday=local_day.isoweekday()).order_by('opens_at') if clinic else ClinicHours.objects.none()
+    hours = clinic_calendar.hours_for_day(clinic.pk, local_day) if clinic else []
     return {'primary_clinic':clinic,'clinic_badge':clinic.code.removeprefix('DEMO-') if clinic else 'ADC','workspace_role':workspace_role,'workspace_title':('前台接诊台' if workspace_role=='前台' else workspace_role+'工作台') if roles else '工作台','role_summary':role_summary,'today_date':local_day,'clinic_hours':hours,
         'scope_label':clinic.name if clinic else ('本人服务' if 'patient' in roles else '连锁范围' if roles else '账号登录'),'roles': roles, 'is_patient': 'patient' in roles, 'is_reception': 'reception' in roles,
         'is_dentist': 'dentist' in roles, 'can_schedule': 'manager' in roles,
@@ -81,7 +83,7 @@ def perform(request, operation, callback, form=None):
 
 
 def context_query(request):
-    return urlencode({k:request.GET[k] for k in ['status','date','q','page'] if request.GET.get(k)})
+    return urlencode({key: request.GET[key] for key in ('patient', 'status', 'date', 'q', 'page') if request.GET.get(key)})
 
 
 def appointment_for(user, pk):
@@ -115,14 +117,7 @@ def register(request):
     patient = forms.PatientForm(request.POST or None, prefix='patient')
     if request.method == 'POST' and account.is_valid() and patient.is_valid():
         try:
-            with transaction.atomic():
-                user = account.save()
-                record = patient.save(commit=False)
-                record.user = user
-                record.save()
-                role = Role.objects.get(code='patient')
-                RoleAssignment.objects.create(user=user,role=role,scope_type='self',valid_from=timezone.now())
-                services.audit(user,record,'register')
+            user = identity.register_patient(account, patient)
             messages.info(request,'已建立本人自助档案。若曾在诊所建档，请联系前台核验；系统不会按手机号自动合并历史。')
             login(request,user)
             return redirect('dashboard')
@@ -133,7 +128,14 @@ def register(request):
 
 @login_required
 def appointment_list(request):
-    qs = access.appointments(request.user).order_by('-slot__starts_at')
+    qs = access.appointments(request.user).select_related('plan').order_by('-slot__starts_at', 'pk')
+    patient_filter = None
+    if request.GET.get('patient'):
+        try:
+            patient_filter = uuid.UUID(request.GET['patient'])
+        except ValueError:
+            return HttpResponseBadRequest('患者标识格式无效。')
+        qs = qs.filter(patient_id=patient_filter)
     if request.GET.get('status')=='pending_review':
         qs=qs.filter(status='booked').filter(Q(plan__ends_at__lte=timezone.now())|Q(plan__isnull=True,slot__ends_at__lte=timezone.now()))
     elif request.GET.get('status') in Appointment.Status.values:
@@ -146,7 +148,8 @@ def appointment_list(request):
     if request.GET.get('q'):
         qs = qs.filter(Q(number__icontains=request.GET['q'])|Q(patient__name__icontains=request.GET['q']))
     return page(request,'appointments',{'items':Paginator(qs,20).get_page(request.GET.get('page')),
-        'statuses':list(Appointment.Status.choices)+[('pending_review','到期待核对')],'now':timezone.now(),'context_query':context_query(request),'title':'预约记录'})
+        'statuses':list(Appointment.Status.choices)+[('pending_review','到期待核对')],'now':timezone.now(),
+        'patient_filter': patient_filter, 'context_query':context_query(request),'title':'预约记录'})
 
 
 @login_required
@@ -155,7 +158,10 @@ def appointment_detail(request, pk):
     visit = Visit.objects.filter(appointment=app).first()
     states = action_states.appointment_actions(request.user, app, visit)
     services.audit(request.user, app, 'view_appointment')
-    return page(request, 'appointment', {'app': app, 'visit': visit,
+    allergy_status = None
+    if request.user.pk == app.patient.user_id:
+        allergy_status = services.allergy_confirmation_label(services.booking_allergy_results(pk).first())
+    return page(request, 'appointment', {'app': app, 'visit': visit, 'booking_allergy_status': allergy_status,
         'appointment_controls': operation_controls(states, 'appointment_command', pk),
         'context_query': context_query(request), 'title': '预约详情'})
 
@@ -193,8 +199,9 @@ def booking(request, pk=None):
         form.fields['identity_confirmed'].required=True
     else:
         form.fields['identity_confirmed'].widget=django_forms.HiddenInput()
+        form.fields['allergy_status'].help_text='请按本人已核实的情况选择。'
     if replacing:
-        qs=access.slots(request.user).filter(starts_at__gt=timezone.now(),active=True,service__active=True).exclude(
+        qs=access.slots(request.user).filter(clinic_id=replacing.slot.clinic_id,starts_at__gt=timezone.now(),active=True,service__active=True).exclude(
             reservation_links__is_active=True,reservation_links__appointment_id__in=Appointment.objects.exclude(pk=replacing.pk).values('pk')).order_by('starts_at')
         # Keep the original query filters when selecting a replacement.
         for key,field in [('clinic','clinic_id'),('dentist','dentist_id')]:
@@ -216,6 +223,8 @@ def booking(request, pk=None):
             except (ValidationError,ObjectDoesNotExist): pass
     except ValueError: pass
     form.fields['slot'].queryset=qs.filter(pk__in=available)
+    if request.method == 'GET' and request.GET.get('slot') in {str(pk) for pk in available}:
+        form.fields['slot'].initial = request.GET['slot']
     if request.GET.get('treatment'): form.fields['treatment'].initial=request.GET['treatment']
     if replacing and not request.POST and not request.GET.get('treatment'):
         form.fields['treatment'].initial=replacing.plan.treatment_type_id
@@ -234,7 +243,8 @@ def booking(request, pk=None):
     if request.method=='POST' and form.is_valid():
         if request.POST.get('confirmed')=='yes':
             d=form.cleaned_data
-            result=perform(request,'book',lambda:services.book(request.user,d['patient'].pk,d['slot'].pk,d['reason'],pk,d['treatment'].pk if d['treatment'] else None),form)
+            result=perform(request,'book',lambda:services.book(request.user,d['patient'].pk,d['slot'].pk,d['reason'],pk,
+                d['treatment'].pk if d['treatment'] else None, allergy_status=d['allergy_status']),form)
             if result:
                 return redirect('appointment',pk=result)
         else:
@@ -256,13 +266,33 @@ def appointment_command(request, pk, action):
     state = action_states.appointment_actions(request.user, app, Visit.objects.filter(appointment=app).first())[action]
     if not state.authorized:
         raise PermissionDenied('当前账号没有执行此操作的权限。')
-    form=forms.ExtensionForm(request.POST or None) if action=='extend' else forms.ReasonForm(request.POST or None) if action in ['cancel','no_show','undo_checkin','undo_no_show'] else django_forms.Form(request.POST or None)
+    review = None
+    if action == 'start':
+        form = forms.AllergyConfirmationForm(request.POST or None)
+        booking_status = services.booking_allergy_results(pk).first()
+        review = {'booking_status': services.allergy_confirmation_label(booking_status),
+                  'recorded': app.patient.patientallergy_set.select_related('allergy').order_by('allergy__name')}
+    elif action == 'extend':
+        form = forms.ExtensionForm(request.POST or None)
+    elif action in ['cancel', 'no_show', 'undo_checkin', 'undo_no_show']:
+        form = forms.ReasonForm(request.POST or None)
+    else:
+        form = django_forms.Form(request.POST or None)
+
+    def submit():
+        if action == 'start':
+            return services.start_visit(request.user, pk, allergy_status=form.cleaned_data['allergy_status'])
+        if action == 'extend':
+            return services.extend_appointment(request.user, pk, form.cleaned_data['minutes'], form.cleaned_data['reason'])
+        return services.appointment_action(request.user, pk, action, form.cleaned_data.get('reason', ''))
+
     if request.method=='POST':
-        result=perform(request,'appointment_'+action,lambda:services.extend_appointment(request.user,pk,form.cleaned_data['minutes'],form.cleaned_data['reason']) if action=='extend' else services.start_visit(request.user,pk) if action=='start' else services.appointment_action(request.user,pk,action,form.cleaned_data.get('reason','')),form)
+        result=perform(request,'appointment_'+action,submit,form)
         if result:
             return redirect('visit' if action=='start' else 'appointment',pk=result)
     return page(request,'form',{'form':form,'title':{'cancel':'取消预约','checkin':'确认到诊签到','no_show':'核实爽约','start':'开始接诊','undo_checkin':'纠正误签到','undo_no_show':'纠正爽约记录','extend':'延长治疗安排'}[action],
-        'description':f'{app.number} · {app.patient.name} · {timezone.localtime(app.slot.starts_at):%Y-%m-%d %H:%M}', 'back':reverse('appointment',args=[pk]), 'blocked_reason':state.reason})
+        'description':f'{app.number} · {app.patient.name} · {timezone.localtime(app.slot.starts_at):%Y-%m-%d %H:%M}',
+        'back':reverse('appointment',args=[pk]), 'blocked_reason':state.reason, 'allergy_review':review})
 
 
 @login_required
@@ -271,10 +301,16 @@ def visit_detail(request, pk):
     doctor = access.own_doctor(request.user, visit.appointment)
     states = action_states.visit_actions(request.user, visit)
     controls = {control['code']: control for control in operation_controls(states, 'visit_command', pk)}
+    can_manage_materials = services.can_manage_materials(request.user, visit)
     services.audit(request.user, visit, 'view_visit')
-    return page(request, 'visit', {'visit': visit, 'lines': visit.treatments.filter(is_active=True),
+    show_lines = doctor or visit.status == 'completed'
+    return page(request, 'visit', {'visit': visit, 'show_lines': show_lines,
+        'lines': visit.treatments.filter(is_active=True) if show_lines else [],
         'invoices': visit.invoices.order_by('-issued_at'), 'doctor': doctor,
         'can_bill': states['issue'].authorized,
+        'can_manage_materials': can_manage_materials,
+        'material_issues': visit.material_issues.select_related('batch__item').order_by('-issued_at')
+                           if can_manage_materials else [],
         'record_controls': [controls[key] for key in ['notes', 'amend']],
         'treatment_controls': [controls[key] for key in ['add_treatment', 'remove_treatment', 'complete']],
         'billing_controls': [controls['issue']],
@@ -282,6 +318,47 @@ def visit_detail(request, pk):
         'allergies': visit.appointment.patient.patientallergy_set.select_related('allergy') if doctor else [],
         'contacts': visit.appointment.patient.emergencycontact_set.all() if doctor else [],
         'context_query': context_query(request), 'title': '就诊详情'})
+
+
+@login_required
+def material_issue(request, pk):
+    visit = visit_for(request.user, pk)
+    if not services.can_manage_materials(request.user, visit):
+        raise PermissionDenied
+    batches = InventoryBatch.objects.filter(item__purchase_order__clinic_id=visit.appointment.slot.clinic_id)
+    if request.method != 'POST':
+        batches = batches.filter(remaining_quantity__gt=0).filter(
+            Q(expires_on__isnull=True) | Q(expires_on__gte=timezone.localdate()))
+    batches = batches.select_related('item').order_by('item__item_name', 'received_on', 'batch_number')
+    form = forms.MaterialIssueForm(request.POST or None, batches=batches)
+    if request.method == 'POST' and perform(request, f'mat_issue:{pk}', lambda: services.issue_material(
+            request.user, pk, form.cleaned_data['batch'].pk, form.cleaned_data['quantity'],
+            form.cleaned_data['reason']), form):
+        return redirect('visit', pk=pk)
+    blocked = ''
+    if visit.status != 'in_progress':
+        blocked = '就诊未开始或已完成，不能领用耗材。'
+    elif request.method != 'POST' and not batches.exists():
+        blocked = '本诊所暂无可领用的库存批次。'
+    return page(request, 'form', {'form': form, 'title': '领用耗材', 'blocked_reason': blocked,
+        'back': reverse('visit', args=[pk])})
+
+
+@login_required
+def material_return(request, pk, issue_pk):
+    visit = visit_for(request.user, pk)
+    if not services.can_manage_materials(request.user, visit):
+        raise PermissionDenied
+    issue = get_object_or_404(visit.material_issues.select_related('batch__item'), pk=issue_pk)
+    form = forms.ReasonForm(request.POST or None)
+    if request.method == 'POST' and perform(request, f'mat_return:{issue_pk}',
+            lambda: services.return_material(request.user, issue_pk, form.cleaned_data['reason']), form):
+        return redirect('visit', pk=pk)
+    return page(request, 'form', {'form': form, 'title': '退回耗材',
+        'description': f'{issue.issue_number} · {issue.batch.item.item_name} · '
+                       f'{issue.quantity} {issue.batch.item.unit}。整笔退回，冲销原领用季度的成本。',
+        'blocked_reason': '该领用已退回。' if issue.reversed_at else '',
+        'back': reverse('visit', args=[pk])})
 
 
 @login_required
@@ -358,6 +435,29 @@ def patients(request):
     if phone and access.has_role(request.user,'reception'):
         qs=Patient.objects.filter(phone=phone)
     return page(request,'patients',{'patients':qs[:100],'title':'患者档案','phone':phone,'editable_ids':set(editable_patients(request.user).values_list('pk',flat=True))})
+
+
+@login_required
+@require_safe
+@never_cache
+def patient_timeline(request, pk):
+    appointments = access.appointments(request.user).filter(patient_id=pk)
+    patient = get_object_or_404(Patient.objects.filter(
+        Q(pk__in=appointments.values('patient_id')) | Q(pk__in=editable_patients(request.user).values('pk'))
+    ).only('name'), pk=pk)
+    completed_lines = VisitTreatment.objects.filter(
+        is_active=True, visit__status='completed',
+    ).only('visit_id', 'name_snapshot', 'quantity').order_by('created_at', 'pk')
+    appointments = appointments.select_related('plan__treatment_type', 'visit__dentist').defer(
+        'visit__clinical_notes', 'visit__special_needs_notes',
+    ).annotate(event_time=Coalesce('visit__started_at', 'slot__starts_at')).prefetch_related(
+        Prefetch('visit__treatments', queryset=completed_lines, to_attr='timeline_treatments'),
+    ).order_by('-event_time', '-pk')
+    if request.method == 'GET':
+        services.audit(request.user, patient, 'view_patient_timeline')
+    return page(request, 'patient_timeline', {'patient': patient,
+        'items': Paginator(appointments, 20).get_page(request.GET.get('page')),
+        'now': timezone.now(), 'title': '患者诊疗时间线'})
 
 
 @login_required
@@ -497,7 +597,13 @@ def reports(request):
     denominator=due.count(); cancelled=due.filter(status='cancelled').count(); missed=due.filter(status='no_show').count()
     global_report=not clinic_filter and access.assignments(request.user,['headquarters','finance']).filter(scope_type='global').exists()
     rows=[]
-    report_clinics=Clinic.objects.filter(pk__in=ids) if not doctor_only else Clinic.objects.filter(dentistclinic__dentist__user=request.user).distinct()
+    if doctor_only:
+        report_clinics = Clinic.objects.filter(
+            Q(dentistclinic__dentist__user=request.user) | Q(pk__in=costs_q.values('clinic_id')) |
+            Q(pk__in=payments.values('invoice__visit__appointment__slot__clinic_id')),
+        ).distinct()
+    else:
+        report_clinics = Clinic.objects.filter(pk__in=ids)
     if clinic_filter:report_clinics=report_clinics.filter(pk=selected)
     for clinic in report_clinics.order_by('code'):
         income=payments.filter(invoice__visit__appointment__slot__clinic=clinic).aggregate(n=Sum('amount'))['n'] or Decimal('0')
@@ -506,7 +612,8 @@ def reports(request):
         operating=costs_q.filter(clinic=clinic,category='operating').aggregate(n=Sum('amount'))['n'] or Decimal('0')
         rows.append({'name':clinic.name,'revenue':income,'supplies':supplies,'operating':operating,'cost':expense,'net':income-expense})
     doctor_rows=[]
-    report_doctors=Dentist.objects.filter(user=request.user) if doctor_only else Dentist.objects.filter(dentistclinic__clinic__in=report_clinics).distinct()
+    report_doctors=Dentist.objects.filter(user=request.user) if doctor_only else Dentist.objects.filter(Q(dentistclinic__clinic__in=report_clinics) |
+        Q(pk__in=costs_q.values('dentist_id')) | Q(pk__in=payments.values('invoice__visit__dentist_id'))).distinct()
     for doctor in report_doctors:
         income=payments.filter(invoice__visit__dentist=doctor).aggregate(n=Sum('amount'))['n'] or Decimal('0')
         direct=costs_q.filter(dentist=doctor).aggregate(n=Sum('amount'))['n'] or Decimal('0')
@@ -515,6 +622,15 @@ def reports(request):
         supplies=costs_q.filter(dentist=doctor,category='supplies').aggregate(n=Sum('amount'))['n'] or Decimal('0')
         operating=costs_q.filter(dentist=doctor,category='operating').aggregate(n=Sum('amount'))['n'] or Decimal('0')
         doctor_rows.append({'name':doctor.name,'income':income,'supplies':supplies,'operating':operating,'cost':direct,'difference':income-direct,'slots':count,'used':used,'utilization':round(used/count*100,2) if count else None})
+    trace_issues = MaterialIssue.objects.filter(
+        issue_number=F('cost_record__source_reference'), visit_id=F('cost_record__visit_id'),
+        batch__item__purchase_order__clinic_id=F('cost_record__clinic_id'),
+        visit__appointment__slot__clinic_id=F('cost_record__clinic_id'),
+    ).select_related('batch__item__purchase_order', 'visit__appointment')
+    cost_items = costs_q.select_related('clinic', 'dentist').prefetch_related(
+        Prefetch('material_issues', queryset=trace_issues, to_attr='report_issues'),
+    ).order_by('-occurred_on', '-created_at', '-pk')
+    cost_page = Paginator(cost_items, 50).get_page(request.GET.get('page'))
     return page(request,'reports',{'title':'本人业绩' if doctor_only else '季度经营汇总','year':year,'quarter':quarter,
         'revenue':revenue,'cost':cost,'net':net,'receivable':receivable,'rows':rows,'doctor_only':doctor_only,
         'public_cost':costs_q.filter(dentist__isnull=True).aggregate(n=Sum('amount'))['n'] or 0,
@@ -522,7 +638,7 @@ def reports(request):
         'cancel_rate':round(cancelled/denominator*100,2) if denominator else None,
         'no_show_rate':round(missed/denominator*100,2) if denominator else None,
         'denominator':denominator,'unchecked':due.filter(status='booked').count(),
-        'doctor_rows':doctor_rows,'cost_items':costs_q.select_related('clinic','dentist').order_by('-occurred_on')[:50],
+        'doctor_rows':doctor_rows,'cost_items':cost_page,
         'clinics':Clinic.objects.filter(pk__in=ids),'payments':payments.select_related('invoice').order_by('-succeeded_at')[:50]})
 
 
@@ -603,6 +719,7 @@ def audit_log(request):
 MASTER = {
  'clinics':(Clinic,'诊所档案',['code','name','address','manager_name','phone','email','floor_area','active'],['manager','headquarters']),
  'hours':(ClinicHours,'营业时间',['clinic','weekday','opens_at','closes_at'],['manager','headquarters']),
+ 'calendar':(WorkCalendar,'工作日历',['clinic','cal_date','kind','opens_at','closes_at','note'],['manager','headquarters']),
  'dentists':(Dentist,'医生档案',['employee_number','name','birth_date','home_address','phone','email','active'],['headquarters']),
  'services':(DentistClinic,'医生服务关系',['dentist','clinic','valid_from','valid_to','active'],['headquarters']),
  'qualifications':(Qualification,'资质目录',['code','name'],['headquarters']),
@@ -612,9 +729,12 @@ MASTER = {
  'outages':(ResourceUnavailable,'资源停用区间',['resource','starts_at','ends_at','quantity','reason','active'],['manager','headquarters']),
  'booking-profiles':(TreatmentBookingProfile,'治疗时长与周转',['treatment_type','expected_minutes','turnover_minutes'],['administrator']),
  'requirements':(TreatmentResourceRequirement,'治疗资源要求',['treatment_type','resource','quantity'],['manager','headquarters']),
+ 'transfer-times':(ClinicTransferTime,'门店转场时间',['origin','destination','minutes','active'],['headquarters']),
+ 'treatment-qualifications':(TreatmentQualificationRequirement,'跨店项目资质',['treatment_type','qualification','active'],['headquarters']),
  'allergies':(Allergy,'过敏类型目录',['code','name'],['administrator']),
 }
-LABELS={'kind':'资源种类','capacity':'容量','resource':'诊疗资源','starts_at':'开始时间','ends_at':'结束时间','quantity':'数量','reason':'原因','treatment_type':'治疗项目','expected_minutes':'预计治疗时长（分钟）','turnover_minutes':'清洁周转（分钟）','code':'编号','name':'名称','address':'地址','manager_name':'负责人','phone':'电话','email':'邮箱','floor_area':'面积（平方米）',
+TRANSFER_SETTINGS = {'transfer-times', 'treatment-qualifications'}
+LABELS={'origin':'出发诊所','destination':'到达诊所','minutes':'最短转场时间（1–720 分钟）','kind':'资源种类','capacity':'容量','resource':'诊疗资源','starts_at':'开始时间','ends_at':'结束时间','quantity':'数量','reason':'原因','treatment_type':'治疗项目','expected_minutes':'预计治疗时长（分钟）','turnover_minutes':'清洁周转（分钟）','code':'编号','name':'名称','address':'地址','manager_name':'负责人','phone':'电话','email':'邮箱','floor_area':'面积（平方米）',
  'active':'启用','clinic':'诊所','weekday':'星期（1=周一，7=周日）','opens_at':'开始营业','closes_at':'结束营业',
  'employee_number':'工号','birth_date':'出生日期','home_address':'联系地址','dentist':'医生','valid_from':'生效时间 / 日期',
  'valid_to':'失效时间 / 日期（可空）','qualification':'资质','certificate_number':'证书编号','unit':'计价单位','catalog_price':'目录单价（元）'}
@@ -624,21 +744,31 @@ LABELS={'kind':'资源种类','capacity':'容量','resource':'诊疗资源','sta
 def master(request, kind, pk=None):
     if kind not in MASTER: return HttpResponseBadRequest('未知目录')
     model,title,fields,roles=MASTER[kind]
+    can_configure_transfer = access.assignments(request.user, ['headquarters']).filter(scope_type='global').exists()
+    if kind in TRANSFER_SETTINGS and not can_configure_transfer:
+        raise PermissionDenied
     if not access.has_role(request.user,*roles):
+        if kind == 'calendar':
+            raise PermissionDenied
         for other,(_,_,_,allowed_roles) in MASTER.items():
             if access.has_role(request.user,*allowed_roles):
                 return redirect('master',kind=other)
         raise PermissionDenied
     qs=model.objects.all().order_by('created_at')
-    if kind in ['clinics','hours']:
+    if kind in ['clinics','hours','calendar']:
         qs=qs.filter(**{'pk__in' if kind=='clinics' else 'clinic_id__in':access.clinic_ids(request.user,roles)})
+    if kind == 'calendar':
+        qs = qs.order_by('-cal_date', 'clinic__name')
     if kind=='resources': qs=qs.filter(clinic_id__in=access.clinic_ids(request.user,roles))
     if kind in ['outages','requirements']: qs=qs.filter(resource__clinic_id__in=access.clinic_ids(request.user,roles))
     obj=get_object_or_404(qs,pk=pk) if pk else None
     can_create=kind!='clinics' or access.has_role(request.user,'headquarters')
-    Form=django_forms.modelform_factory(model,fields=fields,labels=LABELS,field_classes={f:forms.NamedChoice for f in fields if isinstance(model._meta.get_field(f),models.ForeignKey)})
+    labels = {**LABELS, 'cal_date': '日期', 'kind': '日期安排', 'note': '备注'} if kind == 'calendar' else LABELS
+    Form=django_forms.modelform_factory(model,fields=fields,labels=labels,field_classes={f:forms.NamedChoice for f in fields if isinstance(model._meta.get_field(f),models.ForeignKey)})
     form=Form(request.POST or None,instance=obj)
-    if kind in ['hours','resources']:form.fields['clinic'].queryset=Clinic.objects.filter(pk__in=access.clinic_ids(request.user,roles))
+    if kind in ['hours','resources','calendar']:form.fields['clinic'].queryset=Clinic.objects.filter(pk__in=access.clinic_ids(request.user,roles))
+    if kind == 'calendar':
+        form.fields['opens_at'].help_text = '只在调休营业时填写开始和结束时间。'
     if kind in ['outages','requirements']:
         form.fields['resource'].queryset=ClinicalResource.objects.filter(clinic_id__in=access.clinic_ids(request.user,roles))
     for f in form.fields.values():
@@ -646,9 +776,18 @@ def master(request, kind, pk=None):
             f.widget=django_forms.DateTimeInput(attrs={'type':'datetime-local'},format='%Y-%m-%dT%H:%M')
         elif isinstance(f,django_forms.DateField):
             f.widget=django_forms.DateInput(attrs={'type':'date'},format='%Y-%m-%d')
+        elif kind == 'calendar' and isinstance(f, django_forms.TimeField):
+            f.widget = django_forms.TimeInput(attrs={'type': 'time'}, format='%H:%M')
     if request.method=='POST':
         if not obj and not can_create:raise PermissionDenied
         def save():
+            if kind == 'calendar':
+                clinic_id = form.cleaned_data['clinic'].pk
+                access.require(request.user, roles, clinic_id)
+                if obj:
+                    services.check(obj.clinic_id == clinic_id and obj.cal_date == form.cleaned_data['cal_date'],
+                                   '已有日期安排只能修改日期类型、营业时间和备注。')
+                Clinic.objects.select_for_update().get(pk=clinic_id)
             # Serialize clinic resource configuration with booking transactions.
             if kind in ['resources','outages','requirements']:
                 clinic_id=form.cleaned_data['clinic'].pk if kind=='resources' else form.cleaned_data['resource'].clinic_id
@@ -688,9 +827,14 @@ def master(request, kind, pk=None):
             services.audit(request.user,updated,'master_update' if obj else 'master_create',after={k:str(v) for k,v in form.cleaned_data.items()})
             return updated
         if perform(request,'master_'+kind,save,form):return redirect('master',kind=kind)
-    rows=[{'pk':item.pk,'values':[str(getattr(item,f)) if not isinstance(model._meta.get_field(f),models.ForeignKey) else getattr(getattr(item,f),'name',str(getattr(item,f))) for f in fields]} for item in qs[:100]]
+    if kind == 'calendar':
+        rows = [{'pk': item.pk, 'values': [item.clinic.name, item.cal_date, item.get_kind_display(),
+                 item.opens_at or '—', item.closes_at or '—', item.note]} for item in qs.select_related('clinic')[:100]]
+    else:
+        rows=[{'pk':item.pk,'values':[str(getattr(item,f)) if not isinstance(model._meta.get_field(f),models.ForeignKey) else getattr(getattr(item,f),'name',str(getattr(item,f))) for f in fields]} for item in qs[:100]]
     return page(request,'master',{'title':title,'kind':kind,'form':form,'record':obj,'can_create':can_create,'rows':rows,
-        'headers':[LABELS.get(f,f) for f in fields],'tabs':[(k,v[1]) for k,v in MASTER.items() if access.has_role(request.user,*v[3])]})
+        'headers':[labels.get(f,f) for f in fields],'tabs':[(k,v[1]) for k,v in MASTER.items() if access.has_role(request.user,*v[3])
+            and (k not in TRANSFER_SETTINGS or can_configure_transfer)]})
 
 
 @login_required
@@ -712,7 +856,6 @@ def doctor_account(request):
 
 @login_required
 def patient_identity(request,pk,action):
-    from . import identity
     record=get_object_or_404(editable_patients(request.user),pk=pk)
     access.require(request.user,['reception'])
     if action not in ['verify','phone']: return HttpResponseBadRequest('未知核验操作')
@@ -728,11 +871,200 @@ def patient_identity(request,pk,action):
 
 
 @login_required
+def cross_clinic_reschedule(request, pk):
+    from . import clinic_transfer
+
+    appointment = appointment_for(request.user, pk)
+    access.require(request.user, ['reception'], appointment.slot.clinic_id)
+    operation = f'cross:{pk}'
+    if request.method == 'POST' and CommandReceipt.objects.filter(
+            actor=request.user, operation=operation, request_key=request.POST.get('request_key', '')).exists():
+        result = perform(request, operation, lambda: None)
+        return redirect('appointment', pk=result or pk)
+
+    window = forms.TransferWindowForm(request.GET or None, initial={
+        'day': timezone.localdate(appointment.slot.starts_at)})
+    confirm = forms.TransferConfirmationForm(request.POST or None, initial={
+        'version': appointment.version})
+    window_ready = window.is_bound and window.is_valid()
+    if request.method == 'POST' and window_ready:
+        def save():
+            data = confirm.cleaned_data
+            services.check(str(data['slot']) == request.GET.get('slot'), '确认时段与所选时段不一致，请重新选择。')
+            transfer = clinic_transfer.TransferRequest(data['version'], window.cleaned_data['window_start'],
+                window.cleaned_data['window_end'], data['consent'])
+            return services.book(request.user, appointment.patient_id, data['slot'], data['reason'], pk,
+                allergy_status=data['allergy_status'], transfer=transfer)
+        result = perform(request, operation, save, confirm)
+        if result:
+            return redirect('appointment', pk=result)
+
+    rows = []
+    candidate_page = None
+    selected = None
+    blocked = ''
+    try:
+        clinic_transfer.require_affected(appointment)
+    except ValidationError as exc:
+        blocked = error_text(exc)
+    destinations = Clinic.objects.filter(pk__in=access.clinic_ids(request.user, ['reception'])).exclude(
+        pk=appointment.slot.clinic_id)
+    if not blocked and not destinations.exists():
+        blocked = '当前账号没有其他门店的前台权限，原预约继续保留。'
+
+    if window_ready and not blocked:
+        earliest = window.cleaned_data['window_start']
+        latest = window.cleaned_data['window_end']
+        destinations = ScheduleSlot.objects.filter(clinic_id__in=destinations, active=True,
+            starts_at__gte=earliest, starts_at__lt=latest).select_related('clinic', 'dentist', 'service')
+        candidate_page = Paginator(destinations.order_by('starts_at', 'clinic__code', 'dentist__name', 'pk'), 20
+            ).get_page(request.GET.get('page'))
+        requested_slot = request.GET.get('slot')
+        for slot in candidate_page:
+            row = {'slot': slot}
+            try:
+                _, inputs = clinic_transfer.transfer_plan(appointment, slot, earliest, latest, lock=False)
+            except (ValidationError, ObjectDoesNotExist) as exc:
+                row['reason'] = error_text(exc)
+            else:
+                row['ends'] = inputs['ends']
+                if str(slot.pk) == requested_slot:
+                    selected = row
+            rows.append(row)
+        if selected and request.method != 'POST':
+            confirm.initial['slot'] = selected['slot'].pk
+
+    return page(request, 'cross_clinic', {'title': '跨店改约', 'appointment': appointment,
+        'window': window, 'confirm': confirm, 'rows': rows, 'items': candidate_page,
+        'selected': selected, 'blocked': blocked, 'window_ready': window_ready,
+        'resource_query': urlencode({'clinic': appointment.slot.clinic_id,
+            'day': timezone.localdate(appointment.slot.starts_at).isoformat()})})
+
+
+DAY_SCHEDULE_ROLES = ['reception', 'manager', 'headquarters']
+
+
+def scoped_schedule_clinics(user, value):
+    clinics = Clinic.objects.filter(pk__in=access.clinic_ids(user, DAY_SCHEDULE_ROLES))
+    if not value:
+        return clinics, clinics
+    selected = clinics.filter(pk=uuid.UUID(value))
+    if not selected.exists():
+        raise PermissionDenied
+    return clinics, selected
+
+
+def schedule_date(value):
+    day = date.fromisoformat(value) if value else timezone.localdate()
+    if not 2000 <= day.year <= 2100:
+        raise ValueError
+    return day
+
+
+def schedule_outages(clinics, day):
+    outages = ResourceUnavailable.objects.filter(resource__clinic__in=clinics, active=True)
+    if day is None:
+        return outages.filter(ends_at__gt=timezone.now())
+    start = timezone.make_aware(datetime.combine(day, time.min))
+    end = timezone.make_aware(datetime.combine(day + timedelta(days=1), time.min))
+    return outages.filter(starts_at__lt=end, ends_at__gt=start)
+
+
+@login_required
+def day_schedule(request):
+    from . import reservations
+
+    access.require(request.user, DAY_SCHEDULE_ROLES)
+    clinic_value = request.GET.get('clinic', '')
+    dentist_value = request.GET.get('dentist', '')
+    try:
+        clinics, selected_clinics = scoped_schedule_clinics(request.user, clinic_value)
+        day = schedule_date(request.GET.get('day'))
+        dentist_id = uuid.UUID(dentist_value) if dentist_value else None
+    except ValueError:
+        return HttpResponseBadRequest('日程筛选参数无效。')
+
+    dentists = Dentist.objects.filter(
+        Q(dentistclinic__clinic__in=clinics) | Q(scheduleslot__clinic__in=clinics)
+    ).distinct().order_by('name', 'pk')
+    if dentist_id and not dentists.filter(pk=dentist_id).exists():
+        raise PermissionDenied
+
+    appointments = access.appointments(request.user).filter(
+        slot__clinic__in=selected_clinics, slot__starts_at__date=day,
+        status__in=[Appointment.Status.BOOKED, Appointment.Status.ARRIVED, Appointment.Status.COMPLETED],
+    ).select_related('plan')
+    slots = ScheduleSlot.objects.filter(clinic__in=selected_clinics, starts_at__date=day)
+    if dentist_id:
+        appointments = appointments.filter(slot__dentist_id=dentist_id)
+        slots = slots.filter(dentist_id=dentist_id)
+
+    by_slot = {appointment.slot_id: appointment for appointment in appointments}
+    by_appointment = {appointment.pk: appointment for appointment in by_slot.values()}
+    links = AppointmentSlot.objects.filter(appointment_id__in=by_appointment, is_active=True)
+    for slot_id, appointment_id in links.values_list('slot_id', 'appointment_id'):
+        by_slot[slot_id] = by_appointment[appointment_id]
+
+    slots = slots.filter(Q(active=True) | Q(pk__in=by_slot)).select_related(
+        'clinic', 'dentist', 'service',
+    ).order_by('starts_at', 'clinic__code', 'dentist__name', 'pk')
+    slot_page = Paginator(slots, 30).get_page(request.GET.get('page'))
+    now = timezone.now()
+    rows = []
+    reception_ids = set(access.clinic_ids(request.user, ['reception']))
+    for slot in slot_page:
+        appointment = by_slot.get(slot.pk)
+        row = {'slot': slot, 'appointment': appointment}
+        if appointment:
+            row['status'] = '已约' if appointment.status == Appointment.Status.BOOKED else appointment.get_status_display()
+        elif slot.starts_at <= now:
+            row['status'] = '已过时段'
+        else:
+            try:
+                reservations.check_consultation_opening(slot)
+            except ValidationError as exc:
+                row.update(status='不可约', reason=exc.messages[0])
+            else:
+                row['status'] = '可约'
+                if slot.clinic_id in reception_ids:
+                    row['booking_query'] = urlencode({'day': day.isoformat(), 'clinic': slot.clinic_id,
+                        'dentist': slot.dentist_id, 'slot': slot.pk})
+        rows.append(row)
+
+    exceptions = {entry.clinic_id: entry for entry in WorkCalendar.objects.filter(
+        clinic__in=selected_clinics, cal_date=day)}
+    calendar = [{'clinic': clinic, 'entry': exceptions.get(clinic.pk),
+        'hours': clinic_calendar.hours_for_day(clinic.pk, day)} for clinic in selected_clinics.order_by('code')]
+    return page(request, 'day_schedule', {'title': '当天日程', 'day': day, 'clinics': clinics.order_by('code'),
+        'dentists': dentists, 'selected_clinic': clinic_value, 'selected_dentist': dentist_value,
+        'calendar': calendar, 'rows': rows, 'items': slot_page,
+        'outages': schedule_outages(selected_clinics, day).select_related('resource__clinic').order_by('starts_at'),
+        'inactive_resources': ClinicalResource.objects.filter(clinic__in=selected_clinics, active=False)
+            .select_related('clinic').order_by('clinic__code', 'code'),
+        'resource_query': urlencode({'day': day.isoformat(), 'clinic': clinic_value})})
+
+
+@login_required
 def resource_coordination(request):
     from .reservations import affected_by_outage
-    access.require(request.user,['manager','reception','headquarters'])
-    clinics=access.clinic_ids(request.user,['manager','reception','headquarters'])
-    outages=ResourceUnavailable.objects.filter(resource__clinic_id__in=clinics,active=True,ends_at__gt=timezone.now()).select_related('resource')
-    groups=[{'outage':o,'appointments':affected_by_outage(o).select_related('slot__dentist','patient')} for o in outages]
-    return page(request,'resources',{'groups':groups,'resources':ClinicalResource.objects.filter(clinic_id__in=clinics).select_related('clinic'),
-        'title':'资源与停诊协调'})
+    access.require(request.user, DAY_SCHEDULE_ROLES)
+    try:
+        _, clinics = scoped_schedule_clinics(request.user, request.GET.get('clinic'))
+        day = schedule_date(request.GET['day']) if request.GET.get('day') else None
+    except ValueError:
+        return HttpResponseBadRequest('资源与停诊筛选参数无效。')
+    outages = schedule_outages(clinics, day).select_related('resource__clinic').order_by('starts_at')
+    groups = [{'outage': outage, 'appointments': affected_by_outage(outage)
+        .filter(slot__clinic__in=clinics).select_related('slot__dentist', 'patient', 'plan')} for outage in outages]
+    dates = WorkCalendar.objects.filter(clinic__in=clinics).exclude(
+        kind=WorkCalendar.Kind.WORKING).select_related('clinic').order_by('cal_date', 'clinic__name')
+    dates = dates.filter(cal_date=day) if day else dates.filter(cal_date__gte=timezone.localdate())
+    calendar_groups = []
+    for entry in dates:
+        appointments = list(clinic_calendar.affected_appointments(entry))
+        if day or appointments:
+            calendar_groups.append({'entry': entry, 'appointments': appointments})
+    return page(request, 'resources', {'groups': groups, 'selected_day': day,
+        'resources': ClinicalResource.objects.filter(clinic__in=clinics).select_related('clinic'),
+        'calendar_groups': calendar_groups, 'reception_clinics': set(access.clinic_ids(request.user, ['reception'])),
+        'now': timezone.now(), 'title': '资源与停诊协调'})

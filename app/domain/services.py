@@ -7,8 +7,11 @@ from decimal import Decimal, ROUND_HALF_UP
 from django.core.exceptions import PermissionDenied, ValidationError
 from django.db import transaction
 from django.utils import timezone
-from . import access
+from . import access, clinic_calendar
 from .models import *
+
+
+PATIENT_CANCEL_LEAD = timedelta(hours=2)
 
 
 def check(condition, message):
@@ -19,6 +22,15 @@ def check(condition, message):
 def audit(actor, obj, action, before=None, after=None, reason=''):
     AuditEvent.objects.create(actor=actor, source='web', object_type=type(obj).__name__,
         object_id=obj.pk, action=action, before_value=before or {}, after_value=after or {}, reason=reason)
+
+
+def booking_allergy_results(appointment_id):
+    return AuditEvent.objects.filter(object_type='Appointment', object_id=appointment_id,
+        action__in=['book', 'reschedule']).order_by('-occurred_at', '-pk').values_list('after_value__allergy_status', flat=True)
+
+
+def allergy_confirmation_label(status):
+    return dict(AllergyConfirmation.choices).get(status, '未核实')
 
 
 def number(prefix):
@@ -46,18 +58,18 @@ def command(actor, operation, key, payload, callback):
         return result.pk
 
 
-def valid_slot(slot):
-    start, end = timezone.localtime(slot.starts_at), timezone.localtime(slot.ends_at)
+def valid_slot(slot, *, hours=None):
     service = slot.service
     check(slot.active and slot.clinic.active and slot.dentist.active and service.active, '诊所、医生或排班已停用。')
     check(service.valid_from <= slot.starts_at and (service.valid_to is None or service.valid_to >= slot.ends_at), '医生服务关系不覆盖该时段。')
-    check(start.date() == end.date() and ClinicHours.objects.filter(clinic=slot.clinic,
-        weekday=start.isoweekday(), opens_at__lte=start.time(), closes_at__gte=end.time()).exists(), '时段不在诊所营业时间内。')
+    if hours is None:
+        hours = clinic_calendar.hours_for_day(slot.clinic_id, timezone.localdate(slot.starts_at))
+    check(clinic_calendar.covers(hours, slot.starts_at, slot.ends_at), '时段不在该日期的诊所营业时间内。')
 
 
 @transaction.atomic
-def book(actor, patient_id, slot_id, reason='', replacing=None, treatment_id=None):
-    from . import reservations
+def book(actor, patient_id, slot_id, reason='', replacing=None, treatment_id=None, *, allergy_status=None, transfer=None):
+    from . import clinic_transfer, reservations
     patient=Patient.objects.select_for_update().get(pk=patient_id)
     slot=ScheduleSlot.objects.select_related('service','clinic','dentist').get(pk=slot_id)
     old=Appointment.objects.select_related('slot').get(pk=replacing) if replacing else None
@@ -68,8 +80,9 @@ def book(actor, patient_id, slot_id, reason='', replacing=None, treatment_id=Non
     list(Clinic.objects.select_for_update().filter(pk__in=clinic_ids).order_by('pk'))
     list(Dentist.objects.select_for_update().filter(pk__in=dentist_ids).order_by('pk'))
     self_booking=access.has_role(actor,'patient') and patient.user_id==actor.pk
-    if not self_booking: access.require(actor,['reception'],slot.clinic_id)
+    if old or not self_booking: access.require(actor,['reception'],slot.clinic_id)
     check(patient.active,'患者档案已停用。')
+    check(allergy_status in AllergyConfirmation.values, '请先核实并选择患者的过敏状态。')
     check(slot.starts_at>timezone.now(),'不能预约已经开始的时段。')
     if old:
         old=Appointment.objects.select_for_update().get(pk=old.pk)
@@ -77,10 +90,21 @@ def book(actor, patient_id, slot_id, reason='', replacing=None, treatment_id=Non
         check(old.status=='booked' and old.slot.starts_at>timezone.now(),'仅可调整尚未开始的待到诊预约。')
         check(old.patient_id==patient.pk,'调整预约不能更换患者。')
         check(bool(reason.strip()),'请填写调整原因。')
-    inputs=reservations.planning_inputs(slot,treatment_id)
-    slots=reservations.validate_plan(slot,patient,inputs,replacing)
+    cross_clinic = old is not None and old.slot.clinic_id != slot.clinic_id
+    if transfer is not None:
+        check(old is not None and old.version == transfer.version, '原预约已变更，请刷新并重新核对。')
+        check(cross_clinic, '跨店协调须选择其他诊所。')
+    if cross_clinic:
+        check(transfer is not None and transfer.consent is True, '跨店改约须先确认患者同意。')
+        clinic_transfer.require_affected(old)
+        slots, inputs = clinic_transfer.transfer_plan(old, slot, transfer.earliest, transfer.latest, lock=True)
+    else:
+        inputs=reservations.planning_inputs(slot,treatment_id)
+        slots=reservations.validate_plan(slot,patient,inputs,replacing)
     if old:
         before={'slot':str(old.slot_id),'ends_at':old.ends_at.isoformat(),'version':old.version}
+        if cross_clinic:
+            before['clinic'] = str(old.slot.clinic_id)
         app=old
         app.slot=slot
         app.version+=1
@@ -90,9 +114,12 @@ def book(actor, patient_id, slot_id, reason='', replacing=None, treatment_id=Non
         app=Appointment.objects.create(number=number('APT'),patient=patient,slot=slot,
             source='patient' if self_booking else 'reception',reason=reason,created_by=actor)
     reservations.persist_plan(app,slots,inputs)
-    audit(actor,app,'reschedule' if old else 'book',before,
-        {'slot':str(slot.pk),'ends_at':inputs['ends'].isoformat(),'resource_ends_at':inputs['resource_ends'].isoformat(),
-         'version':app.version,'slot_count':len(slots)},reason)
+    after = {'slot':str(slot.pk),'ends_at':inputs['ends'].isoformat(),'resource_ends_at':inputs['resource_ends'].isoformat(),
+         'version':app.version,'slot_count':len(slots),'allergy_status':allergy_status}
+    if cross_clinic:
+        after.update(clinic=str(slot.clinic_id), dentist=str(slot.dentist_id), patient_consent=True,
+            patient_earliest=transfer.earliest.isoformat(), patient_latest=transfer.latest.isoformat())
+    audit(actor,app,'reschedule' if old else 'book',before,after,reason)
     return app
 
 
@@ -119,7 +146,7 @@ def extend_appointment(actor,pk,minutes,reason):
 
 
 @transaction.atomic
-def appointment_action(actor, pk, action, reason=''):
+def appointment_action(actor, pk, action, reason='', *, patient_only=False):
     source=Appointment.objects.get(pk=pk)
     Patient.objects.select_for_update().get(pk=source.patient_id)
     Dentist.objects.select_for_update().get(pk=source.slot.dentist_id)
@@ -150,11 +177,11 @@ def appointment_action(actor, pk, action, reason=''):
     if action == 'cancel':
         check(bool(reason.strip()), '取消原因不能为空。')
         check(app.slot.starts_at > now, '预约已经开始，不能普通取消，请联系前台核实。')
-        if access.allowed(actor, ['reception'], app.slot.clinic_id):
+        if not patient_only and access.allowed(actor, ['reception'], app.slot.clinic_id):
             party = 'reception'
         else:
             check(access.has_role(actor, 'patient') and app.patient.user_id == actor.pk, '不能取消其他患者的预约。')
-            check(app.slot.starts_at - now >= timedelta(hours=2), '不足2小时，请联系前台处理。')
+            check(app.slot.starts_at - now >= PATIENT_CANCEL_LEAD, '不足2小时，请联系前台处理。')
             party = 'patient'
         app.status, app.cancelled_at, app.cancel_reason, app.cancel_party = 'cancelled', now, reason, party
     else:
@@ -177,7 +204,7 @@ def appointment_action(actor, pk, action, reason=''):
 
 
 @transaction.atomic
-def start_visit(actor, pk):
+def start_visit(actor, pk, *, allergy_status=None):
     app = Appointment.objects.select_for_update().get(pk=pk)
     if not access.own_doctor(actor, app):
         raise PermissionDenied('只能接诊本人预约。')
@@ -185,12 +212,16 @@ def start_visit(actor, pk):
     if previous:
         return previous
     check(app.status == 'arrived', '请先由前台完成签到。')
+    check(allergy_status in AllergyConfirmation.values, '请先核实并选择患者的过敏状态。')
+    if allergy_status == AllergyConfirmation.NO_KNOWN:
+        check(not PatientAllergy.objects.filter(patient_id=app.patient_id).exists(),
+              '患者档案已登记过敏信息，请核对后选择正确的状态。')
     from .reservations import check_capacity
     for occupancy in app.resource_occupancies.filter(is_active=True).order_by('resource_id'):
         resource=ClinicalResource.objects.select_for_update().get(pk=occupancy.resource_id)
         check_capacity(resource,occupancy.starts_at,occupancy.ends_at,occupancy.quantity,app.pk)
     visit = Visit.objects.create(appointment=app, dentist=app.slot.dentist, started_at=timezone.now())
-    audit(actor, visit, 'start_visit')
+    audit(actor, visit, 'start_visit', after={'allergy_status': allergy_status})
     return visit
 
 
@@ -351,6 +382,7 @@ def review_amendment(actor, pk, approve, reason):
 def schedule(actor, service, starts_at):
     service = DentistClinic.objects.select_for_update().get(pk=service.pk)
     access.require(actor, ['manager'], service.clinic_id)
+    Clinic.objects.select_for_update().get(pk=service.clinic_id)
     Dentist.objects.select_for_update().get(pk=service.dentist_id)
     check(starts_at > timezone.now(), '只能新增未来排班。')
     slot = ScheduleSlot(service=service, clinic=service.clinic, dentist=service.dentist,
@@ -361,3 +393,98 @@ def schedule(actor, service, starts_at):
     slot.save()
     audit(actor, slot, 'create_schedule', after={'starts_at': starts_at.isoformat()})
     return slot
+
+
+@transaction.atomic
+def receive_purchase(actor, pk, lines, reason=''):
+    order = PurchaseOrder.objects.select_for_update().get(pk=pk)
+    access.require(actor, ['manager'], order.clinic_id)
+    check(order.status == 'draft', '该采购单已验收或已退回。')
+    check(order.supplier.is_valid_on(order.ordered_on), '供应商在采购日不在合作有效期内。')
+    check(bool(lines), '请填写验收明细。')
+    accepted = Decimal('0')
+    for row in lines:
+        item = order.items.select_for_update().get(pk=row['item_id'])
+        quantity = Decimal(row['accepted_quantity'])
+        check(quantity >= 0 and quantity <= item.quantity, '验收数量超出采购数量。')
+        if quantity == 0:
+            continue
+        amount = money(quantity * item.unit_price)
+        InventoryBatch.objects.create(item=item, batch_number=number('BAT'),
+            received_on=row.get('received_on') or timezone.localdate(),
+            received_quantity=quantity, remaining_quantity=quantity,
+            expires_on=row.get('expires_on'))
+        accepted += amount
+    order.accepted_amount = money(accepted)
+    order.status = 'accepted' if accepted > 0 else 'returned'
+    order.save()
+    audit(actor, order, 'receive_purchase', {'status': 'draft'},
+        {'status': order.status, 'accepted_amount': str(order.accepted_amount)}, reason)
+    return order
+
+
+def can_manage_materials(actor, visit):
+    clinic_id = visit.appointment.slot.clinic_id
+    if access.allowed(actor, ['reception'], clinic_id):
+        return True
+    return visit.dentist.user_id == actor.pk and access.assignments(actor, ['dentist']).filter(
+        Q(scope_type__in=['self', 'global']) | Q(scope_type='clinic', clinic_id=clinic_id)
+    ).exists()
+
+
+@transaction.atomic
+def issue_material(actor, visit_id, batch_id, quantity, reason=''):
+    visit = Visit.objects.select_for_update().get(pk=visit_id)
+    clinic_id = visit.appointment.slot.clinic_id
+    if not can_manage_materials(actor, visit):
+        raise PermissionDenied
+    check(visit.status == 'in_progress', '就诊未开始或已完成，不能领用耗材。')
+    batch = InventoryBatch.objects.select_for_update().get(pk=batch_id)
+    check(batch.item.purchase_order.clinic_id == clinic_id, '该批次不属于就诊所在诊所。')
+    used = Decimal(quantity)
+    check(used.is_finite() and used > 0, '领用数量必须大于零。')
+    check(batch.remaining_quantity >= used, '批次结余不足。')
+    check(used == used.quantize(Decimal('.01')), '领用数量最多保留两位小数。')
+    issued_at = timezone.now()
+    today = timezone.localdate(issued_at)
+    check(batch.expires_on is None or batch.expires_on >= today, '该批次已过有效期。')
+    batch.remaining_quantity = batch.remaining_quantity - used
+    batch.save()
+    issue_number = number('ISS')
+    cost = CostRecord.objects.create(clinic_id=clinic_id, visit=visit,
+        dentist_id=visit.dentist_id, category='supplies',
+        amount=money(used * batch.item.unit_price), occurred_on=today,
+        source_reference=issue_number, description=batch.item.item_name, recorded_by=actor)
+    issue = MaterialIssue.objects.create(issue_number=issue_number, visit=visit, batch=batch,
+        quantity=used, issued_at=issued_at, issued_by=actor, cost_record=cost)
+    audit(actor, issue, 'issue_material', after={'quantity': str(used), 'batch': batch.batch_number,
+        'unit_price': str(batch.item.unit_price), 'amount': str(cost.amount)}, reason=reason)
+    return issue
+
+
+@transaction.atomic
+def return_material(actor, pk, reason=''):
+    issue = MaterialIssue.objects.select_for_update().get(pk=pk)
+    if not can_manage_materials(actor, issue.visit):
+        raise PermissionDenied
+    check(issue.reversed_at is None, '该领用已退回。')
+    cost = issue.cost_record
+    if cost is not None:
+        check(cost.source_reference == issue.issue_number and cost.visit_id == issue.visit_id
+            and cost.clinic_id == issue.visit.appointment.slot.clinic_id and cost.category == 'supplies',
+            '成本记录与领用单不一致。')
+    batch = InventoryBatch.objects.select_for_update().get(pk=issue.batch_id)
+    batch.remaining_quantity = batch.remaining_quantity + issue.quantity
+    batch.save()
+    issue.reversed_at = timezone.now()
+    issue.save()
+    before = None
+    if cost is not None:
+        before = {'amount': str(cost.amount)}
+        cost.amount = Decimal('0')
+        cost.description = (cost.description + '（退料冲销）').strip()
+        cost.save()
+    audit(actor, issue, 'return_material',
+        before=before,
+        after={'quantity': str(issue.quantity), 'reversed_at': issue.reversed_at.isoformat()}, reason=reason)
+    return issue

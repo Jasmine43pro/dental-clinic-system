@@ -1,9 +1,39 @@
 """Explicit verification; phone lookup never merges or transfers patient history."""
 from django.core.exceptions import PermissionDenied, ValidationError
-from django.db import transaction
+from django.db import connection, transaction
+from django.db.models import Q
 from django.utils import timezone
 from . import access
 from .models import Patient,User,Role,RoleAssignment,AuditEvent
+
+
+class RegistrationConflict(ValidationError):
+    pass
+
+
+@transaction.atomic
+def register_patient(account_form, patient_form, *, reject_existing=False):
+    from .services import audit
+
+    patient = patient_form.save(commit=False)
+    name = patient.name.lower()
+    identity = f'{name}:{patient.birth_date.isoformat()}'
+    # Serialize self-service registrations even when no matching patient row exists yet.
+    with connection.cursor() as cursor:
+        cursor.execute('SELECT pg_advisory_xact_lock(hashtext(%s), hashtext(%s))', ['patient.phone', patient.phone])
+        cursor.execute('SELECT pg_advisory_xact_lock(hashtext(%s), hashtext(%s))', ['patient.identity', identity])
+    if reject_existing and Patient.objects.filter(
+        Q(phone=patient.phone) | Q(name__iexact=name, birth_date=patient.birth_date)
+    ).exists():
+        raise RegistrationConflict('资料可能已登记。已有账号请直接登录，已有档案请联系诊所前台核验。')
+
+    user = account_form.save()
+    patient.user = user
+    patient.save()
+    RoleAssignment.objects.create(user=user, role=Role.objects.get(code='patient'),
+                                  scope_type='self', valid_from=timezone.now())
+    audit(user, patient, 'register')
+    return user
 
 
 def scoped(actor,patient):

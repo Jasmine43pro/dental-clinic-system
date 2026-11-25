@@ -1,0 +1,3 @@
+@import "../booking/index.wxss";
+
+.registration-note { margin-bottom: 20rpx; }

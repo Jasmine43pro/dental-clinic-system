@@ -1,0 +1,9 @@
+{
+  "pages": ["pages/clinics/index", "pages/booking/index", "pages/appointments/index", "pages/visit/index", "pages/register/index"],
+  "window": {
+    "navigationBarTitleText": "诊所列表",
+    "navigationBarBackgroundColor": "#183F36",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#F5F1E8"
+  }
+}

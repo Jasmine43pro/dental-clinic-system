@@ -35,7 +35,7 @@ class ReservationTests(TestCase):
 
     def book(self,slot=None,patient=None):
         patient=patient or self.patient
-        return services.book(patient.user or self.front,patient.pk,(slot or self.slot).pk,treatment_id=self.treatment.pk)
+        return services.book(patient.user or self.front,patient.pk,(slot or self.slot).pk,treatment_id=self.treatment.pk, allergy_status='no_known')
 
     def test_contiguous_units_and_cleanup_snapshot(self):
         self.configure()
@@ -58,25 +58,25 @@ class ReservationTests(TestCase):
         app=self.book()
         second=app.slot_links.order_by('slot__starts_at')[1].slot
         other=Patient.objects.get(user__username='demo_patient_2')
-        with self.assertRaises(ValidationError): services.book(other.user,other.pk,second.pk)
+        with self.assertRaises(ValidationError): services.book(other.user,other.pk,second.pk, allergy_status='no_known')
 
     def test_patient_conflict_in_second_unit_across_doctors(self):
         self.configure(turnover=0)
         self.book()
         other=ScheduleSlot.objects.get(dentist__user__username='demo_dentist_2',starts_at=self.slot.ends_at)
-        with self.assertRaises(ValidationError): services.book(self.patient.user,self.patient.pk,other.pk)
+        with self.assertRaises(ValidationError): services.book(self.patient.user,self.patient.pk,other.pk, allergy_status='no_known')
 
     def test_cleanup_blocks_next_resource_use_but_adjacency_is_allowed(self):
         self.configure(minutes=30,turnover=10)
         self.book()
         other=Patient.objects.get(user__username='demo_patient_2')
         adjacent=ScheduleSlot.objects.get(dentist__user__username='demo_dentist_2',starts_at=self.slot.ends_at)
-        with self.assertRaises(ValidationError): services.book(other.user,other.pk,adjacent.pk)
+        with self.assertRaises(ValidationError): services.book(other.user,other.pk,adjacent.pk, allergy_status='no_known')
         self.profile.turnover_minutes=0;self.profile.save()
         app=Appointment.objects.get(patient=self.patient,slot=self.slot)
         services.appointment_action(self.patient.user,app.pk,'cancel','测试重新安排')
         self.book()
-        services.book(other.user,other.pk,adjacent.pk)
+        services.book(other.user,other.pk,adjacent.pk, allergy_status='no_known')
 
     def test_interval_peak_does_not_sum_adjacent_occupancies(self):
         a=self.slot.starts_at
@@ -98,7 +98,7 @@ class ReservationTests(TestCase):
         before=list(app.slot_links.filter(is_active=True).values_list('slot_id',flat=True))
         target=ScheduleSlot.objects.get(dentist=self.slot.dentist,starts_at=self.slot.starts_at+timedelta(days=1))
         ResourceUnavailable.objects.create(resource=self.chair,starts_at=target.starts_at,ends_at=target.ends_at+timedelta(hours=1),quantity=1,reason='停诊')
-        with self.assertRaises(ValidationError): services.book(self.front,self.patient.pk,target.pk,'调整',app.pk,self.treatment.pk)
+        with self.assertRaises(ValidationError): services.book(self.front,self.patient.pk,target.pk,'调整',app.pk,self.treatment.pk, allergy_status='no_known')
         app.refresh_from_db()
         self.assertEqual(app.slot_id,self.slot.pk)
         self.assertCountEqual(app.slot_links.filter(is_active=True).values_list('slot_id',flat=True),before)
@@ -108,7 +108,7 @@ class ReservationTests(TestCase):
         self.configure(turnover=0)
         app=self.book()
         target=ScheduleSlot.objects.get(dentist=self.slot.dentist,starts_at=self.slot.starts_at+timedelta(days=1))
-        services.book(self.front,self.patient.pk,target.pk,'调整',app.pk,self.treatment.pk)
+        services.book(self.front,self.patient.pk,target.pk,'调整',app.pk,self.treatment.pk, allergy_status='no_known')
         self.assertEqual(app.slot_links.filter(is_active=False).count(),2)
         self.assertEqual(app.slot_links.filter(is_active=True).count(),2)
         services.appointment_action(self.front,app.pk,'cancel','患者确认')
@@ -121,7 +121,7 @@ class ReservationTests(TestCase):
         app=self.book()
         next_slot=ScheduleSlot.objects.get(dentist=self.slot.dentist,starts_at=self.slot.ends_at)
         other=Patient.objects.get(user__username='demo_patient_2')
-        blocked=services.book(other.user,other.pk,next_slot.pk)
+        blocked=services.book(other.user,other.pk,next_slot.pk, allergy_status='no_known')
         with self.assertRaises(ValidationError): services.extend_appointment(self.front,app.pk,60,'治疗延长')
         app.refresh_from_db();self.assertEqual(app.duration_minutes,30)
         services.appointment_action(self.front,blocked.pk,'cancel','协调改期')
@@ -134,7 +134,7 @@ class ReservationTests(TestCase):
         self.assertIn(app,reservations.affected_by_outage(outage))
         Appointment.objects.filter(pk=app.pk).update(status='arrived')
         doctor=self.slot.dentist.user
-        with self.assertRaises(ValidationError): services.start_visit(doctor,app.pk)
+        with self.assertRaises(ValidationError): services.start_visit(doctor,app.pk, allergy_status='no_known')
 
     def test_undo_checkin_requires_no_visit_and_keeps_audit(self):
         app=self.book()
@@ -143,7 +143,7 @@ class ReservationTests(TestCase):
         app.refresh_from_db();self.assertEqual(app.status,'booked');self.assertIsNone(app.checked_in_at)
         self.assertTrue(AuditEvent.objects.filter(object_id=app.pk,action='undo_checkin').exists())
         Appointment.objects.filter(pk=app.pk).update(status='arrived')
-        services.start_visit(self.slot.dentist.user,app.pk)
+        services.start_visit(self.slot.dentist.user,app.pk, allergy_status='known')
         with self.assertRaises(ValidationError): services.appointment_action(self.front,app.pk,'undo_checkin','误签到')
 
     def test_duplicate_phone_is_hint_and_change_does_not_merge(self):
@@ -206,6 +206,58 @@ class ReservationTests(TestCase):
         self.assertEqual(self.client.post('/master/outages/',data).status_code,200)
         self.assertFalse(ResourceUnavailable.objects.filter(resource=foreign).exists())
 
+    def test_closure_blocks_new_bookings_and_preserves_existing_appointment(self):
+        self.configure(minutes=30, turnover=0)
+        app = self.book()
+        day = timezone.localdate(self.slot.starts_at)
+        self.client.force_login(self.manager)
+        data = {'clinic': self.slot.clinic_id, 'cal_date': day.isoformat(), 'kind': 'closed',
+                'note': '虚构停诊核对', 'request_key': 'calendar-closure'}
+        self.assertEqual(self.client.post('/master/calendar/', data).status_code, 302)
+        self.assertContains(self.client.get('/resources/'), app.number)
+        other_front = User.objects.get(username='demo_reception_b')
+        self.client.force_login(other_front)
+        self.assertNotContains(self.client.get('/resources/'), app.number)
+        self.assertEqual(self.client.post('/master/calendar/', data).status_code, 403)
+        next_slot = ScheduleSlot.objects.get(dentist=self.slot.dentist, starts_at=self.slot.ends_at)
+        with self.assertRaisesMessage(ValidationError, '营业时间'):
+            self.book(next_slot)
+        app.refresh_from_db()
+        self.assertEqual(app.status, Appointment.Status.BOOKED)
+        self.assertEqual(app.slot_id, self.slot.pk)
+        self.assertTrue(app.slot_links.filter(is_active=True).exists())
+
+        entry = WorkCalendar.objects.get(clinic=self.slot.clinic, cal_date=day)
+        self.client.force_login(self.manager)
+        restored = {**data, 'kind': 'working', 'revision': entry.updated_at.isoformat(), 'request_key': 'calendar-restore'}
+        self.assertEqual(self.client.post(reverse('master_edit', args=['calendar', entry.pk]), restored).status_code, 302)
+        self.assertNotContains(self.client.get('/resources/'), app.number)
+        self.assertEqual(reservations.preview(next_slot.pk)['minutes'], 30)
+
+    def test_makeup_opening_controls_schedule_and_treatment_turnover(self):
+        self.configure(minutes=30, turnover=10)
+        start = (timezone.localtime(self.slot.starts_at) + timedelta(weeks=3)).replace(hour=9, minute=30)
+        ClinicHours.objects.filter(clinic=self.slot.clinic, weekday=start.isoweekday()).delete()
+        with self.assertRaisesMessage(ValidationError, '营业时间'):
+            services.schedule(self.manager, self.slot.service, start)
+        self.client.force_login(self.manager)
+        data = {'clinic': self.slot.clinic_id, 'cal_date': start.date().isoformat(), 'kind': 'makeup',
+                'opens_at': '09:00', 'request_key': 'calendar-makeup'}
+        self.assertContains(self.client.post('/master/calendar/', data), '须填写有效营业区间')
+        self.assertFalse(WorkCalendar.objects.exists())
+        self.assertEqual(self.client.post('/master/calendar/', {**data, 'closes_at': '10:00'}).status_code, 302)
+        slot = services.schedule(self.manager, self.slot.service, start)
+        with self.assertRaisesMessage(ValidationError, '营业时间'):
+            services.schedule(self.manager, self.slot.service, start + timedelta(minutes=30))
+        with self.assertRaisesMessage(ValidationError, '清洁周转'):
+            self.book(slot)
+        app = self.book(services.schedule(self.manager, self.slot.service, start - timedelta(minutes=30)))
+        self.assertEqual(app.status, Appointment.Status.BOOKED)
+        entry = WorkCalendar.objects.get(clinic=self.slot.clinic, cal_date=start.date())
+        revised = {**data, 'closes_at': '09:35', 'revision': entry.updated_at.isoformat(), 'request_key': 'calendar-shorten'}
+        self.assertEqual(self.client.post(reverse('master_edit', args=['calendar', entry.pk]), revised).status_code, 302)
+        self.assertContains(self.client.get('/resources/'), app.number)
+
     def test_web_multislot_booking_confirmation_and_identity_required(self):
         import uuid
         self.configure()
@@ -216,6 +268,10 @@ class ReservationTests(TestCase):
         response=self.client.post('/book/'+query,data)
         self.assertFalse(Appointment.objects.filter(patient=self.patient,slot=self.slot).exists())
         data['identity_confirmed']='on'
+        rejected = self.client.post('/book/'+query, {**data, 'confirmed': 'yes'})
+        self.assertContains(rejected, '请先核实并选择患者的过敏状态')
+        self.assertFalse(Appointment.objects.filter(patient=self.patient,slot=self.slot).exists())
+        data['allergy_status'] = 'no_known'
         response=self.client.post('/book/'+query,data)
         self.assertContains(response,'预计60分钟')
         self.assertFalse(Appointment.objects.filter(patient=self.patient,slot=self.slot).exists())
@@ -268,6 +324,79 @@ class ReservationTests(TestCase):
         self.assertIsNone(Patient.objects.get(user__username='new_same_phone').identity_verified_at)
 
 
+    def test_daily_schedule_reuses_booking_rules_and_keeps_appointments_during_closure(self):
+        self.configure(minutes=60, turnover=0)
+        appointment = self.book()
+        day = timezone.localdate(self.slot.starts_at)
+        filters = {'day': day.isoformat(), 'clinic': self.slot.clinic_id, 'dentist': self.slot.dentist_id}
+        self.client.force_login(self.front)
+        url = reverse('day_schedule')
+        dashboard = self.client.get(reverse('dashboard'))
+        self.assertContains(dashboard, f'href="{url}"')
+        response = self.client.get(url, filters)
+        rows = response.context['rows']
+        occupied = [row for row in rows if row.get('appointment') == appointment]
+        self.assertEqual([row['status'] for row in occupied], ['已约', '已约'])
+        self.assertContains(response, reverse('appointment', args=[appointment.pk]))
+        available = [row for row in rows if row.get('booking_query')]
+        self.assertTrue(available)
+        open_slot = available[0]['slot']
+        booking = self.client.get(f"{reverse('booking')}?{available[0]['booking_query']}")
+        self.assertEqual(booking.context['form']['slot'].value(), str(open_slot.pk))
+
+        outage = ResourceUnavailable.objects.create(resource=self.chair, starts_at=open_slot.starts_at,
+            ends_at=open_slot.ends_at, quantity=1, reason='牙椅检修')
+        outage_url = f'{reverse("resources")}?{response.context["resource_query"]}'
+        blocked = self.client.get(url, filters)
+        blocked_row = next(row for row in blocked.context['rows'] if row['slot'] == open_slot)
+        self.assertEqual(blocked_row['status'], '不可约')
+        self.assertNotIn('booking_query', blocked_row)
+        self.assertContains(blocked, f'#outage-{outage.pk}')
+        self.assertContains(self.client.get(outage_url), f'id="outage-{outage.pk}"')
+
+        WorkCalendar.objects.create(clinic=self.slot.clinic, cal_date=day, kind=WorkCalendar.Kind.CLOSED,
+            note='临时停诊演示')
+        closed = self.client.get(url, filters)
+        self.assertContains(closed, '临时停诊')
+        self.assertContains(closed, appointment.number)
+        self.assertFalse(any(row['status'] == '可约' for row in closed.context['rows']))
+        self.assertContains(self.client.get(outage_url), appointment.number)
+
+        arrived = Appointment.objects.get(number='DEMO-A004')
+        arrived_day = timezone.localdate(arrived.slot.starts_at)
+        arrived_response = self.client.get(url, {**filters, 'day': arrived_day.isoformat()})
+        self.assertContains(arrived_response, '已到诊')
+        self.assertContains(arrived_response, arrived.number)
+
+    def test_daily_schedule_scopes_clinics_doctors_and_resources(self):
+        outside = Clinic.objects.get(code='DEMO-02')
+        outside_slot = ScheduleSlot.objects.filter(clinic=outside,
+            dentist__user__username='demo_dentist_4').order_by('starts_at').first()
+        outside_appointment = self.book(outside_slot)
+        day = timezone.localdate(outside_slot.starts_at).isoformat()
+        outside_resource = ClinicalResource.objects.get(clinic=outside, kind='chair')
+        ResourceUnavailable.objects.create(resource=outside_resource, starts_at=outside_slot.starts_at,
+            ends_at=outside_slot.ends_at, quantity=1, reason='二店专用检修')
+        url = reverse('day_schedule')
+        self.client.force_login(self.front)
+        own_board = self.client.get(url, {'day': day})
+        self.assertNotContains(own_board, outside_appointment.number)
+        self.assertNotContains(own_board, '二店专用检修')
+        self.assertNotIn(outside_slot.dentist, own_board.context['dentists'])
+        for filters in ({'clinic': outside.pk}, {'dentist': outside_slot.dentist_id}):
+            self.assertEqual(self.client.get(url, {'day': day, **filters}).status_code, 403)
+        self.assertEqual(self.client.get(reverse('resources'), {'day': day, 'clinic': outside.pk}).status_code, 403)
+        self.assertEqual(self.client.get(url, {'day': '2026-02-30'}).status_code, 400)
+        self.client.force_login(User.objects.get(username='demo_headquarters'))
+        network = self.client.get(url, {'day': day, 'clinic': outside.pk, 'dentist': outside_slot.dentist_id})
+        self.assertContains(network, outside_appointment.number)
+        self.assertContains(network, '二店专用检修')
+        self.assertTrue(all(row['slot'].dentist_id == outside_slot.dentist_id for row in network.context['rows']))
+        self.assertNotContains(network, '办理预约')
+        self.client.force_login(self.patient.user)
+        self.assertEqual(self.client.get(url).status_code, 403)
+
+
 class CapacityConcurrencyTests(TransactionTestCase):
     def setUp(self):
         call_command('seed_demo',no_credentials_file=True,stdout=StringIO())
@@ -282,7 +411,7 @@ class CapacityConcurrencyTests(TransactionTestCase):
             connections.close_all()
             try:
                 patient=Patient.objects.get(pk=patients[i]);barrier.wait(timeout=10)
-                try: services.book(patient.user,patient.pk,slots[i]);return 'booked'
+                try: services.book(patient.user,patient.pk,slots[i], allergy_status='no_known');return 'booked'
                 except ValidationError:return 'rejected'
             finally:connections.close_all()
         with ThreadPoolExecutor(max_workers=2) as pool:results=list(pool.map(worker,[0,1]))

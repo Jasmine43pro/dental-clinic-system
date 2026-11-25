@@ -1,11 +1,11 @@
 .venv/
 .local/
-.cache/
 .tmp/
+.cache/
+outputs/
 __pycache__/
 *.py[cod]
-.env
-.env.*
-!.env.example
-*.sqlite3
 *.log
+.env
+node_modules/
+project.private.config.json
