@@ -1,5 +1,9 @@
 const api = require('../../services/booking');
 
+function displayTreatment(line) {
+  return { ...line, name_snapshot: line.name_snapshot.replace(/（虚构价格）$/, '') };
+}
+
 Page({
   data: { appointmentId: '', visit: null, invoice: null, busy: false, error: '', loginNeeded: false },
 
@@ -24,7 +28,7 @@ Page({
     this.setData({ busy: true, error: '', loginNeeded: false });
     try {
       const visit = await api.getVisit(this.data.appointmentId);
-      this.setData({ visit });
+      this.setData({ visit: { ...visit, treatments: visit.treatments.map(displayTreatment) } });
     } catch (error) {
       this.showError(error);
     } finally {
@@ -37,7 +41,7 @@ Page({
     this.setData({ busy: true, error: '' });
     try {
       const invoice = await api.getInvoice(currentTarget.dataset.id);
-      this.setData({ invoice });
+      this.setData({ invoice: { ...invoice, lines: invoice.lines.map(displayTreatment) } });
     } catch (error) {
       this.showError(error);
     } finally {

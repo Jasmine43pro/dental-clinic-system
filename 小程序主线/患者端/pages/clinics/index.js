@@ -22,6 +22,7 @@ Page({
     try {
       const clinics = (await listClinics()).map((clinic) => ({
         ...clinic,
+        address: /^演示地址\d+（非真实地址）$/.test(clinic.address) ? '地址未公开' : clinic.address,
         displayPhone: clinic.phone && !clinic.phone.startsWith('TEST-CLINIC-') ? clinic.phone : '',
       }));
       this.setData({ clinics, status: clinics.length ? 'ready' : 'empty' });

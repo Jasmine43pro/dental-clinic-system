@@ -6,9 +6,9 @@ from domain.models import *
 
 def initialize_demo_resources():
     for clinic in Clinic.objects.filter(code__startswith='DEMO-'):
-        chair,_=ClinicalResource.objects.get_or_create(clinic=clinic,code='DEMO-CHAIR',defaults={'name':'演示牙椅容量','kind':'chair','capacity':3})
-        ClinicalResource.objects.get_or_create(clinic=clinic,code='DEMO-ASSISTANT',defaults={'name':'演示辅助人员容量','kind':'assistant','capacity':2})
-        ClinicalResource.objects.get_or_create(clinic=clinic,code='DEMO-EQUIPMENT',defaults={'name':'演示设备容量','kind':'equipment','capacity':1})
+        chair,_=ClinicalResource.objects.get_or_create(clinic=clinic,code='DEMO-CHAIR',defaults={'name':'诊疗牙椅','kind':'chair','capacity':3})
+        ClinicalResource.objects.get_or_create(clinic=clinic,code='DEMO-ASSISTANT',defaults={'name':'椅旁助理','kind':'assistant','capacity':2})
+        ClinicalResource.objects.get_or_create(clinic=clinic,code='DEMO-EQUIPMENT',defaults={'name':'共用诊疗设备','kind':'equipment','capacity':1})
         for treatment in TreatmentType.objects.filter(code__startswith='DEMO-'):
             TreatmentBookingProfile.objects.get_or_create(treatment_type=treatment,defaults={'expected_minutes':30,'turnover_minutes':0})
             TreatmentResourceRequirement.objects.get_or_create(treatment_type=treatment,resource=chair,defaults={'quantity':1})

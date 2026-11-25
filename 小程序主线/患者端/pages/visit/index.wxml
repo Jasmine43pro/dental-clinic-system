@@ -18,10 +18,11 @@
       <view class="total">合计 ¥{{invoice.total}}</view>
     </view>
     <view class="card">
-      <view class="heading">模拟收款记录</view>
+      <view class="heading">收款记录</view>
+      <view class="hint">仅记录模拟结算。未发生实际扣款。</view>
       <view wx:if="{{invoice.payment}}">{{invoice.payment.method}} · ¥{{invoice.payment.amount}}</view>
       <view wx:if="{{invoice.payment.succeeded_at}}" class="hint">{{invoice.payment.succeeded_at}}</view>
-      <view wx:if="{{!invoice.payment}}" class="hint">暂无成功的模拟收款记录。</view>
+      <view wx:if="{{!invoice.payment}}" class="hint">暂无收款记录。</view>
     </view>
   </block>
 

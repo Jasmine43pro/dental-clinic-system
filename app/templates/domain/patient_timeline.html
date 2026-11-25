@@ -1,4 +1,4 @@
-{% extends 'domain/base.html' %}
+{% extends 'domain/base.html' %}{% load record_display %}
 {% block content %}
 <div class="crumb"><a href="{% url 'appointments' %}?patient={{ patient.pk }}">患者预约记录</a> / 诊疗时间线</div>
 <div class="heading"><div><h1>{{ patient.name }}的诊疗时间线</h1><p>查看有权访问的预约计划、就诊进度和已完成治疗。</p></div></div>
@@ -13,7 +13,7 @@
         <span class="badge">已完成就诊</span>
         <p>完成时间 {{ app.visit.completed_at|date:'Y-m-d H:i' }}</p>
         {% for line in app.visit.timeline_treatments %}
-          <p>已完成治疗 · {{ line.name_snapshot }} × {{ line.quantity }}</p>
+          <p>已完成治疗 · {{ line.name_snapshot|catalog_name }} × {{ line.quantity }}</p>
         {% empty %}
           <p>暂无可展示的治疗明细。</p>
         {% endfor %}

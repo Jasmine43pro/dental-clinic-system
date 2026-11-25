@@ -1,6 +1,6 @@
 <view class="page">
   <form class="card" bindsubmit="register">
-    <view class="hint registration-note">课程演示请使用虚构资料。已有诊所档案请联系前台核验并关联账号。</view>
+    <view class="hint registration-note">已有诊所档案，请联系前台核验并关联账号。课程使用时请勿填写真实个人资料。</view>
     <label class="field">姓名<input name="name" maxlength="60" disabled="{{busy}}" /></label>
     <view class="field">出生日期
       <picker mode="date" value="{{birthDate}}" disabled="{{busy}}" bindchange="changeBirthDate">

@@ -281,7 +281,7 @@ def issue_invoice(actor, pk, version):
     visit = Visit.objects.select_for_update().get(pk=pk)
     access.require(actor, ['reception', 'finance'], visit.appointment.slot.clinic_id)
     check(visit.status == 'completed', '就诊尚未完成。')
-    check(visit.current_version == int(version), '就诊版本已更新，请重新核对。')
+    check(visit.current_version == int(version), '就诊记录已更新，请重新核对。')
     check(not VisitAmendment.objects.filter(visit=visit, status='pending').exists(), '更正审批中，暂不能出单。')
     existing = visit.invoices.exclude(status='void').first()
     if existing:
@@ -355,7 +355,7 @@ def review_amendment(actor, pk, approve, reason):
     check(amendment.status == 'pending', '该申请已经处理。')
     check(bool(reason.strip()), '请填写审批意见。')
     if approve:
-        check(visit.current_version == amendment.base_version, '版本已变化，请驳回并让医生重新申请。')
+        check(visit.current_version == amendment.base_version, '就诊记录已更新，请驳回并由医生重新提交更正申请。')
         changes = amendment.proposed_changes
         replacement = changes.get('replacement_treatment')
         if replacement:

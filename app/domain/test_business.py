@@ -62,9 +62,9 @@ class BusinessTests(TestCase):
             self.assertEqual(self.client.get(reverse('appointment',args=[app.pk])).status_code,403)
             self.assertEqual(self.client.get(reverse('visit',args=[app.visit.pk])).status_code,403)
         self.login('demo_reception_a')
-        self.assertNotContains(self.client.get(reverse('visit',args=[app.visit.pk])),'虚构测试记录，不是诊疗建议')
+        self.assertNotContains(self.client.get(reverse('visit',args=[app.visit.pk])),app.visit.clinical_notes)
         self.login('demo_dentist_1')
-        self.assertContains(self.client.get(reverse('visit',args=[app.visit.pk])),'虚构测试记录，不是诊疗建议')
+        self.assertContains(self.client.get(reverse('visit',args=[app.visit.pk])),app.visit.clinical_notes)
 
     def test_navigation_preserves_context(self):
         self.login('demo_reception_a');app=Appointment.objects.get(number='DEMO-A004')

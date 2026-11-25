@@ -17,7 +17,7 @@ class Command(BaseCommand):
         if not clinic:raise CommandError('Initialize the fictional dataset first.')
         from domain.management.commands.seed_resources import initialize_demo_resources
         initialize_demo_resources()
-        treatment,_=TreatmentType.objects.get_or_create(code='DEMO-LONG',defaults={'name':'连续预约演示项目（虚构）','unit':'次','catalog_price':Decimal('80.00')})
+        treatment,_=TreatmentType.objects.get_or_create(code='DEMO-LONG',defaults={'name':'综合口腔检查','unit':'次','catalog_price':Decimal('80.00')})
         TreatmentBookingProfile.objects.get_or_create(treatment_type=treatment,defaults={'expected_minutes':60,'turnover_minutes':10})
         for resource in ClinicalResource.objects.filter(clinic=clinic,code__in=['DEMO-CHAIR','DEMO-ASSISTANT','DEMO-EQUIPMENT']):
             TreatmentResourceRequirement.objects.get_or_create(treatment_type=treatment,resource=resource,defaults={'quantity':1})
