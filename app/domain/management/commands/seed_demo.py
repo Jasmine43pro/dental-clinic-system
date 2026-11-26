@@ -9,7 +9,7 @@ from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
 from django.utils import timezone
 from domain.demo_names import (
-    CLINIC_NAMES, CONTACT_NAMES, DENTIST_NAMES, MANAGER_NAMES, PATIENT_NAMES,
+    CLINIC_ADDRESSES, CLINIC_NAMES, CONTACT_NAMES, DENTIST_NAMES, MANAGER_NAMES, PATIENT_NAMES,
     QUALIFICATION_NAMES, TREATMENTS,
 )
 from domain.models import *
@@ -45,8 +45,8 @@ class Command(BaseCommand):
                 scope_type='clinic' if clinic else ('self' if role in ['patient','dentist'] else 'global'),valid_from=now)
             return user
         clinics=[]
-        for i, clinic_name in enumerate(CLINIC_NAMES, start=1):
-            c=Clinic.objects.create(code=f'DEMO-{i:02}',name=clinic_name,address='地址未公开',
+        for i, (clinic_name, address) in enumerate(zip(CLINIC_NAMES, CLINIC_ADDRESSES), start=1):
+            c=Clinic.objects.create(code=f'DEMO-{i:02}',name=clinic_name,address=address,
                 manager_name=MANAGER_NAMES[i - 1],phone=f'TEST-CLINIC-{i:02}',email=f'clinic{i}@example.invalid',floor_area=100+i)
             clinics.append(c)
             for weekday in range(1,8):

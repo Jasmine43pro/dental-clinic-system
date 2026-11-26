@@ -2,7 +2,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 
 from domain.demo_names import (
-    CLINIC_NAMES, CONTACT_NAMES, DENTIST_NAMES, MANAGER_NAMES, PATIENT_NAMES,
+    CLINIC_ADDRESSES, CLINIC_NAMES, CONTACT_NAMES, DENTIST_NAMES, MANAGER_NAMES, PATIENT_NAMES,
     QUALIFICATION_NAMES, RESOURCE_NAMES, TREATMENTS,
 )
 from domain.models import (
@@ -16,10 +16,12 @@ class Command(BaseCommand):
     @transaction.atomic
     def handle(self, *args, **options):
         clinic_count = 0
-        for number, name in enumerate(CLINIC_NAMES, start=1):
+        for number, (name, address) in enumerate(zip(CLINIC_NAMES, CLINIC_ADDRESSES), start=1):
             clinics = Clinic.objects.filter(code=f'DEMO-{number:02}', phone=f'TEST-CLINIC-{number:02}')
             clinic_count += clinics.filter(name=f'虚构演示诊所{number:02}').update(name=name)
-            clinic_count += clinics.filter(address=f'演示地址{number:02}（非真实地址）').update(address='地址未公开')
+            clinic_count += clinics.filter(
+                address__in=('地址未公开', f'演示地址{number:02}（非真实地址）'),
+            ).update(address=address)
             clinic_count += clinics.filter(manager_name=f'演示负责人{number:02}').update(
                 manager_name=MANAGER_NAMES[number - 1],
             )

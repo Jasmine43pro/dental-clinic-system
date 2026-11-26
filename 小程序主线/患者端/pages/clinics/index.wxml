@@ -14,5 +14,5 @@
       <button wx:if="{{!demoMode}}" class="booking-link" size="mini" data-id="{{item.id}}" data-name="{{item.name}}" bindtap="openBooking">查看可约时段</button>
     </view>
   </block>
-  <view class="notice">课程使用 · 请勿填写真实个人资料。</view>
+  <view class="notice">课程使用 · 门店地址仅供界面展示，请勿据此前往就诊。</view>
 </view>
