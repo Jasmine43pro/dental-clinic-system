@@ -24,7 +24,7 @@ py -3.12 -B scripts\bootstrap.py --install
 
 默认数据库端口为 55433，网页端口为 8000。首次启动前可通过 `DENTAL_DB_PORT` 和 `DENTAL_WEB_PORT` 指定空闲端口。按 Ctrl+C 停止网页服务。停止本项目数据库可运行 `.venv\Scripts\python.exe -B scripts\database.py stop`。
 
-首次初始化会生成「云杉路店」等虚构门店及人员样例。如果已运行过旧版，可在本机数据库启动后执行 `.venv\Scripts\python.exe -B app\manage.py rename_demo_labels`，更新匹配旧占位值的样例资料。原有业务编号、病历、结算明细及记录间的关联保留。
+首次初始化会生成 15 家虚构门店及人员样例，门店地址见报告附录「课程验收样例资料」。如果已运行过旧版，可在本机数据库启动后执行 `.venv\Scripts\python.exe -B app\manage.py rename_demo_labels`，更新匹配旧占位值的样例资料。原有业务编号、病历、结算明细及记录间的关联保留。
 
 微信开发者工具可打开「小程序主线/患者端」做本地联调，默认连接本机 8000 端口。真机体验需要获授权的体验码及可访问的 HTTPS 服务。
 
